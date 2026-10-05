@@ -1,4 +1,4 @@
-import { ParticleName } from '@/components/three/ParticleName'
+import { Hero } from '@/components/hero/Hero'
 import { Counter } from '@/components/motion/Counter'
 import { WorkCard } from '@/components/motion/WorkCard'
 import { LabCommand } from '@/components/ui/LabCommand'
@@ -15,9 +15,7 @@ export default function Home() {
     <main className="relative w-full">
       
       {/* SC.01: Hero */}
-      <section className="relative h-[100vh] w-full">
-        <ParticleName />
-      </section>
+      <Hero />
 
       {/* SC.02: Proof */}
       <section className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-text">

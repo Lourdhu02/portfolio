@@ -66,3 +66,20 @@
   --color-accent-dim: #7A1F4E;
   --color-success: #2DE2E6;
 }
+
+/* Signature cut corner for buttons and cards */
+.cut-corner {
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+}
+
+/* Hero role line types in character by character */
+.type-char {
+  opacity: 0;
+  animation: type-in 0.01s linear forwards;
+}
+@keyframes type-in {
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .type-char { opacity: 1; animation: none; }
+}
