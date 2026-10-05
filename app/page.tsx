@@ -1,16 +1,15 @@
-import { ParticleName } from '@/components/three/ParticleName'
 import { Counter } from '@/components/motion/Counter'
 import { WorkCard } from '@/components/motion/WorkCard'
 import { LabDock } from '@/components/interaction/LabDock'
 import { CopyEmail } from '@/components/interaction/CopyEmail'
 import { Magnetic } from '@/components/motion/Magnetic'
-import { HeroScroll } from '@/components/motion/HeroScroll'
 import { ParallaxGrid } from '@/components/motion/Parallax'
 import { Reveal, RevealItem } from '@/components/motion/Reveal'
 import { ScrollWords } from '@/components/motion/ScrollWords'
 import { TRUTH, METRICS, show, factor } from '@/content/truth'
 import { Receipt } from '@/components/ui/Receipt'
 import Link from 'next/link'
+import { HeroStage } from '@/components/hero/HeroStage'
 import { HeroOverlay } from '@/components/hero/HeroOverlay'
 import { SectionHead } from '@/components/ui/SectionHead'
 import { MeterOcrVisual, SvtrVisual, EchomeVisual, FinSentinelVisual } from '@/components/work/CardVisuals'
@@ -24,10 +23,9 @@ export default function Home() {
     <main className="relative w-full">
       
       {/* SC.01: Hero */}
-      <HeroScroll>
-        <ParticleName />
+      <HeroStage>
         <HeroOverlay />
-      </HeroScroll>
+      </HeroStage>
 
       {/* SC.02: Proof */}
       <section className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-text">
