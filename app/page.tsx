@@ -1,7 +1,8 @@
 import { ParticleName } from '@/components/three/ParticleName'
 import { Counter } from '@/components/motion/Counter'
 import { WorkCard } from '@/components/motion/WorkCard'
-import { LabCommand } from '@/components/ui/LabCommand'
+import { LabDock } from '@/components/interaction/LabDock'
+import { CopyEmail } from '@/components/interaction/CopyEmail'
 import { Magnetic } from '@/components/motion/Magnetic'
 import { SplitLines } from '@/components/motion/SplitLines'
 import { TRUTH, METRICS, show, factor } from '@/content/truth'
@@ -125,14 +126,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SC.04: Lab (cmdk) */}
+      {/* SC.04: Lab console (same command menu as ⌘K) */}
       <section className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-text">
         <SectionHead
           index="02"
           title="Lab"
           aside={<Link href="/lab" className="text-detect hover:text-text transition-colors">Walk through the pipeline →</Link>}
         />
-        <LabCommand />
+        <LabDock />
       </section>
 
       {/* SC.05: Principles */}
@@ -205,16 +206,19 @@ export default function Home() {
         <Magnetic strength={20}>
           <a 
             href={`mailto:${TRUTH.identity.email}`} 
+            data-cursor="view"
+            data-cursor-label="Say hi"
             className="group flex flex-col items-center justify-center px-12 py-10 rounded-full border border-line bg-bg hover:border-accent transition-all shadow-2xl"
           >
             <span className="font-display text-4xl md:text-5xl group-hover:text-accent transition-colors uppercase">
               Got a model to ship?
             </span>
-            <span className="font-mono text-xs text-muted mt-2 group-hover:text-text transition-colors">
-              {TRUTH.identity.email}
-            </span>
           </a>
         </Magnetic>
+        <CopyEmail
+          email={TRUTH.identity.email}
+          className="mt-6 rounded-full px-4 py-2 font-mono text-xs text-muted transition-colors hover:text-text"
+        />
 
         <div className="mt-16 flex flex-wrap justify-center gap-6 font-mono text-xs uppercase tracking-widest text-muted">
           <a href={TRUTH.identity.links.github} target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">GitHub</a>
