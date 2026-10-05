@@ -100,3 +100,46 @@
 @media (prefers-reduced-motion: reduce) {
   .cmdk-overlay, .cmdk-content { animation-duration: 1ms !important; }
 }
+
+/* ---------- Hero frame ---------- */
+.hero-in {
+  opacity: 0;
+  animation: hero-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0s) forwards;
+}
+@keyframes hero-in {
+  from { opacity: 0; transform: translateY(12px); filter: blur(6px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+.hero-blink { animation: hero-blink 2.4s steps(1) infinite; }
+@keyframes hero-blink { 50% { opacity: 0.2; } }
+.hero-scroll { animation: hero-scroll 2s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
+@keyframes hero-scroll {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(200%); }
+}
+
+/* ---------- Work card visuals ---------- */
+.wc-grid {
+  background-image:
+    linear-gradient(to right, rgba(237, 237, 240, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(237, 237, 240, 0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.wc-scan { animation: wc-scan 3.2s cubic-bezier(0.65, 0, 0.35, 1) infinite alternate; }
+@keyframes wc-scan { from { transform: translateY(0); } to { transform: translateY(90px); } }
+.wc-node { animation: wc-node 2s ease-in-out infinite; }
+@keyframes wc-node {
+  0%, 60%, 100% { border-color: var(--color-line); color: var(--color-muted); }
+  20% { border-color: var(--color-accent); color: var(--color-text); }
+}
+.wc-ping { animation: wc-ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite; }
+@keyframes wc-ping { 0% { r: 9px; opacity: 1; } 100% { r: 24px; opacity: 0; } }
+.wc-grow { transform-origin: left; animation: wc-grow 1.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes wc-grow { from { transform: scaleX(3.4); } to { transform: scaleX(1); } }
+.wc-grow-r { transform-origin: left; animation: wc-grow-r 1.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes wc-grow-r { from { transform: scaleX(9); } to { transform: scaleX(1); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-in { animation: none; opacity: 1; }
+  .hero-blink, .hero-scroll, .wc-scan, .wc-node, .wc-ping, .wc-grow, .wc-grow-r { animation: none; }
+}

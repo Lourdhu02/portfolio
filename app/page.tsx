@@ -7,6 +7,9 @@ import { Magnetic } from '@/components/motion/Magnetic'
 import { SplitLines } from '@/components/motion/SplitLines'
 import { TRUTH } from '@/content/truth'
 import Link from 'next/link'
+import { HeroOverlay } from '@/components/hero/HeroOverlay'
+import { SectionHead } from '@/components/ui/SectionHead'
+import { MeterOcrVisual, SvtrVisual, EchomeVisual, FinSentinelVisual } from '@/components/work/CardVisuals'
 
 export default function Home() {
   const { readingsProcessed, accuracy, latencyP50 } = TRUTH.metrics.flagship
@@ -16,8 +19,9 @@ export default function Home() {
     <main className="relative w-full">
       
       {/* SC.01: Hero */}
-      <section className="relative h-[100vh] w-full">
+      <section className="relative h-[100svh] min-h-[640px] w-full overflow-hidden">
         <ParticleName />
+        <HeroOverlay />
       </section>
 
       {/* SC.02: Proof */}
@@ -25,7 +29,7 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-6 pt-16 pb-24 border-t border-line">
           
           <div className="flex flex-col space-y-4">
-            <h2 className="font-display text-5xl md:text-7xl">
+            <h2 className="font-display text-6xl md:text-8xl leading-none">
               <Counter value={readingsProcessed / 1000000} suffix="M+" />
             </h2>
             <div className="flex flex-col">
@@ -35,7 +39,7 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col space-y-4">
-            <h2 className="font-display text-5xl md:text-7xl text-success">
+            <h2 className="font-display text-6xl md:text-8xl leading-none text-success">
               <Counter value={accuracy.after} suffix="%" />
             </h2>
             <div className="flex flex-col">
@@ -45,7 +49,7 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col space-y-4">
-            <h2 className="font-display text-5xl md:text-7xl text-accent">
+            <h2 className="font-display text-6xl md:text-8xl leading-none text-accent">
               <Counter value={speedup} suffix="×" />
             </h2>
             <div className="flex flex-col">
@@ -58,128 +62,78 @@ export default function Home() {
       </section>
 
       {/* SC.03: Work Grid */}
-      <section id="work" className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-text">
-        <div className="flex justify-between items-baseline mb-12 border-b border-line pb-4">
-          <h2 className="font-mono text-sm tracking-widest uppercase text-muted">01 / Selected Work</h2>
-          <span className="font-mono text-xs text-muted uppercase">Production Systems & Research</span>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-          
-          {/* Flagship: Meter OCR */}
-          <WorkCard 
+      <section id="work" className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-text scroll-mt-16">
+        <SectionHead index="01" title="Selected Work" aside="Production systems & research" />
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-16">
+          <WorkCard
             id="meter-ocr"
-            index={1}
-            summary="Five-model pipeline that reads utility meters from field photos, served on Triton with TensorRT FP16 engines."
-            stack={["Triton", "TensorRT FP16", "YOLO26n-OBB", "SVTRv2", "NVIDIA L4"]}
+            index="01"
             title="Meter OCR"
-            kicker="State Utility · 40M+ Readings"
+            kicker="State Utility · 40M+ Readings · Flagship"
             href="/work/meter-ocr"
+            summary="Utility-scale five-model pipeline that reads electricity meters from field photos, running in live production."
+            tags={['TensorRT', 'Triton', 'NVIDIA L4']}
+            aspect="aspect-[4/3] md:aspect-[21/9]"
+            className="md:col-span-3"
           >
-            <div className="w-full h-full bg-[#0E0E12] p-6 flex flex-col justify-between border-t border-accent/40">
-              <div className="flex justify-between items-center font-mono text-[11px] text-muted uppercase">
-                <span className="text-accent">FLAGSHIP PIPELINE</span>
-                <span>9 TENSORRT ENGINES</span>
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-success" />
-                  <span className="font-mono text-xs text-text">181 img/s sustained on 1× NVIDIA L4</span>
-                </div>
-                <div className="w-full bg-line h-1 rounded-full overflow-hidden">
-                  <div className="bg-accent h-full w-[91%]" />
-                </div>
-                <div className="flex justify-between font-mono text-[10px] text-muted">
-                  <span>ACCURACY: 91%</span>
-                  <span>P50: 156ms</span>
-                </div>
-              </div>
-            </div>
+            <MeterOcrVisual />
           </WorkCard>
 
-          {/* SVTRv2-ARD */}
-          <WorkCard 
+          <WorkCard
             id="svtrv2-ard"
-            index={2}
-            summary="Attention refactor of SVTRv2 with fused SDPA and torch.compile, cutting training memory from 50.5GB to 14.7GB."
-            stack={["PyTorch", "SDPA", "torch.compile", "SVTRv2"]}
+            index="02"
             title="SVTRv2-ARD"
-            kicker="Research · DGX 3.8× Accelerated"
+            kicker="Research · Attention refactor"
             href="/work/svtrv2-ard"
+            summary="Fused SDPA and compile for the SVTRv2 text recogniser, cutting the training memory footprint."
+            tags={['PyTorch', 'SDPA', 'DGX']}
+            aspect="aspect-[4/3]"
           >
-            <div className="w-full h-full bg-[#0E0E12] p-6 flex flex-col justify-between border-t border-detect/40">
-              <div className="flex justify-between items-center font-mono text-[11px] text-muted uppercase">
-                <span className="text-detect">ATTENTION REFACTOR</span>
-                <span>FUSED SDPA + COMPILE</span>
-              </div>
-              <div className="space-y-2">
-                <div className="font-mono text-xs text-text">VRAM footprint: 50.5GB → 14.7GB</div>
-                <div className="font-mono text-xs text-detect">+8.7 pp on low-quality photo crops</div>
-              </div>
-            </div>
+            <SvtrVisual />
           </WorkCard>
 
-          {/* ECHOME */}
-          <WorkCard 
+          <WorkCard
             id="echome"
-            index={3}
-            summary="Offline agent with three-tier memory and adaptive IRT personality testing, all running locally."
-            stack={["LangGraph", "Qdrant", "IRT", "Whisper"]}
+            index="03"
             title="ECHOME"
-            kicker="Local-First Agent · LangGraph"
+            kicker="Local-first agent · LangGraph"
             href="/work/echome"
+            summary="An offline agent with three-tier memory and adaptive IRT psychometric testing."
+            tags={['LangGraph', 'Qdrant', 'Offline']}
+            aspect="aspect-[4/3]"
           >
-            <div className="w-full h-full bg-[#0E0E12] p-6 flex flex-col justify-between border-t border-line">
-              <div className="flex justify-between items-center font-mono text-[11px] text-muted uppercase">
-                <span>3-TIER MEMORY</span>
-                <span>1MS QDRANT RETRIEVAL</span>
-              </div>
-              <div className="space-y-1">
-                <div className="font-mono text-xs text-text">11 of 12 planted facts recalled</div>
-                <div className="font-mono text-xs text-muted">Adaptive IRT psychometric testing · Offline</div>
-              </div>
-            </div>
-          </WorkCard>
-          
-          {/* FinSentinelAI */}
-          <WorkCard 
-            id="finsentinel"
-            index={4}
-            summary="Air-gapped financial RAG: hybrid BM25 and dense retrieval fused by reciprocal rank, then cross-encoder reranking."
-            stack={["FastAPI", "Ollama", "ChromaDB", "BM25"]}
-            title="FinSentinelAI"
-            kicker="Private Financial RAG · Hybrid BM25"
-            href="/work/finsentinel"
-          >
-            <div className="w-full h-full bg-[#0E0E12] p-6 flex flex-col justify-between border-t border-line">
-              <div className="flex justify-between items-center font-mono text-[11px] text-muted uppercase">
-                <span>RECIPROCAL-RANK FUSION</span>
-                <span>AIR-GAPPED OLLAMA</span>
-              </div>
-              <div className="space-y-1">
-                <div className="font-mono text-xs text-text">15% → 100% Exact-ID Lookup Recovery</div>
-                <div className="font-mono text-xs text-muted">Cross-encoder reranking over 1,000 PDFs</div>
-              </div>
-            </div>
+            <EchomeVisual />
           </WorkCard>
 
+          <WorkCard
+            id="finsentinel"
+            index="04"
+            title="FinSentinelAI"
+            kicker="Private financial RAG"
+            href="/work/finsentinel"
+            summary="Hybrid BM25 and dense retrieval fused by reciprocal rank, cross-encoder reranked, on air-gapped Ollama."
+            tags={['BM25', 'RRF', 'Ollama']}
+            aspect="aspect-[4/3]"
+          >
+            <FinSentinelVisual />
+          </WorkCard>
         </div>
       </section>
 
       {/* SC.04: Lab console (same command menu as ⌘K) */}
       <section className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-text">
-        <div className="flex justify-between items-baseline mb-12 border-b border-line pb-4">
-          <h2 className="font-mono text-sm tracking-widest uppercase text-muted">02 / Live ML Lab</h2>
-          <Link href="/lab" className="font-mono text-xs text-detect hover:underline uppercase tracking-wider">
-            Launch Interactive Benchmark →
-          </Link>
-        </div>
+        <SectionHead
+          index="02"
+          title="Live ML Lab"
+          aside={<Link href="/lab" className="text-detect hover:text-text transition-colors">Launch interactive benchmark →</Link>}
+        />
         <LabDock />
       </section>
 
       {/* SC.05: Principles */}
       <section className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-text">
-        <div className="font-mono text-xs text-muted uppercase tracking-widest mb-8">03 / Engineering Creed</div>
+        <SectionHead index="03" title="Engineering Creed" />
         <h2 className="font-display text-5xl md:text-7xl mb-12 leading-[1.05]">
           <SplitLines>Measure before you claim.</SplitLines>
           <br />
