@@ -1,0 +1,8 @@
+# Netlify build settings. The Next.js runtime (@netlify/plugin-nextjs) is
+# detected and installed automatically, so no plugin entry is needed here.
+[build]
+  command = "pnpm build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
