@@ -1,5 +1,5 @@
 "use client"
-import { useRef, useState } from 'react'
+import { useRef, useState, ViewTransition } from 'react'
 import { m, useMotionTemplate, useMotionValue, useSpring } from 'motion/react'
 import Link from 'next/link'
 
@@ -36,7 +36,6 @@ export function WorkCard({ id, title, kicker, href, children }: WorkCardProps) {
     >
       <m.div
         ref={ref}
-        layoutId={`cover-${id}`}
         onMouseMove={onMouseMove}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -65,7 +64,10 @@ export function WorkCard({ id, title, kicker, href, children }: WorkCardProps) {
 
       <div className="flex flex-col space-y-1">
         <span className="font-mono text-xs uppercase tracking-widest text-muted">{kicker}</span>
-        <h3 className="font-display text-4xl">{title}</h3>
+        {/* Morphs into the case study's h1 on navigation (globals.css, "Shared title") */}
+        <ViewTransition name={`work-title-${id}`} share="morph" default="none">
+          <h3 className="font-display text-4xl w-fit">{title}</h3>
+        </ViewTransition>
       </div>
     </Link>
   )

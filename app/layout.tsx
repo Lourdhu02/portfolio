@@ -4,6 +4,8 @@ import "./globals.css";
 import { JinxMode } from "@/components/JinxMode";
 import { Navigation } from "@/components/ui/Navigation";
 import { MotionProvider } from "@/components/motion/MotionProvider";
+import { SmoothScroll } from "@/components/motion/SmoothScroll";
+import { ScrollProgress } from "@/components/motion/ScrollProgress";
 
 // Big Shoulders Display now ships on Google Fonts as the variable "Big Shoulders" family (opsz axis).
 const fontDisplay = Big_Shoulders({
@@ -39,13 +41,16 @@ export default function RootLayout({
     <html lang="en" className={`${fontDisplay.variable} ${fontSans.variable} ${fontMono.variable}`}>
       <body className="antialiased">
         <MotionProvider>
+          <SmoothScroll>
           <JinxMode />
+          <ScrollProgress />
           <Navigation />
-          <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-50 overflow-hidden">
+          <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-50 overflow-hidden" style={{ viewTransitionName: "site-grain" }}>
             <div className="film-grain absolute inset-0" />
             <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_40%,transparent_55%,rgba(5,5,7,0.7)_100%)]" />
           </div>
           {children}
+          </SmoothScroll>
         </MotionProvider>
       </body>
     </html>

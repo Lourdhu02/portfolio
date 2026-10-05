@@ -2,6 +2,7 @@ import { PipelineDiagram } from '@/components/motion/PipelineDiagram'
 import { Counter } from '@/components/motion/Counter'
 import { TRUTH } from '@/content/truth'
 import Link from 'next/link'
+import { ViewTransition } from 'react'
 
 export default function MeterOCRCaseStudy() {
   const { metrics } = TRUTH
@@ -15,9 +16,11 @@ export default function MeterOCRCaseStudy() {
 
       {/* 1. Title Card */}
       <header className="mb-24">
-        <h1 className="font-display text-6xl md:text-8xl leading-[0.85] uppercase mb-6">
-          Meter OCR
-        </h1>
+        <ViewTransition name="work-title-meter-ocr" share="morph" default="none">
+          <h1 className="font-display text-6xl md:text-8xl leading-[0.85] uppercase mb-6 w-fit">
+            Meter OCR
+          </h1>
+        </ViewTransition>
         <p className="font-mono text-muted uppercase tracking-widest">State Electricity Utility</p>
       </header>
 

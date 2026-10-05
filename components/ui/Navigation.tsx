@@ -1,10 +1,28 @@
 "use client"
 import Link from 'next/link'
-import { m, AnimatePresence } from 'motion/react'
-import { useState } from 'react'
+import { m, AnimatePresence, useMotionValueEvent, useScroll } from 'motion/react'
+import { useEffect, useState } from 'react'
+import { useLenis } from '@/components/motion/SmoothScroll'
+import { duration, ease } from '@/lib/tokens'
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
+  const [hidden, setHidden] = useState(false)
+  const lenis = useLenis()
+  const { scrollY } = useScroll()
+
+  // Tuck the bar away while reading down the page; bring it back on any upward scroll
+  useMotionValueEvent(scrollY, 'change', (y) => {
+    const prev = scrollY.getPrevious() ?? 0
+    setHidden(y > 160 && y > prev)
+  })
+
+  // Freeze the page behind the open menu
+  useEffect(() => {
+    if (!lenis) return
+    if (isOpen) lenis.stop()
+    else lenis.start()
+  }, [isOpen, lenis])
 
   const links = [
     { label: 'Work', href: '/#work' },
@@ -15,7 +33,12 @@ export function Navigation() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center mix-blend-difference pointer-events-none">
+      <m.nav
+        className="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center mix-blend-difference pointer-events-none"
+        style={{ viewTransitionName: 'site-nav' }}
+        animate={{ y: hidden && !isOpen ? '-110%' : '0%' }}
+        transition={{ duration: duration.reveal * 0.6, ease: ease.out }}
+      >
         <Link href="/" className="font-display text-2xl text-text pointer-events-auto hover:text-accent transition-colors">
           LR
         </Link>
@@ -25,7 +48,7 @@ export function Navigation() {
         >
           [ Menu ]
         </button>
-      </nav>
+      </m.nav>
 
       <AnimatePresence>
         {isOpen && (
