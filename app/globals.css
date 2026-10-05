@@ -1,6 +1,17 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* The ₹ glyph from Big Shoulders (OFL), subset to ~1KB and inlined. Big Shoulders keeps ₹ in its
+   latin-ext file, so one rupee sign on the page would otherwise pull a 29KB font before first paint. */
+@font-face {
+  font-family: "Rupee Display";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  unicode-range: U+20B9;
+  src: url(data:font/woff2;base64,d09GMgABAAAAAARIABIAAAAAB7AAAAPmAAIAgwAAAAAAAAAAAAAAAAAAAAAAAAAAGyAcKj9IVkFSVQZgP1NUQVSBJicyADQvJBEICmyBATCBagE2AiQDCAsGAAQgBYRAByAbgwYoLgNsYyj2WSnS0nBiXPW66WTHxbu7H2MxRBovgsju/796zl7thfbRDAFGzKQgk78YESERxA9+/Zq+JGV0QKAAUIX3gPYfoO74KlmhKnSmDlyFbXjgOWZ/RRW84d7AZhOIvKPC08NK8bOjiLbCKrypm+2F9oFsjXRa7F00N0jbp7/5Z2OKdB4G1EadQFlxFuaBRwWSbpB6jWH7ey2RCKP/53J8c7Sf18cGcUZz+pg0l6UHnAVaIOHCNYGySyDgAKlh7NrMuF8g115HMf14/nINMngJAFTmnnpL87XtKBzYZYD2WwhQYBFmpwYJnTFASDSY3JR3IeA9gd8rP/cnhHPB4RApkaVzBtRSVmAfuD4ukt5VClacQjI2e2RxZ3xY3Oo+XH3lxQOQj0R+EJA9Lp8M6KxCCJUSClXoLu0W+49Fe8jh4S0HohMUmnTU10gz3cvSBFKCyG0AiKnGJ5q66I+UJlM0wO+kdynyTXC1MhXIq7Ilpak1OqRri76pE0L+oUNQNoxCzYUGLe/QXmddClPo1/MxYiUw2S6QUEKhJFDIdEYmE3TeAp6zz6RS1h0KVEbhT1EGG6B0GoIQL6EdJJAh0A1DABkguvHZpqg+8/Xo07n7uDBNUSt/sGLYhqPIj//weL/qfV+1yef5mBed0iLzKD0q7UlPMec+TZ9wvkvPH0wHTbuOd81Kp9O09Ky1h+pKDxAI0FYCbcGWMaa1eYckhcmw/ZBUdZgM3f/f8/zv9/tuqe9ux29w0G9xeWlx8RMafLqWZdOj8xgzXrf9+aFVDn09Nf/7aXZhIP73O6TtU1f3/9/dMkBX76SLsspRT8syTbvVW1kagTxy9xw4dmjPLrTyvn1Hw+ojy5asju2Sv3G/8eLF66Z97cK6T6d0dNpN7BcaeuPGazzAFtj4KZ//U8H3Sr/3ZQyB5FS5dsyeO/7SMhXfwI/bIAP+uHaaL8Vv1G5puIlyCQTlnyr7jYb+fn28wfO9pGw4dCb4j1EpJPvVOiEiAEBJoN7bQiKrwptAIKnzpqXOSB9ZBTWeQa4yKqFGEeiAOnl0VzRIs4omqCYGQgE1BHaQlsRcaA01Be6RtsQGaA+1DljRTpZceoAJMYdKpvAMGWqwIcbobDkcoehUGteKLLuc+QxlxOEaspiDaUiJZ8iUDTwKjvaWvc0juHYMMshm6ra7r2jBesy06AjmiQmESS9ap9t5jts7bSkiV9MLHD3R3bK2WSTM4jGoSvCaiyxY2JK9IN9PeaRQWY5EPI6CS4rg9yVXSJnKZ3pATKp9zFDug3KC8Oi+rZUS3U0f9Sz6oQLDkP1UCZIBXk5KTg==) format("woff2");
+}
+
 @theme {
   --color-bg: #050507;
   --color-surface: #0B0B0F;
@@ -13,7 +24,7 @@
   --color-detect: #2DE2E6;
   --color-success: #3DDC97;
 
-  --font-display: var(--font-big-shoulders), "Arial Narrow", sans-serif;
+  --font-display: "Rupee Display", var(--font-big-shoulders), "Arial Narrow", sans-serif;
   --font-sans: var(--font-geist), "Helvetica Neue", Arial, sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, monospace;
 

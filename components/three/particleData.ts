@@ -46,5 +46,7 @@ export function buildParticles(particleCount: number, lines: string[]) {
   }
 }
 
+export type Particles = ReturnType<typeof buildParticles>
+
 // Behaviour constants both renderers share
 export const NO_SHOCK = 100 // seconds; old enough that the ring has fully faded

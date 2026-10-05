@@ -1,17 +1,16 @@
 "use client"
-import { Command } from 'cmdk'
+import dynamic from 'next/dynamic'
 import { useEffect, useRef, useState } from 'react'
-import { COMMANDS } from '@/lib/commands'
 import { openPalette } from '@/lib/interaction'
 import { useModKey } from '@/lib/useMediaQuery'
-import { CommandMenu, Kbd, useRunCommand } from './CommandMenu'
+import { Kbd } from './Kbd'
 
-const DOCKED = COMMANDS.filter((c) => c.group === 'Lab' || c.group === 'Work' || c.id === 'copy-email')
+const loadConsole = () => import('./LabConsole')
+const LabConsole = dynamic(loadConsole, { ssr: false })
 
 // The home page's lab console: a docked window running the same command menu as ⌘K,
 // with the shortcuts spelled out beside it.
 export function LabDock() {
-  const run = useRunCommand()
   const mod = useModKey()
   const slot = useRef<HTMLDivElement>(null)
   const [armed, setArmed] = useState(false)
@@ -21,6 +20,14 @@ export function LabDock() {
   useEffect(() => {
     const el = slot.current
     if (!el) return
+    // Fetch the console's code a screen ahead so it is ready by the time it mounts
+    const near = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        void loadConsole()
+        near.disconnect()
+      }
+    }, { rootMargin: '100% 0px' })
+    near.observe(el)
     const io = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
         setArmed(true)
@@ -28,7 +35,10 @@ export function LabDock() {
       }
     }, { threshold: 0.9 })
     io.observe(el)
-    return () => io.disconnect()
+    return () => {
+      near.disconnect()
+      io.disconnect()
+    }
   }, [])
 
   return (
@@ -72,16 +82,7 @@ export function LabDock() {
             </button>
           </div>
           <div ref={slot} className="min-h-[377px]">
-            {armed && (
-              <Command label="Lab console" loop>
-                <CommandMenu
-                  commands={DOCKED}
-                  onRun={run}
-                  placeholder="Search experiments and work…"
-                  listClassName="h-[320px]"
-                />
-              </Command>
-            )}
+            {armed && <LabConsole />}
           </div>
         </div>
       </div>

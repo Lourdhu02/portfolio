@@ -12,7 +12,9 @@ export interface SampledText {
   height: number
 }
 
-const FONT_PX = 280 // drawn at 2x the ~140px display size for denser sampling
+// Every pixel at 140px gives the same grid as every 2nd pixel at 280px, with a quarter of the
+// pixels to rasterise and read back
+const FONT_PX = 140
 const WORLD_PER_PX = 2.4 / FONT_PX // one line of caps is ~2.4 world units tall
 const LINE_HEIGHT = 0.92
 
@@ -50,12 +52,11 @@ export function sampleTextToParticles(
 
   const data = ctx.getImageData(0, 0, width, height).data
   // Filled pixel coordinates in a typed array (x, y pairs): no per-pixel array growth or boxing
-  const filled = new Uint32Array(Math.ceil(width / 2) * Math.ceil(height / 2) * 2)
+  const filled = new Uint32Array(width * height * 2)
   let filledLength = 0
-  const step = 2
-  for (let y = 0; y < height; y += step) {
+  for (let y = 0; y < height; y++) {
     const row = y * width
-    for (let x = 0; x < width; x += step) {
+    for (let x = 0; x < width; x++) {
       if (data[(row + x) * 4] > 128) {
         filled[filledLength++] = x
         filled[filledLength++] = y
