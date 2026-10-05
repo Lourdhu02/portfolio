@@ -8,6 +8,7 @@ import { CommandPalette } from "@/components/interaction/CommandPalette";
 import { Cursor } from "@/components/interaction/Cursor";
 import { Toaster } from "@/components/interaction/Toaster";
 import { posts } from "#velite";
+import { TRUTH } from "@/content/truth";
 
 // Big Shoulders Display now ships on Google Fonts as the variable "Big Shoulders" family (opsz axis).
 const fontDisplay = Big_Shoulders({
@@ -31,7 +32,7 @@ const fontMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "Lourdu Raju · Machine Learning Engineer",
-  description: "I make vision models fast, honest and boring to run.",
+  description: TRUTH.identity.pitch,
 };
 
 export default function RootLayout({

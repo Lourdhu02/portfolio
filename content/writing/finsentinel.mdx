@@ -1,31 +1,24 @@
 ---
-title: "FinSentinelAI: Zero-Leakage Financial Document RAG"
-summary: "Fully local hybrid BM25 + dense retrieval with reciprocal-rank fusion, cross-encoder reranking, and Ollama."
-date: 2024-11-20
+title: "FinSentinelAI: Private RAG for Financial Documents"
+summary: "A fully local assistant that indexes invoices, receipts and bank statements and answers questions about them, with zero external API calls."
+date: 2026-07-24
 tags: ["FastAPI", "Ollama", "ChromaDB", "RAG", "FinTech"]
 ---
 
-## Overview
+## The constraint
 
-FinSentinelAI is a self-contained, air-gapped document question-answering and compliance intelligence engine designed for sensitive enterprise financial records: invoices, bank account statements, GST filings, and salary slips.
+Financial documents are the last thing you want to send to a third-party API. FinSentinelAI answers questions about invoices, receipts and bank statements with retrieval-augmented generation that never leaves the machine: local embeddings, a local vector store, a local LLM.
 
-- **GitHub Repository**: [github.com/Lourdhu02/fin-sentinal.ai](https://github.com/Lourdhu02/fin-sentinal.ai)
-- **Tech Stack**: FastAPI, Ollama, ChromaDB, BM25, Cross-Encoder Reranking, JWT Auth.
+- **Code**: [github.com/Lourdhu02/fin-sentinal.ai](https://github.com/Lourdhu02/fin-sentinal.ai)
+- **Stack**: React, Vite and Tailwind; FastAPI; ChromaDB and SQLite; SentenceTransformers; a cross-encoder reranker; Ollama; local vision-language models for images; JWT and bcrypt auth.
 
-## Why Dense-Only Embeddings Fail on Financial Records
+## Pipeline
 
-When querying financial documents for exact alphanumeric invoice numbers, tax identification codes (GSTINs), or specific currency amounts, conventional vector embeddings (dense cosine search) suffer catastrophic semantic failure.
+1. **Ingest**: one extractor handles PDF, CSV, JSON and images.
+2. **Retrieve**: query embeddings search ChromaDB, filtered by `user_id` inside the vector store, so one user's documents can never surface in another user's answer.
+3. **Rerank**: a `ms-marco-MiniLM-L-6-v2` cross-encoder rescores the candidates.
+4. **Check**: anomaly detection and an invoice verifier run on top of retrieval before the local LLM writes the answer.
 
-To quantify this, we constructed a **60-question gold-standard benchmark** across 1,000 scanned financial PDFs:
-- **Dense-Only Search**: Retrieved the correct document in the top-1 position for only **15% of exact identifier lookups**.
-- **Hybrid Retrieval (BM25 + Dense) with Reciprocal-Rank Fusion (RRF)**: Retrieved the target document first in **100% of cases**.
+## Test corpus
 
-## Pipeline Architecture
-
-1. **Ingestion & Parsing**: Multi-page PDF text extraction with layout-aware chunking preserving tabular row alignments.
-2. **Dual-Path Retrieval**:
-   - Sparse lexical scoring via BM25 over tokenized n-grams.
-   - Dense semantic embeddings generated locally via sentence-transformers in ChromaDB.
-3. **Reciprocal-Rank Fusion (RRF)**: Fuses ranked lists dynamically using $RRF(d) = \sum_{m \in M} \frac{1}{k + r_m(d)}$.
-4. **Cross-Encoder Reranking**: Top-20 merged candidates are rescored by a local cross-encoder model to determine top-3 context chunks.
-5. **Local Synthesis**: Ollama-served LLM generates citations with page coordinates, wrapped in secure JWT-isolated multi-tenant workspaces.
+The repo carries a **1,000**-document synthetic finance corpus: invoices, salary slips, bank statements, GST returns, purchase orders, and credit and debit notes across 10 layouts. It exists so retrieval can be measured on documents that look real without exposing anyone's real finances.

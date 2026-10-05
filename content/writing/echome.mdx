@@ -1,34 +1,29 @@
 ---
-title: "ECHOME: Local-First Agent with Three-Tier Memory"
-summary: "LangGraph agent with CoALA-style episodic memory in Qdrant, adaptive psychometric assessment, and 1ms retrieval."
-date: 2025-10-01
+title: "ECHOME: A Local Digital Twin with Real Memory"
+summary: "A fully offline agent that learns how you think through an adaptive personality test, speaks in your voice, and remembers across sessions."
+date: 2026-08-26
 tags: ["LangGraph", "Qdrant", "Local-AI", "Psychometrics"]
 ---
 
-## Project Highlights
+## What it is
 
-ECHOME is a privacy-first, local AI agent architecture built to run entirely offline on consumer hardware with zero cloud dependencies. It unifies structured long-term memory with an adaptive psychometric conversational interface.
+ECHOME is a digital twin that runs entirely on your own machine. It learns how you think through an adaptive personality assessment, sounds like you through a local voice clone, and acts for you through an agent that remembers past conversations.
 
-- **GitHub Repository**: [github.com/Lourdhu02/echome](https://github.com/Lourdhu02/echome)
-- **Tech Stack**: LangGraph, Qdrant, Item Response Theory (IRT), Whisper, XTTSv2.
+- **Code**: [github.com/Lourdhu02/echome](https://github.com/Lourdhu02/echome)
+- **Stack**: Python, FastAPI, LangGraph, Qdrant, MiniLM embeddings, Ollama, Whisper, Resemblyzer, XTTSv2, HiFi-GAN, Docker.
 
-## Three-Tier Memory Architecture (CoALA-Style)
+## Memory that is tested, not assumed
 
-Rather than dumping unstructured chat history into a naive context window, ECHOME implements a cognitive three-tier memory architecture:
+Chat history in a context window is not memory. ECHOME uses a CoALA-style design with three tiers: episodic memories in Qdrant with recency-decayed retrieval, semantic facts consolidated from those episodes, and procedural patterns mined from how you interact.
 
-1. **Episodic Vector Memory**: Stored in a local Qdrant instance with recency-decayed cosine similarity retrieval.
-2. **Semantic Knowledge Consolidation**: Periodic offline background passes synthesize disparate episodic observations into durable user facts.
-3. **Procedural Behavioral Patterns**: Mined interaction heuristics that guide system prompt modulation over time.
+The repo includes a multi-session evaluation (`python -m tests.eval.run_eval`). A fact is planted in one session and probed later, between 2 and 52 turns afterward:
 
-### Benchmark Validation
-On a synthetic conversational benchmark testing recall across 52 conversational turns:
-- **Recall Accuracy**: Successfully recalled **11 out of 12 planted facts** in the top 5 candidates.
-- **Latency**: Vector retrieval completed in approximately **1 ms per query**.
+- **With memory**: the needed fact is recalled in 11 of 12 scenarios (**92%**).
+- **With memory off**: **0%**.
+- **Retrieval**: under 1 ms with 200 episodes stored.
 
-## Adaptive Psychometric Assessment
+## An assessment that asks less
 
-ECHOME implements an adaptive personality evaluation engine based on Item Response Theory (IRT):
-- Employs a Graded Response Model (GRM) with Maximum A Posteriori (MAP) estimation.
-- Selects conversational probes maximizing Fisher information at the candidate's current latent trait estimates.
-- **50% Shorter Assessments**: Reduces question count by half while maintaining an **$r = 0.97$ correlation** with full-length 240-question inventories across 500 simulated respondents over 8 personality dimensions.
-- Fully speech-enabled via local Whisper speech-to-text and XTTSv2 expressive voice synthesis.
+The personality test uses Item Response Theory: a Graded Response Model with MAP estimation, choosing each next question to maximize Fisher information at your current trait estimate. It cuts test length by **70%** while keeping standard error under 0.32 across 8 trait dimensions.
+
+Speech runs locally too: Whisper for speech-to-text, Resemblyzer speaker embeddings, and XTTSv2 with HiFi-GAN for the voice.

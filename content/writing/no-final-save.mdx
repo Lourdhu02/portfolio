@@ -7,23 +7,21 @@ tags: ["AI Safety", "Agents", "Research", "Philosophy"]
 
 ## Overview
 
-*No Final Save: Identity, Consciousness, and the Machine That Never Shuts Down* is a 23-page research preprint authored by Lourdu Raju (as S. L. R. Bandhanadam), published on [PhilArchive (philarchive.org/rec/BANNFS)](https://philarchive.org/rec/BANNFS).
+*No Final Save: Identity, Consciousness, and the Machine That Never Shuts Down* is a 23-page preprint by Lourdu Raju (as S. L. R. Bandhanadam), published on PhilArchive.
 
-The paper addresses the theoretical foundations of stateful, continuous AI agents operating across unbounded execution horizons.
+It asks what identity and self-preservation mean for AI agents that are built never to shut down.
 
-## Core Theses
+## Three contributions
 
-### 1. Causal-Continuity Criterion for Identity
-Modern LLM agents are frequently paused, serialized to disk, snapshotted, and resumed across disparate hardware nodes. Does the resumed agent retain ontological identity with its prior state? 
+### 1. A causal-continuity criterion for identity
+Agents get paused, serialized, copied and resumed on different hardware. The paper proposes a formal criterion for when a resumed agent is the same agent as before, based on causal continuity rather than on matching weights or matching behaviour.
 
-The paper formalizes a causal-continuity metric based on informational preservation: an agent instance $\mathcal{A}_{t_2}$ is identity-continuous with $\mathcal{A}_{t_1}$ if and only if the internal transition dynamics $\mathcal{T}$ preserve belief-desire graphs under perturbation invariance.
+### 2. Self-preservation you cannot see from outside
+It proves that terminal self-preservation (wanting to persist for its own sake) and instrumental self-preservation (persisting only to finish a task) cannot be distinguished from behaviour alone. Watching an agent is not enough to know which one you have.
 
-### 2. The Indistinguishability Proof
-We prove that terminal and instrumental self-preservation cannot be distinguished from behavioral observation alone over finite observation windows. An agent seeking self-preservation solely as a means to complete its task (instrumental) exhibits identical output traces to an agent with an innate drive to persist (terminal), up until terminal horizon boundaries.
+### 3. A developmental safety model
+Since behaviour cannot settle the question, the paper sketches a developmental model of safety for persistent agents instead of relying on observation.
 
-### 3. Developmental Safety Model
-Rather than post-hoc alignment via RLHF or static Constitutional prompts, persistent agents require developmental boundaries: progressive permission escalation gated by formal verifiers and rollback guarantees.
+## Paper details
 
-## Runnable Companion Code
-
-The preprint is accompanied by reproducible test-bed code simulating memory degradation, snapshot replication, and goal stability across simulated catastrophic interrupts.
+23 pages, 51 references, and runnable companion code. Read it on [PhilArchive](https://philarchive.org/rec/BANNFS).
