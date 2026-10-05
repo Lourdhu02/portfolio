@@ -226,11 +226,11 @@ export const METRICS = {
 export const TRUTH = {
   identity: {
     name: 'Lourdu Raju',
+    siteUrl: 'https://lourdu.netlify.app',
     role: 'Machine Learning Engineer',
     focus: 'Production Computer Vision · GPU Inference · Applied GenAI',
     company: 'Sujanix',
     location: 'Bengaluru, India',
-    phone: '+91 99595 94460',
     email: 'b.lourdhuraju1234@gmail.com',
     mission: 'I make vision models fast, honest and boring to run.',
     /** Hero line under the name. Design places it; Content owns the words. */

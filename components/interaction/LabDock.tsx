@@ -38,7 +38,7 @@ export function LabDock() {
           Every system here is one keystroke away.
         </p>
         <p className="max-w-md text-sm leading-relaxed text-muted md:text-base">
-          The console on the right is the same command menu that runs on every page. Search the work, open the lab, or copy my email without touching the mouse.
+          This console is the same command menu that runs on every page. Search the work, open the lab, or copy my email without touching the mouse.
         </p>
         <dl className="grid max-w-sm grid-cols-[auto_1fr] items-center gap-x-6 gap-y-3 font-mono text-xs uppercase tracking-widest text-muted">
           <dt className="flex gap-1"><Kbd>{mod}</Kbd><Kbd>K</Kbd></dt>
