@@ -1,6 +1,7 @@
 "use client"
 import { useRef, useState } from 'react'
-import { motion, useSpring } from 'motion/react'
+import { m, useSpring } from 'motion/react'
+import { spring } from '@/lib/tokens'
 
 interface MagneticProps {
   children: React.ReactNode;
@@ -10,8 +11,8 @@ interface MagneticProps {
 export function Magnetic({ children, strength = 10 }: MagneticProps) {
   const ref = useRef<HTMLDivElement>(null)
   
-  const x = useSpring(0, { stiffness: 140, damping: 18 })
-  const y = useSpring(0, { stiffness: 140, damping: 18 })
+  const x = useSpring(0, spring.magnetic)
+  const y = useSpring(0, spring.magnetic)
   
   function onMouseMove(e: React.MouseEvent<HTMLDivElement>) {
     if (!ref.current) return
@@ -37,7 +38,7 @@ export function Magnetic({ children, strength = 10 }: MagneticProps) {
   }
 
   return (
-    <motion.div
+    <m.div
       ref={ref}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
@@ -45,6 +46,6 @@ export function Magnetic({ children, strength = 10 }: MagneticProps) {
       className="inline-block"
     >
       {children}
-    </motion.div>
+    </m.div>
   )
 }

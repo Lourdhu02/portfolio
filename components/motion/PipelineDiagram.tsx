@@ -1,6 +1,6 @@
 "use client"
 import { useState } from 'react'
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 
 const nodes = [
   { id: 'presence', label: 'Meter Presence', model: 'MobileViTv2', input: '3×256×256', engine: 'TensorRT FP16' },
@@ -32,7 +32,7 @@ export function PipelineDiagram() {
       <div className="mb-16">
         <div className="text-xs font-mono text-muted mb-2 uppercase tracking-widest">End-to-End Latency (p50)</div>
         <div className="h-4 bg-raised w-full overflow-hidden" style={{ borderRadius: '999px' }}>
-          <motion.div 
+          <m.div 
             className="h-full bg-accent"
             initial={false}
             animate={{ width: isGpu ? '11%' : '100%' }} // 156ms vs 1415ms
@@ -52,7 +52,7 @@ export function PipelineDiagram() {
           <path d="M 50,100 L calc(100% - 50px),100" stroke="#1C1C22" strokeWidth="2" fill="none" />
           
           {/* Animated Pulse */}
-          <motion.path 
+          <m.path 
             d="M 50,100 L calc(100% - 50px),100" 
             stroke={isGpu ? "#FF4655" : "#8A8A96"} 
             strokeWidth="4" 
@@ -94,7 +94,7 @@ export function PipelineDiagram() {
 
               {/* Hover Panel */}
               {activeNode === node.id && (
-                <motion.div 
+                <m.div 
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="absolute bottom-12 left-1/2 -translate-x-1/2 bg-raised border border-line p-4 min-w-[200px] z-20 pointer-events-none"
@@ -108,7 +108,7 @@ export function PipelineDiagram() {
                   
                   <div className="text-xs font-mono text-muted mb-1">ENGINE</div>
                   <div className="text-sm font-medium text-accent">{isGpu ? node.engine : 'ONNX / TFLite'}</div>
-                </motion.div>
+                </m.div>
               )}
             </div>
           ))}

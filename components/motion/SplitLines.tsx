@@ -1,6 +1,7 @@
 "use client"
-import { motion, useInView } from 'motion/react'
+import { m, useInView } from 'motion/react'
 import { useRef } from 'react'
+import { duration, ease } from '@/lib/tokens'
 
 interface SplitLinesProps {
   children: string;
@@ -20,17 +21,17 @@ export function SplitLines({ children, className = "", staggerDelay = 0.06 }: Sp
     <div ref={ref} className={`flex flex-wrap gap-x-[0.25em] ${className}`}>
       {words.map((word, i) => (
         <div key={i} className="overflow-hidden inline-block pb-1">
-          <motion.div
+          <m.div
             initial={{ y: "100%" }}
             animate={inView ? { y: 0 } : { y: "100%" }}
             transition={{ 
-              duration: 0.7, 
-              ease: [0.22, 1, 0.36, 1], 
+              duration: duration.reveal,
+              ease: ease.out,
               delay: i * staggerDelay 
             }}
           >
             {word}
-          </motion.div>
+          </m.div>
         </div>
       ))}
     </div>

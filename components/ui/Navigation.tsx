@@ -1,6 +1,6 @@
 "use client"
 import Link from 'next/link'
-import { motion, AnimatePresence } from 'motion/react'
+import { m, AnimatePresence } from 'motion/react'
 import { useState } from 'react'
 
 export function Navigation() {
@@ -29,7 +29,7 @@ export function Navigation() {
 
       <AnimatePresence>
         {isOpen && (
-          <motion.div 
+          <m.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -44,7 +44,7 @@ export function Navigation() {
             </button>
             <div className="flex flex-col space-y-8 items-center">
               {links.map((link, idx) => (
-                <motion.div
+                <m.div
                   key={link.label}
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -58,10 +58,10 @@ export function Navigation() {
                   >
                     {link.label}
                   </Link>
-                </motion.div>
+                </m.div>
               ))}
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </>

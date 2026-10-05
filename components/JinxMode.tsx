@@ -1,33 +1,57 @@
 "use client"
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
+const KONAMI = ['arrowup', 'arrowup', 'arrowdown', 'arrowdown', 'arrowleft', 'arrowright', 'arrowleft', 'arrowright', 'b', 'a']
+const WORD = 'jinx'
+const STORAGE_KEY = 'jinx-mode'
+
+function setJinx(on: boolean) {
+  if (on) document.documentElement.dataset.jinx = ''
+  else delete document.documentElement.dataset.jinx
+  try {
+    if (on) sessionStorage.setItem(STORAGE_KEY, '1')
+    else sessionStorage.removeItem(STORAGE_KEY)
+  } catch {
+    // Storage can be blocked; the mode still works for this page view.
+  }
+}
+
+function isTyping(target: EventTarget | null) {
+  if (!(target instanceof HTMLElement)) return false
+  return target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)
+}
+
+// Konami code or typing "jinx" turns it on for the session; Esc turns it off.
 export function JinxMode() {
-  const [jinxed, setJinxed] = useState(false)
-
   useEffect(() => {
+    try {
+      if (sessionStorage.getItem(STORAGE_KEY)) setJinx(true)
+    } catch {}
+
+    let konami = 0
+    let word = ''
+
     function handleKeyDown(e: KeyboardEvent) {
-      if (e.key.toLowerCase() === 'j') {
-        setJinxed(prev => !prev)
+      if (e.key === 'Escape') {
+        setJinx(false)
+        return
+      }
+      if (isTyping(e.target) || e.metaKey || e.ctrlKey || e.altKey) return
+
+      const key = e.key.toLowerCase()
+      konami = key === KONAMI[konami] ? konami + 1 : key === KONAMI[0] ? 1 : 0
+      word = (word + key).slice(-WORD.length)
+
+      if (konami === KONAMI.length || word === WORD) {
+        konami = 0
+        word = ''
+        setJinx(true)
       }
     }
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [])
-
-  useEffect(() => {
-    if (jinxed) {
-      document.documentElement.style.setProperty('--color-accent', '#FF00FF')
-      document.documentElement.style.setProperty('--color-success', '#00FFFF')
-      document.body.style.transform = 'skewX(-5deg)'
-      document.body.style.transformOrigin = 'top center'
-    } else {
-      document.documentElement.style.removeProperty('--color-accent')
-      document.documentElement.style.removeProperty('--color-success')
-      document.body.style.transform = ''
-      document.body.style.transformOrigin = ''
-    }
-  }, [jinxed])
 
   return null
 }

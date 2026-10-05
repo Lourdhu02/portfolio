@@ -1,6 +1,6 @@
 "use client"
 import { useRef, useState } from 'react'
-import { motion, useMotionTemplate, useMotionValue, useSpring } from 'motion/react'
+import { m, useMotionTemplate, useMotionValue, useSpring } from 'motion/react'
 import Link from 'next/link'
 
 interface WorkCardProps {
@@ -34,7 +34,7 @@ export function WorkCard({ id, title, kicker, href, children }: WorkCardProps) {
       href={href}
       className="group relative flex flex-col space-y-4"
     >
-      <motion.div
+      <m.div
         ref={ref}
         layoutId={`cover-${id}`}
         onMouseMove={onMouseMove}
@@ -49,7 +49,7 @@ export function WorkCard({ id, title, kicker, href, children }: WorkCardProps) {
         }}
       >
         {/* Glow effect on hover */}
-        <motion.div 
+        <m.div 
           className="pointer-events-none absolute inset-0 z-10 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
           style={{ maskImage, WebkitMaskImage: maskImage }}
         />
@@ -61,7 +61,7 @@ export function WorkCard({ id, title, kicker, href, children }: WorkCardProps) {
         <div className="absolute inset-0 z-0">
           {children}
         </div>
-      </motion.div>
+      </m.div>
 
       <div className="flex flex-col space-y-1">
         <span className="font-mono text-xs uppercase tracking-widest text-muted">{kicker}</span>

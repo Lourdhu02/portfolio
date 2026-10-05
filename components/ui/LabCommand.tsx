@@ -1,7 +1,6 @@
 "use client"
 import * as React from "react"
 import { Command } from "cmdk"
-import { motion } from "motion/react"
 import Link from "next/link"
 
 export function LabCommand() {
