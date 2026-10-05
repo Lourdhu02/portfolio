@@ -6,6 +6,9 @@ import { TRUTH } from '@/content/truth'
 import { type CommandDef } from '@/lib/commands'
 import { copyText, toast } from '@/lib/interaction'
 import { toggleJinx } from '@/components/JinxMode'
+import { Kbd } from './Kbd'
+
+export { Kbd }
 
 export function useRunCommand() {
   const router = useRouter()
@@ -22,14 +25,6 @@ export function useRunCommand() {
       router.push(cmd.href)
     }
   }, [router])
-}
-
-export function Kbd({ children }: { children: React.ReactNode }) {
-  return (
-    <kbd className="inline-flex min-w-5 h-5 items-center justify-center rounded-[4px] border border-line bg-bg px-1 font-mono text-[10px] uppercase text-muted">
-      {children}
-    </kbd>
-  )
 }
 
 interface CommandMenuProps {
