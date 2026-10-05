@@ -64,22 +64,22 @@ export default async function WorkSlugPage({ params }: PageProps) {
   }
 
   return (
-    <main className="relative w-full max-w-4xl mx-auto px-6 py-32 text-text">
-      <Link href="/#work" className="inline-block font-mono text-xs uppercase tracking-widest text-muted hover:text-accent transition-colors mb-16">
+    <main className="relative w-full max-w-4xl mx-auto px-4 sm:px-6 pt-24 pb-16 sm:py-32 text-text">
+      <Link href="/#work" className="inline-block font-mono text-xs uppercase tracking-widest text-muted hover:text-accent transition-colors -mt-2 py-2 mb-8 sm:mb-14">
         ← Back to Work
       </Link>
       
-      <header className="mb-16">
+      <header className="mb-10 sm:mb-16">
         <ViewTransition name={`work-title-${slug}`} share="morph" default="none">
-          <h1 className="font-display text-6xl md:text-8xl leading-[0.85] mb-6 uppercase w-fit">
+          <h1 className="font-display text-[clamp(3.25rem,16vw,3.75rem)] sm:text-6xl md:text-8xl leading-[0.85] mb-6 uppercase w-fit">
             {post.title}
           </h1>
         </ViewTransition>
-        <p className="font-mono text-muted uppercase tracking-widest">{post.summary}</p>
+        <p className="font-mono text-xs sm:text-base text-muted uppercase tracking-wider sm:tracking-widest">{post.summary}</p>
       </header>
 
       {/* TL;DR Grid */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-8 py-8 border-y border-line mb-16">
+      <section className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-6 sm:gap-8 py-8 border-y border-line mb-12 sm:mb-16">
         <div>
           <div className="text-xs font-mono text-muted mb-2">ROLE</div>
           <div className="text-sm font-medium">{meta.role}</div>

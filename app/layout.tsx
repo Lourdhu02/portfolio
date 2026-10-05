@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Big_Shoulders, Geist, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { JinxMode } from "@/components/JinxMode";
@@ -60,6 +60,16 @@ const personJsonLd = {
   worksFor: { "@type": "Organization", name: TRUTH.identity.company },
   address: { "@type": "PostalAddress", addressLocality: "Bengaluru", addressCountry: "IN" },
   sameAs: [links.github, links.linkedin, links.kaggle, links.studio],
+};
+
+// viewport-fit=cover lets the dark background run under the notch and home indicator;
+// components pad themselves with env(safe-area-inset-*).
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#050507",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({

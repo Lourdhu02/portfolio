@@ -18,10 +18,10 @@ export function PipelineDiagram() {
   const [isGpu, setIsGpu] = useState(true)
 
   return (
-    <div className="w-full rounded-none border border-line bg-surface p-8 relative overflow-hidden" style={{ borderBottomRightRadius: '14px' }}>
+    <div className="w-full rounded-none border border-line bg-surface p-5 sm:p-8 relative overflow-hidden" style={{ borderBottomRightRadius: '14px' }}>
       
       {/* Header Controls */}
-      <div className="flex justify-between items-start mb-12">
+      <div className="flex flex-wrap gap-4 justify-between items-start mb-8 sm:mb-12">
         <h3 className="font-display text-2xl uppercase tracking-widest text-text">Serving Architecture</h3>
         <button 
           onClick={() => setIsGpu(!isGpu)}
@@ -33,7 +33,7 @@ export function PipelineDiagram() {
       </div>
 
       {/* Latency Viz */}
-      <div className="mb-16">
+      <div className="mb-10 sm:mb-16">
         <div className="text-xs font-mono text-muted mb-2 uppercase tracking-widest">End-to-end p50, same 1,000 photos</div>
         <div className="h-4 bg-raised w-full overflow-hidden" style={{ borderRadius: '999px' }}>
           <m.div 
@@ -49,8 +49,49 @@ export function PipelineDiagram() {
         </div>
       </div>
 
+      {/* Phones: the four stages stack vertically and tap to expand, since there is no hover */}
+      <div className="relative sm:hidden">
+        <div aria-hidden="true" className="absolute left-[15px] top-4 bottom-4 w-px bg-line" />
+        <ol className="relative">
+        {nodes.map((node) => {
+          const open = activeNode === node.id
+          return (
+            <li key={node.id} className="relative">
+              <button
+                type="button"
+                aria-expanded={open}
+                onClick={() => setActiveNode(open ? null : node.id)}
+                className="flex w-full min-h-12 items-center gap-4 py-2 text-left"
+              >
+                <span className={`relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 bg-surface transition-colors ${open ? 'border-accent' : 'border-line'}`}>
+                  <span className={`h-2 w-2 rounded-full transition-colors ${open ? 'bg-accent' : 'bg-muted'}`} />
+                </span>
+                <span className={`font-mono text-xs uppercase tracking-wider ${open ? 'text-text' : 'text-muted'}`}>{node.label}</span>
+                <span className="ml-auto font-mono text-xs text-muted" aria-hidden="true">{open ? '−' : '+'}</span>
+              </button>
+              {open && (
+                <m.dl
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="ml-12 mb-3 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 border border-line bg-raised p-3 text-sm"
+                  style={{ borderBottomRightRadius: '10px' }}
+                >
+                  <dt className="font-mono text-xs text-muted">MODEL</dt>
+                  <dd>{node.model}</dd>
+                  <dt className="font-mono text-xs text-muted">INPUT</dt>
+                  <dd>{node.input}</dd>
+                  <dt className="font-mono text-xs text-muted">ENGINE</dt>
+                  <dd className="text-accent">{isGpu ? node.engine : 'Serverless function'}</dd>
+                </m.dl>
+              )}
+            </li>
+          )
+        })}
+        </ol>
+      </div>
+
       {/* SVG Pipeline */}
-      <div className="relative w-full h-[200px]">
+      <div className="relative w-full h-[200px] hidden sm:block">
         {/* Draw Line */}
         {/* SVG path data cannot use calc(), so the 50px insets live on the box and the path spans a 0-100 viewBox. */}
         <svg className="absolute inset-y-0 left-[50px] right-[50px] h-full w-[calc(100%-100px)]" viewBox="0 0 100 200" preserveAspectRatio="none">

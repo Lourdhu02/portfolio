@@ -32,7 +32,7 @@ export function LabDock() {
   }, [])
 
   return (
-    <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+    <div className="grid grid-cols-1 items-center gap-8 sm:gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
       <div className="space-y-6">
         <p className="font-display text-4xl leading-[1.02] md:text-6xl">
           Every system here is one keystroke away.
@@ -40,7 +40,7 @@ export function LabDock() {
         <p className="max-w-md text-sm leading-relaxed text-muted md:text-base">
           This console is the same command menu that runs on every page. Search the work, open the lab, or copy my email without touching the mouse.
         </p>
-        <dl className="grid max-w-sm grid-cols-[auto_1fr] items-center gap-x-6 gap-y-3 font-mono text-xs uppercase tracking-widest text-muted">
+        <dl className="hidden sm:grid max-w-sm grid-cols-[auto_1fr] items-center gap-x-6 gap-y-3 font-mono text-xs uppercase tracking-widest text-muted">
           <dt className="flex gap-1"><Kbd>{mod}</Kbd><Kbd>K</Kbd></dt>
           <dd>Open anywhere</dd>
           <dt className="flex gap-1"><Kbd>g</Kbd><Kbd>w</Kbd></dt>

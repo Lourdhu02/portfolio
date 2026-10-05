@@ -23,7 +23,15 @@
 }
 
 @layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   body {
+    /* Guard against a stray wide child scrolling the whole page sideways on phones */
+    overflow-x: clip;
     background-color: var(--color-bg);
     color: var(--color-text);
     font-family: var(--font-sans);
@@ -43,6 +51,31 @@
     background-color: var(--color-accent-dim);
     color: var(--color-text);
   }
+}
+
+/* Form fields under 16px make iOS Safari zoom the page on focus */
+@media (pointer: coarse) {
+  input,
+  textarea,
+  select {
+    font-size: max(16px, 1em);
+  }
+}
+
+/* Horizontal snap rail used for card rows on phones; cards in the rail sit level, so the
+   scroll-linked parallax drift (Parallax.tsx) only runs once the rail becomes a grid at lg */
+@media (max-width: 1023.98px) {
+  .snap-rail [data-scroll-fx] {
+    transform: none !important;
+  }
+}
+.snap-rail {
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+.snap-rail::-webkit-scrollbar {
+  display: none;
 }
 
 /* Custom scrollbar */
@@ -240,4 +273,37 @@ html.lenis body {
 @media (prefers-reduced-motion: reduce) {
   .hero-in { animation: none; opacity: 1; }
   .hero-blink, .hero-scroll, .wc-scan, .wc-node, .wc-ping, .wc-grow, .wc-grow-r { animation: none; }
+}
+
+/* /lab stress sliders: an invisible native range over a drawn accuracy curve */
+.lab-range {
+  appearance: none;
+  background: transparent;
+  cursor: ew-resize;
+}
+.lab-range:focus-visible {
+  outline: 1px solid var(--color-detect);
+  outline-offset: 2px;
+}
+.lab-range::-webkit-slider-runnable-track {
+  height: 100%;
+  background: transparent;
+}
+.lab-range::-moz-range-track {
+  height: 100%;
+  background: transparent;
+}
+.lab-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 100%;
+  background: transparent;
+  border: 1px solid var(--color-accent);
+}
+.lab-range::-moz-range-thumb {
+  width: 12px;
+  height: 100%;
+  border-radius: 0;
+  background: transparent;
+  border: 1px solid var(--color-accent);
 }
