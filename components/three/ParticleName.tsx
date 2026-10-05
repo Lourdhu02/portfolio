@@ -1,19 +1,39 @@
 "use client"
-import { useState, Suspense, useEffect } from 'react'
+import { useState, Suspense, useEffect, useMemo, useRef, type RefObject } from 'react'
 import { Canvas } from '@react-three/fiber'
+import { useScroll } from 'motion/react'
 import { PerformanceMonitor } from '@react-three/drei'
 import { EffectComposer, Bloom, ChromaticAberration } from '@react-three/postprocessing'
 import { BlendFunction } from 'postprocessing'
 import * as THREE from 'three'
 import { ParticleSystem } from './ParticleSystem'
-import { usePerformanceTier, Tier } from './tiers'
+import { usePerformanceTier, usePrefersReducedMotion, lowerTier, Tier } from './tiers'
 import { displayFontFamily } from '@/utils/canvasSampling'
 
-export function ParticleName() {
-  const defaultTier = usePerformanceTier()
-  const [tier, setTier] = useState<Tier>(defaultTier)
-  const [isInView, setIsInView] = useState(true)
+interface ParticleNameProps {
+  lines: string[]
+  className?: string
+  scrollDissolve?: boolean
+  // The section the dissolve is measured against, usually the hero
+  scrollTarget?: RefObject<HTMLElement | null>
+  fitHeight?: number
+  offsetY?: number
+  // Called once particles are on screen, so the page can fade out its typographic fallback
+  onReady?: () => void
+}
+
+// Client-only: load through next/dynamic with ssr: false. Renders nothing on the static tier,
+// where the page's own <h1> stays as the hero.
+export default function ParticleName({ lines, className = 'absolute inset-0', scrollDissolve = false, scrollTarget, fitHeight, offsetY, onReady }: ParticleNameProps) {
+  const deviceTier = usePerformanceTier()
+  const reducedMotion = usePrefersReducedMotion()
+  const [downgrade, setDowngrade] = useState(0)
   const [fontReady, setFontReady] = useState(false)
+  const [active, setActive] = useState(true)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  let tier: Tier = deviceTier
+  for (let i = 0; i < downgrade; i++) tier = lowerTier(tier)
 
   // Particle targets are sampled from canvas text, so the display font must be loaded first
   useEffect(() => {
@@ -23,66 +43,57 @@ export function ParticleName() {
     return () => { cancelled = true }
   }, [])
 
-  // Very basic intersection observer for pausing when far off screen
+  // Pause rendering when the hero is off screen. Scroll smoothing (Lenis) is ticked from Motion's
+  // frame loop, so useScroll below stays in step with it without a scroll listener of our own.
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsInView(entry.isIntersecting)
-      },
-      { rootMargin: '500px' } // Keep rendering a bit outside viewport
-    )
-    
-    const el = document.getElementById('hero-canvas-container')
-    if (el) observer.observe(el)
-      
+    const el = containerRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(([entry]) => setActive(entry.isIntersecting))
+    observer.observe(el)
     return () => observer.disconnect()
   }, [])
 
-  if (tier === 'low') {
-    return (
-      <div className="flex h-[100vh] w-full items-center justify-center bg-bg relative z-0">
-        <h1 className="font-display text-[clamp(72px,12vw,220px)] leading-[0.85] text-text text-center tracking-tight">
-          LOURDU RAJU
-        </h1>
-      </div>
-    )
-  }
+  const { scrollYProgress } = useScroll({
+    target: scrollTarget ?? containerRef,
+    offset: ['start start', 'end start'],
+  })
+
+  const caOffset = useMemo(() => new THREE.Vector2(0.0003, 0.0003), [])
+  const eventSource = typeof document !== 'undefined' ? document.body : undefined
+
+  if (tier === 'static') return null
 
   return (
-    <div id="hero-canvas-container" className="absolute inset-0 z-0 h-full w-full pointer-events-auto">
-      {/* HTML H1 for SEO and LCP */}
-      <h1 className="sr-only">Lourdu Raju</h1>
-      
-      {/* 
-        We use frameloop="always" when in view to handle smooth mouse repulsion,
-        and "never" when out of view to pause it outright.
-      */}
+    <div ref={containerRef} aria-hidden="true" className={`${className} z-0 pointer-events-none`}>
       <Canvas
         camera={{ position: [0, 0, 15], fov: 45 }}
         dpr={[1, 1.75]}
         gl={{ antialias: false, powerPreference: 'high-performance' }}
-        frameloop={isInView ? 'always' : 'never'}
-        // The canvas never moves within its section, so skip R3F's per-scroll-event re-measure;
-        // with it on, every smooth-scroll tick re-rendered the scene even while the hero was off-screen.
+        frameloop={active && !reducedMotion ? 'always' : 'never'}
+        // The canvas never moves inside its section, so skip R3F's per-scroll re-measure; with it on,
+        // every smooth-scroll tick re-rendered the scene even with the hero off screen.
         resize={{ scroll: false }}
+        eventSource={eventSource}
+        eventPrefix="client"
       >
-        <PerformanceMonitor 
-          onDecline={() => setTier('medium')}
-          onFallback={() => setTier('low')}
-        />
+        <PerformanceMonitor onDecline={() => setDowngrade(d => Math.min(d + 1, 2))} />
         <Suspense fallback={null}>
-          {fontReady && <ParticleSystem tier={tier} />}
+          {fontReady && (
+            <ParticleSystem
+              key={tier}
+              tier={tier}
+              lines={lines}
+              reducedMotion={reducedMotion}
+              scrollProgress={scrollDissolve ? scrollYProgress : undefined}
+              fitHeight={fitHeight}
+              offsetY={offsetY}
+              onReady={onReady}
+            />
+          )}
           <EffectComposer multisampling={0}>
-            <Bloom 
-              luminanceThreshold={0.8} 
-              luminanceSmoothing={0.9} 
-              intensity={2.0} 
-              mipmapBlur 
-            />
-            <ChromaticAberration 
-              blendFunction={BlendFunction.NORMAL} 
-              offset={new THREE.Vector2(0.001, 0.001)} 
-            />
+            <Bloom luminanceThreshold={0.8} luminanceSmoothing={0.9} intensity={2.0} mipmapBlur />
+            {/* Only on the high tier, where dots are dense enough that the fringe reads as a lens, not noise */}
+            <ChromaticAberration blendFunction={BlendFunction.NORMAL} offset={caOffset} opacity={tier === 'high' ? 1 : 0} />
           </EffectComposer>
         </Suspense>
       </Canvas>
