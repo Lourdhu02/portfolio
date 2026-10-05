@@ -136,7 +136,6 @@ portfolio/
 ## 📬 Contact & Profiles
 
 - **Email**: [b.lourdhuraju1234@gmail.com](mailto:b.lourdhuraju1234@gmail.com)
-- **Phone**: +91 99595 94460
 - **GitHub**: [github.com/Lourdhu02](https://github.com/Lourdhu02)
 - **LinkedIn**: [linkedin.com/in/lourdhu](https://linkedin.com/in/lourdhu)
 - **Kaggle**: [kaggle.com/blourdhuraju](https://kaggle.com/blourdhuraju)
