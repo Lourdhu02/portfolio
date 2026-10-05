@@ -1,6 +1,7 @@
 "use client"
-import { useState, Suspense, useEffect, useMemo, useRef } from 'react'
+import { useState, Suspense, useEffect, useMemo, useRef, type RefObject } from 'react'
 import { Canvas } from '@react-three/fiber'
+import { useScroll } from 'motion/react'
 import { PerformanceMonitor } from '@react-three/drei'
 import { EffectComposer, Bloom, ChromaticAberration } from '@react-three/postprocessing'
 import { BlendFunction } from 'postprocessing'
@@ -13,13 +14,17 @@ interface ParticleNameProps {
   lines: string[]
   className?: string
   scrollDissolve?: boolean
+  // The section the dissolve is measured against, usually the hero
+  scrollTarget?: RefObject<HTMLElement | null>
+  fitHeight?: number
+  offsetY?: number
   // Called once particles are on screen, so the page can fade out its typographic fallback
   onReady?: () => void
 }
 
 // Client-only: load through next/dynamic with ssr: false. Renders nothing on the static tier,
 // where the page's own <h1> stays as the hero.
-export default function ParticleName({ lines, className = 'absolute inset-0', scrollDissolve = false, onReady }: ParticleNameProps) {
+export default function ParticleName({ lines, className = 'absolute inset-0', scrollDissolve = false, scrollTarget, fitHeight, offsetY, onReady }: ParticleNameProps) {
   const deviceTier = usePerformanceTier()
   const reducedMotion = usePrefersReducedMotion()
   const [downgrade, setDowngrade] = useState(0)
@@ -38,25 +43,20 @@ export default function ParticleName({ lines, className = 'absolute inset-0', sc
     return () => { cancelled = true }
   }, [])
 
-  // Pause rendering when the canvas is off screen; for the scroll-dissolve hero, fade the
-  // starfield out over the second screen and stop once it is gone
+  // Pause rendering when the hero is off screen. Scroll smoothing (Lenis) is ticked from Motion's
+  // frame loop, so useScroll below stays in step with it without a scroll listener of our own.
   useEffect(() => {
     const el = containerRef.current
     if (!el) return
-    if (scrollDissolve) {
-      const onScroll = () => {
-        const h = window.innerHeight
-        el.style.opacity = String(1 - THREE.MathUtils.clamp((window.scrollY - h) / h, 0, 1))
-        setActive(window.scrollY < h * 2)
-      }
-      onScroll()
-      window.addEventListener('scroll', onScroll, { passive: true })
-      return () => window.removeEventListener('scroll', onScroll)
-    }
     const observer = new IntersectionObserver(([entry]) => setActive(entry.isIntersecting))
     observer.observe(el)
     return () => observer.disconnect()
-  }, [scrollDissolve])
+  }, [])
+
+  const { scrollYProgress } = useScroll({
+    target: scrollTarget ?? containerRef,
+    offset: ['start start', 'end start'],
+  })
 
   const caOffset = useMemo(() => new THREE.Vector2(0.0003, 0.0003), [])
   const eventSource = typeof document !== 'undefined' ? document.body : undefined
@@ -69,7 +69,10 @@ export default function ParticleName({ lines, className = 'absolute inset-0', sc
         camera={{ position: [0, 0, 15], fov: 45 }}
         dpr={[1, 1.75]}
         gl={{ antialias: false, powerPreference: 'high-performance' }}
-        frameloop={active && !reducedMotion ? 'always' : 'demand'}
+        frameloop={active && !reducedMotion ? 'always' : 'never'}
+        // The canvas never moves inside its section, so skip R3F's per-scroll re-measure; with it on,
+        // every smooth-scroll tick re-rendered the scene even with the hero off screen.
+        resize={{ scroll: false }}
         eventSource={eventSource}
         eventPrefix="client"
       >
@@ -81,7 +84,9 @@ export default function ParticleName({ lines, className = 'absolute inset-0', sc
               tier={tier}
               lines={lines}
               reducedMotion={reducedMotion}
-              scrollDissolve={scrollDissolve}
+              scrollProgress={scrollDissolve ? scrollYProgress : undefined}
+              fitHeight={fitHeight}
+              offsetY={offsetY}
               onReady={onReady}
             />
           )}

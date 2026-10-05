@@ -2,6 +2,7 @@
 import { useRef, useMemo, useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
+import type { MotionValue } from 'motion/react'
 import { vertexShader, fragmentShader } from './shaders/particle'
 import { sampleTextToParticles } from '@/utils/canvasSampling'
 import { PARTICLE_COUNT, Tier } from './tiers'
@@ -21,14 +22,19 @@ interface ParticleSystemProps {
   tier: Exclude<Tier, 'static'>
   lines: string[]
   reducedMotion: boolean
-  // Scatter the name into a starfield as the page scrolls past the first screen
-  scrollDissolve?: boolean
+  // 0 to 1 across the hero; scatters the name into a starfield as the page scrolls past it.
+  // Supplied by Motion's scroll loop so the dissolve stays in step with the hero's own scroll-out.
+  scrollProgress?: MotionValue<number>
+  // Share of the viewport the name may fill, and how far to lift it, so it never runs into
+  // the tagline and CTAs below it
+  fitHeight?: number
+  offsetY?: number
   onReady?: () => void
 }
 
 const NO_SHOCK = 100 // seconds; old enough that the ring has fully faded
 
-export function ParticleSystem({ tier, lines, reducedMotion, scrollDissolve = false, onReady }: ParticleSystemProps) {
+export function ParticleSystem({ tier, lines, reducedMotion, scrollProgress, fitHeight = 0.55, offsetY = 0, onReady }: ParticleSystemProps) {
   const groupRef = useRef<THREE.Group>(null)
   const materialRef = useRef<THREE.ShaderMaterial>(null)
   const { viewport, gl } = useThree()
@@ -69,8 +75,8 @@ export function ParticleSystem({ tier, lines, reducedMotion, scrollDissolve = fa
     }
   }, [particleCount, linesKey])
 
-  // Scale the whole block so the name always fits: 88% of the width, at most 55% of the height
-  const fit = Math.min(1, (viewport.width * 0.88) / textWidth, (viewport.height * 0.55) / textHeight)
+  // Scale the whole block so the name always fits the width and its allotted band of height
+  const fit = Math.min(1, (viewport.width * 0.88) / textWidth, (viewport.height * fitHeight) / textHeight)
 
   const uniforms = useMemo(() => ({
     uTime: { value: 0 },
@@ -123,8 +129,9 @@ export function ParticleSystem({ tier, lines, reducedMotion, scrollDissolve = fa
     if (progressRef.current < 1) progressRef.current = Math.min(1, progressRef.current + delta * 0.55)
     u.uProgress.value = progressRef.current
 
-    if (scrollDissolve && !reducedMotion) {
-      u.uScatter.value = THREE.MathUtils.clamp(window.scrollY / window.innerHeight, 0, 1)
+    if (scrollProgress && !reducedMotion) {
+      // The hero fades out by ~0.75 of its own scroll-out, so finish scattering before it goes
+      u.uScatter.value = THREE.MathUtils.clamp(scrollProgress.get() / 0.6, 0, 1)
     }
 
     if (reducedMotion) return
@@ -149,7 +156,7 @@ export function ParticleSystem({ tier, lines, reducedMotion, scrollDissolve = fa
   })
 
   return (
-    <group ref={groupRef} scale={fit}>
+    <group ref={groupRef} scale={fit} position={[0, viewport.height * offsetY, 0]}>
       <points>
         <bufferGeometry>
           <bufferAttribute attach="attributes-position" count={particleCount} args={[positions, 3]} />

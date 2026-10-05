@@ -35,7 +35,7 @@ export function Counter({ value, prefix = "", suffix = "", duration = 1.5 }: Cou
   }, [springValue, prefix, suffix])
 
   return (
-    <span ref={ref} className="tabular-nums font-mono">
+    <span ref={ref} className="tabular-nums">
       {/* SSR fallback for SEO */}
       {prefix}{value}{suffix}
     </span>
