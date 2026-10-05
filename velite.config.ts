@@ -20,8 +20,9 @@ export default defineConfig({
         tags: s.array(s.string()).default([]),
         cover: s.image().optional(),
         draft: s.boolean().default(false),
-        content: s.markdown()
-      }).transform(data => ({ ...data, slug: data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') }))
+        content: s.markdown(),
+        path: s.path()
+      }).transform(({ path, ...data }) => ({ ...data, slug: path.split('/').pop()! }))
     }
   }
 })
