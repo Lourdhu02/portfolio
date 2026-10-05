@@ -1,0 +1,47 @@
+---
+title: "94x Speedup: Patching TensorRT's Rejection of UINT8 Transpose"
+summary: "Tracing a throughput cliff on NVIDIA L4: from ONNX Runtime (309.5ms) to TensorRT FP16 (3.3ms) via graph rewrite."
+date: 2026-01-20
+tags: ["TensorRT", "GPU", "CUDA", "Inference"]
+---
+
+## The Throughput Cliff
+
+While serving our 5-model pipeline on an NVIDIA L4 GPU instance, load tests at 200 requests/sec revealed an unexpected bottleneck. While the dial detector and recognition networks finished in sub-15ms, the preliminary dial classifier took **309.5ms** under load.
+
+Throughput hit a hard ceiling at **19 img/s**, causing request queues to swell and p99 latency to exceed 2.4 seconds.
+
+## Investigation
+
+Inspecting our Triton Inference Server model repository, we found that the dial classifier was running on the default ONNX Runtime CPU execution provider rather than a TensorRT engine. 
+
+When attempting to build the TensorRT engine using `trtexec`:
+
+```bash
+[E] [TRT] ModelImporter.cpp:896: ERROR: ... Node (Transpose_4) of type Transpose has unsupported input type: UINT8
+```
+
+The model architecture accepted raw decoded UINT8 JPEG buffers `(H, W, C)` and performed a transpose to `(C, H, W)` inside the computation graph before normalization. TensorRT's builder rejected UINT8 transpose operations on this CUDA compute capability!
+
+## The Solution: ONNX Graph Transformation
+
+Rather than retraining or performing the transpose in Python on the host CPU (which would introduce expensive host-to-device memory copies), we patched the ONNX graph using `onnx-graphsurgeon`:
+
+1. We inserted a `Cast` node immediately following the input tensor, converting `UINT8 -> FP32` prior to the transpose.
+2. TensorRT fully supports FP32 transpose and fuses it directly into the subsequent convolution/normalization kernel.
+3. We rebuilt the engine with TensorRT 10.x with FP16 precision:
+
+```bash
+trtexec --onnx=classifier_patched.onnx \
+        --saveEngine=classifier_fp16.engine \
+        --fp16 \
+        --minShapes=input:1x3x224x224 \
+        --optShapes=input:8x3x224x224 \
+        --maxShapes=input:32x32x224x224
+```
+
+## Results
+
+- **Compute Time**: Dropped from **309.5 ms** down to **3.3 ms** (a **94× reduction**).
+- **Throughput**: Scaled from **19 img/s** to **321 img/s** on a single NVIDIA L4.
+- **Latency Stability**: Eliminated queue buildup during burst loads up to 12.6× production peak.

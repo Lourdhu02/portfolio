@@ -1,0 +1,30 @@
+---
+title: "Achilles: Core AI from First Principles"
+summary: "Building an 18-lab open-source curriculum covering transformers, Triton FlashAttention, and speculative decoding with 229 CI tests."
+date: 2025-12-10
+tags: ["Open Source", "Triton", "PyTorch", "Transformers"]
+---
+
+## Why Achilles?
+
+Most AI education falls into one of two extremes: high-level library API wrappers (`model.generate()`) or dense academic papers with no runnable code. 
+
+**Achilles** (`github.com/Lourdhu02/achilles`) was built to bridge this gap: an open-source, test-driven curriculum where you implement every fundamental primitive of modern frontier models from scratch, validated against 229 automated unit tests in CI across Linux, macOS, and Windows.
+
+## The 18 Test-Driven Labs
+
+The curriculum progresses through the entire deep learning stack:
+
+1. **Autograd Engine**: Reverse-mode automatic differentiation on multidimensional tensors with dynamic DAG tape.
+2. **Llama-Style Transformer**: RMSNorm, SwiGLU activations, and Rotary Position Embeddings (RoPE).
+3. **FlashAttention in OpenAI Triton**: Custom GPU fused forward and backward attention kernels, bypassing intermediate HBM roundtrips.
+4. **KV Cache & Generation**: Paged attention and continuous batching primitives.
+5. **LoRA & Parameter-Efficient Tuning**: Low-rank matrix decomposition with rank scaling $\alpha / r$.
+6. **Alignment (DPO & GRPO)**: Direct Preference Optimization and Group Relative Policy Optimization loss functions.
+7. **Quantization**: INT8 vector-quantized matrix multiply and FP8 scaling factors.
+8. **Speculative Decoding**: Draft-target verification loops achieving 2.2× decode speedups.
+9. **Mixture of Experts (MoE)**: Top-k expert routing with load-balancing auxiliary loss.
+
+## Continuous Integration & Test Suite
+
+Every lab comes with strict unit tests (`pytest`). No PR merges without passing all 229 tests verifying numerical precision against reference PyTorch and Hugging Face implementations down to $10^{-6}$ tolerance.

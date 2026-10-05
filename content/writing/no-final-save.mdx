@@ -1,0 +1,29 @@
+---
+title: "No Final Save: Identity and Persistent AI Agents"
+summary: "A 23-page formal framework for continuous agent identity, terminal self-preservation proofs, and developmental safety."
+date: 2026-03-01
+tags: ["AI Safety", "Agents", "Research", "Philosophy"]
+---
+
+## Overview
+
+*No Final Save: Identity, Consciousness, and the Machine That Never Shuts Down* is a 23-page research preprint authored by Lourdu Raju (as S. L. R. Bandhanadam), published on [PhilArchive (philarchive.org/rec/BANNFS)](https://philarchive.org/rec/BANNFS).
+
+The paper addresses the theoretical foundations of stateful, continuous AI agents operating across unbounded execution horizons.
+
+## Core Theses
+
+### 1. Causal-Continuity Criterion for Identity
+Modern LLM agents are frequently paused, serialized to disk, snapshotted, and resumed across disparate hardware nodes. Does the resumed agent retain ontological identity with its prior state? 
+
+The paper formalizes a causal-continuity metric based on informational preservation: an agent instance $\mathcal{A}_{t_2}$ is identity-continuous with $\mathcal{A}_{t_1}$ if and only if the internal transition dynamics $\mathcal{T}$ preserve belief-desire graphs under perturbation invariance.
+
+### 2. The Indistinguishability Proof
+We prove that terminal and instrumental self-preservation cannot be distinguished from behavioral observation alone over finite observation windows. An agent seeking self-preservation solely as a means to complete its task (instrumental) exhibits identical output traces to an agent with an innate drive to persist (terminal), up until terminal horizon boundaries.
+
+### 3. Developmental Safety Model
+Rather than post-hoc alignment via RLHF or static Constitutional prompts, persistent agents require developmental boundaries: progressive permission escalation gated by formal verifiers and rollback guarantees.
+
+## Runnable Companion Code
+
+The preprint is accompanied by reproducible test-bed code simulating memory degradation, snapshot replication, and goal stability across simulated catastrophic interrupts.

@@ -1,0 +1,31 @@
+---
+title: "SVTRv2-ARD: Production OCR Retraining"
+summary: "Retraining SVTRv2 on production utility crops, accelerating DGX training 3.8×, and gating release regressions."
+date: 2026-01-15
+tags: ["PyTorch", "torch.compile", "SDPA", "OCR"]
+---
+
+## Overview
+
+SVTRv2 (Single Visual Model for Text Recognition v2) represents our core text extraction backbone across tens of millions of challenging field meter photos. Operating in low light, through scratched glass, and under steep perspective angles required retraining on held-out production distributions.
+
+## Architectural Optimizations
+
+Training the base model on large high-resolution crop batches previously exhausted VRAM on high-end clusters. We implemented two architectural interventions:
+
+1. **Fused Scaled Dot-Product Attention (SDPA)**: Replaced custom multi-head attention kernels with PyTorch's native FlashAttention-backed SDPA backend.
+2. **Static `torch.compile`**: Replaced dynamic graph tracing with ahead-of-time graph compilation with fixed batch dimensions, fusing element-wise normalization and activation kernels.
+
+## Performance Gains
+
+- **Training Speedup**: Achieved **3.8× faster training iterations** on a DGX Spark cluster.
+- **Peak Memory**: Reduced peak VRAM footprint from **50.5 GB down to 14.7 GB**, enabling larger effective batch sizes without gradient accumulation overhead.
+- **Exact Match Accuracy**:
+  - Overall benchmark: Lifted from **87.7% to 90.1%** on a fixed validation set of 3,965 challenging images.
+  - Low-quality photo subset: Gained **+8.7 percentage points**.
+  - Analog dial readings: Gained **67.2% → 79.6%**.
+  - Digital LCD releases: Improved **83.4% → 87.8%**.
+
+## Production Rollout & Checksum Gating
+
+Models are frozen with cryptographic checksums, containerized into a 2.2 GB runtime (down from 4.43 GB), and gated in CI with a mandatory $1.2 \times 10^{-5}$ PyTorch-to-ONNX numerical parity check before deployment to Triton.

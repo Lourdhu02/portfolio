@@ -1,0 +1,31 @@
+---
+title: "FinSentinelAI: Zero-Leakage Financial Document RAG"
+summary: "Fully local hybrid BM25 + dense retrieval with reciprocal-rank fusion, cross-encoder reranking, and Ollama."
+date: 2024-11-20
+tags: ["FastAPI", "Ollama", "ChromaDB", "RAG", "FinTech"]
+---
+
+## Overview
+
+FinSentinelAI is a self-contained, air-gapped document question-answering and compliance intelligence engine designed for sensitive enterprise financial records: invoices, bank account statements, GST filings, and salary slips.
+
+- **GitHub Repository**: [github.com/Lourdhu02/fin-sentinal.ai](https://github.com/Lourdhu02/fin-sentinal.ai)
+- **Tech Stack**: FastAPI, Ollama, ChromaDB, BM25, Cross-Encoder Reranking, JWT Auth.
+
+## Why Dense-Only Embeddings Fail on Financial Records
+
+When querying financial documents for exact alphanumeric invoice numbers, tax identification codes (GSTINs), or specific currency amounts, conventional vector embeddings (dense cosine search) suffer catastrophic semantic failure.
+
+To quantify this, we constructed a **60-question gold-standard benchmark** across 1,000 scanned financial PDFs:
+- **Dense-Only Search**: Retrieved the correct document in the top-1 position for only **15% of exact identifier lookups**.
+- **Hybrid Retrieval (BM25 + Dense) with Reciprocal-Rank Fusion (RRF)**: Retrieved the target document first in **100% of cases**.
+
+## Pipeline Architecture
+
+1. **Ingestion & Parsing**: Multi-page PDF text extraction with layout-aware chunking preserving tabular row alignments.
+2. **Dual-Path Retrieval**:
+   - Sparse lexical scoring via BM25 over tokenized n-grams.
+   - Dense semantic embeddings generated locally via sentence-transformers in ChromaDB.
+3. **Reciprocal-Rank Fusion (RRF)**: Fuses ranked lists dynamically using $RRF(d) = \sum_{m \in M} \frac{1}{k + r_m(d)}$.
+4. **Cross-Encoder Reranking**: Top-20 merged candidates are rescored by a local cross-encoder model to determine top-3 context chunks.
+5. **Local Synthesis**: Ollama-served LLM generates citations with page coordinates, wrapped in secure JWT-isolated multi-tenant workspaces.

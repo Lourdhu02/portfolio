@@ -1,0 +1,34 @@
+---
+title: "ECHOME: Local-First Agent with Three-Tier Memory"
+summary: "LangGraph agent with CoALA-style episodic memory in Qdrant, adaptive psychometric assessment, and 1ms retrieval."
+date: 2025-10-01
+tags: ["LangGraph", "Qdrant", "Local-AI", "Psychometrics"]
+---
+
+## Project Highlights
+
+ECHOME is a privacy-first, local AI agent architecture built to run entirely offline on consumer hardware with zero cloud dependencies. It unifies structured long-term memory with an adaptive psychometric conversational interface.
+
+- **GitHub Repository**: [github.com/Lourdhu02/echome](https://github.com/Lourdhu02/echome)
+- **Tech Stack**: LangGraph, Qdrant, Item Response Theory (IRT), Whisper, XTTSv2.
+
+## Three-Tier Memory Architecture (CoALA-Style)
+
+Rather than dumping unstructured chat history into a naive context window, ECHOME implements a cognitive three-tier memory architecture:
+
+1. **Episodic Vector Memory**: Stored in a local Qdrant instance with recency-decayed cosine similarity retrieval.
+2. **Semantic Knowledge Consolidation**: Periodic offline background passes synthesize disparate episodic observations into durable user facts.
+3. **Procedural Behavioral Patterns**: Mined interaction heuristics that guide system prompt modulation over time.
+
+### Benchmark Validation
+On a synthetic conversational benchmark testing recall across 52 conversational turns:
+- **Recall Accuracy**: Successfully recalled **11 out of 12 planted facts** in the top 5 candidates.
+- **Latency**: Vector retrieval completed in approximately **1 ms per query**.
+
+## Adaptive Psychometric Assessment
+
+ECHOME implements an adaptive personality evaluation engine based on Item Response Theory (IRT):
+- Employs a Graded Response Model (GRM) with Maximum A Posteriori (MAP) estimation.
+- Selects conversational probes maximizing Fisher information at the candidate's current latent trait estimates.
+- **50% Shorter Assessments**: Reduces question count by half while maintaining an **$r = 0.97$ correlation** with full-length 240-question inventories across 500 simulated respondents over 8 personality dimensions.
+- Fully speech-enabled via local Whisper speech-to-text and XTTSv2 expressive voice synthesis.
