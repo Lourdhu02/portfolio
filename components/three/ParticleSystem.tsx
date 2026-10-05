@@ -1,10 +1,20 @@
 "use client"
-import { useRef, useMemo, useEffect } from 'react'
+import { useRef, useMemo } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { vertexShader, fragmentShader } from './shaders/particle'
 import { sampleTextToParticles } from '@/utils/canvasSampling'
 import { Tier } from './tiers'
+
+// Seeded PRNG (mulberry32) so the particle layout is deterministic and render stays pure
+function createRandom(seed: number) {
+  return () => {
+    seed = (seed + 0x6d2b79f5) | 0
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
 
 interface ParticleSystemProps {
   tier: Tier;
@@ -27,18 +37,19 @@ export function ParticleSystem({ tier }: ParticleSystemProps) {
     const seedArray = new Float32Array(particleCount)
     const sizeArray = new Float32Array(particleCount)
     const accentArray = new Float32Array(particleCount)
+    const random = createRandom(particleCount)
     
     for(let i = 0; i < particleCount; i++) {
       // Nebula-like initial distribution
-      posArray[i * 3] = (Math.random() - 0.5) * 40
-      posArray[i * 3 + 1] = (Math.random() - 0.5) * 40
-      posArray[i * 3 + 2] = (Math.random() - 0.5) * 40 - 10
+      posArray[i * 3] = (random() - 0.5) * 40
+      posArray[i * 3 + 1] = (random() - 0.5) * 40
+      posArray[i * 3 + 2] = (random() - 0.5) * 40 - 10
       
-      seedArray[i] = Math.random()
-      sizeArray[i] = Math.random() * 0.5 + 0.1
+      seedArray[i] = random()
+      sizeArray[i] = random() * 0.5 + 0.1
       
       // 6-8% tinted signal red
-      accentArray[i] = Math.random() < 0.07 ? 1.0 : 0.0
+      accentArray[i] = random() < 0.07 ? 1.0 : 0.0
     }
     
     return {
