@@ -28,7 +28,7 @@ export function HeroOverlay() {
 
       {/* Tagline + CTAs sit under the particle name, which the canvas centres in the viewport */}
       <div className="absolute inset-x-6 top-[61%] mx-auto flex max-w-3xl flex-col items-center text-center">
-        <p className="hero-in text-balance text-lg leading-snug text-text/85 md:text-2xl" style={{ '--d': '1.6s' } as React.CSSProperties}>
+        <p className="hero-in hero-lcp text-balance text-lg leading-snug text-text/85 md:text-2xl" style={{ '--d': '1.6s' } as React.CSSProperties}>
           {headline}
         </p>
         <div className="hero-in pointer-events-auto mt-8 flex flex-wrap items-center justify-center gap-3" style={{ '--d': '1.9s' } as React.CSSProperties}>

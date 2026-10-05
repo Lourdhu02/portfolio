@@ -241,6 +241,10 @@ html.lenis body {
   from { opacity: 0; transform: translateY(12px); filter: blur(6px); }
   to { opacity: 1; transform: none; filter: none; }
 }
+/* On phones the tagline is the largest contentful paint, so it is visible in the first frame there */
+@media (max-width: 767px) {
+  .hero-lcp { opacity: 1; animation: none; }
+}
 .hero-blink { animation: hero-blink 2.4s steps(1) infinite; }
 @keyframes hero-blink { 50% { opacity: 0.2; } }
 .hero-scroll { animation: hero-scroll 2s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
