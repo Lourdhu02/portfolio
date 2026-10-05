@@ -4,6 +4,10 @@ import "./globals.css";
 import { JinxMode } from "@/components/JinxMode";
 import { Navigation } from "@/components/ui/Navigation";
 import { MotionProvider } from "@/components/motion/MotionProvider";
+import { CommandPalette } from "@/components/interaction/CommandPalette";
+import { Cursor } from "@/components/interaction/Cursor";
+import { Toaster } from "@/components/interaction/Toaster";
+import { posts } from "#velite";
 import { TRUTH } from "@/content/truth";
 
 // Big Shoulders Display now ships on Google Fonts as the variable "Big Shoulders" family (opsz axis).
@@ -61,6 +65,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const palettePosts = posts
+    .filter((p) => !p.draft)
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .map(({ slug, title }) => ({ slug, title }));
+
   return (
     <html lang="en" className={`${fontDisplay.variable} ${fontSans.variable} ${fontMono.variable}`}>
       <body className="antialiased">
@@ -68,14 +77,25 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd).replace(/</g, "\\u003c") }}
         />
+        <a
+          href="#content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-6 focus:top-6 focus:z-[100] focus:rounded-[6px] focus:bg-accent focus:px-4 focus:py-2 focus:font-mono focus:text-xs focus:uppercase focus:tracking-widest focus:text-bg"
+        >
+          Skip to content
+        </a>
         <MotionProvider>
           <JinxMode />
+          <CommandPalette posts={palettePosts} />
+          <Cursor />
+          <Toaster />
           <Navigation />
           <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-50 overflow-hidden">
             <div className="film-grain absolute inset-0" />
             <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_40%,transparent_55%,rgba(5,5,7,0.7)_100%)]" />
           </div>
-          {children}
+          <div id="content" tabIndex={-1} className="outline-none">
+            {children}
+          </div>
         </MotionProvider>
       </body>
     </html>
