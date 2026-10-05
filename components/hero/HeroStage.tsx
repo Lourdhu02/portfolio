@@ -1,6 +1,7 @@
 "use client"
 import dynamic from 'next/dynamic'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { HeroScroll } from '@/components/motion/HeroScroll'
 
 const ParticleName = dynamic(() => import('@/components/three/ParticleName'), { ssr: false })
 
@@ -8,7 +9,8 @@ const NAME_LINES = ['LOURDU', 'RAJU']
 
 // SC.01 stage: the real <h1> paints first (LCP, SEO, and the hero for anyone without WebGL2),
 // then the particle canvas loads on idle and the heading crossfades out behind it.
-// HeroOverlay (the frame, tagline, CTAs and meta rows) is passed in as children.
+// HeroOverlay (the frame, tagline, CTAs and meta rows) is passed in as children. HeroScroll owns the
+// scroll-out; the particle dissolve reads the same section's progress, both ticked by Lenis via Motion.
 export function HeroStage({ children }: { children: React.ReactNode }) {
   const [loadCanvas, setLoadCanvas] = useState(false)
   const [particlesReady, setParticlesReady] = useState(false)
@@ -37,7 +39,7 @@ export function HeroStage({ children }: { children: React.ReactNode }) {
   const onReady = useCallback(() => setParticlesReady(true), [])
 
   return (
-    <section ref={sectionRef} className="relative h-[100svh] min-h-[640px] w-full overflow-hidden">
+    <HeroScroll sectionRef={sectionRef}>
       {loadCanvas && (
         <ParticleName
           key={portrait ? 'stacked' : 'single'}
@@ -62,6 +64,6 @@ export function HeroStage({ children }: { children: React.ReactNode }) {
       </div>
 
       {children}
-    </section>
+    </HeroScroll>
   )
 }

@@ -1,9 +1,9 @@
-import { TRUTH } from '@/content/truth'
+import { METRICS, show } from '@/content/truth'
 
 // Static SVG compositions for the home work cards. Pure markup, no client JS; the only motion is
 // CSS keyframes in app/globals.css (wc-*), all gated behind prefers-reduced-motion.
 
-const f = TRUTH.metrics.flagship
+const ocr = METRICS.meterOcr
 
 /* ------------------------------------------------------------------ */
 /* Meter OCR: a meter LCD under a detection box, plus the model chain  */
@@ -97,30 +97,30 @@ export function MeterOcrVisual() {
           ))}
         </ol>
         <div className="space-y-3 font-mono text-[10px] uppercase tracking-widest text-muted">
-          <div className="flex justify-between"><span>p50 latency</span><span>before → after</span></div>
+          <div className="flex justify-between"><span>End-to-end p50</span><span>serverless → GPU</span></div>
           <div className="space-y-1.5">
             <div className="flex items-center gap-3">
               <div className="h-1.5 flex-1 bg-muted/30" />
-              <span className="w-14 text-right">{f.latencyP50.before}ms</span>
+              <span className="w-16 text-right">{show(ocr.p50, 'before')}</span>
             </div>
             <div className="flex items-center gap-3">
-              <div className="flex-1"><div className="h-1.5 bg-accent wc-grow-r" style={{ width: `${(f.latencyP50.after / f.latencyP50.before) * 100}%` }} /></div>
-              <span className="w-14 text-right text-text">{f.latencyP50.after}ms</span>
+              <div className="flex-1"><div className="h-1.5 bg-accent wc-grow-r" style={{ width: `${(ocr.p50.value / (ocr.p50.before ?? ocr.p50.value)) * 100}%` }} /></div>
+              <span className="w-16 text-right text-text">{show(ocr.p50)}</span>
             </div>
           </div>
         </div>
         <dl className="grid grid-cols-3 gap-4 border-t border-line pt-5">
           <div>
-            <dt className="font-mono text-[10px] uppercase tracking-widest text-muted">Accuracy</dt>
-            <dd className="font-display text-3xl text-success">{f.accuracy.after}%</dd>
+            <dt className="font-mono text-[10px] uppercase tracking-widest text-muted">Bad photos refused</dt>
+            <dd className="font-display text-3xl text-success">{show(ocr.invalidDetection)}</dd>
           </div>
           <div>
-            <dt className="font-mono text-[10px] uppercase tracking-widest text-muted">p50</dt>
-            <dd className="font-display text-3xl text-text">{f.latencyP50.after}<span className="text-lg text-muted">ms</span></dd>
+            <dt className="font-mono text-[10px] uppercase tracking-widest text-muted">Reading acc.</dt>
+            <dd className="font-display text-3xl text-text">{show(ocr.readingAccuracy)}</dd>
           </div>
           <div>
-            <dt className="font-mono text-[10px] uppercase tracking-widest text-muted">1× L4</dt>
-            <dd className="font-display text-3xl text-text">{f.capacity1L4}<span className="text-lg text-muted">/s</span></dd>
+            <dt className="font-mono text-[10px] uppercase tracking-widest text-muted">One L4</dt>
+            <dd className="font-display text-3xl text-text">{ocr.sustainedL4.value}<span className="text-lg text-muted">/s</span></dd>
           </div>
         </dl>
       </div>
@@ -129,53 +129,68 @@ export function MeterOcrVisual() {
 }
 
 /* ------------------------------------------------------------------ */
-/* SVTRv2-ARD: an attention map and the memory it no longer needs      */
+/* SVTRv2-ARD: word crops routed into resize bins by a learned policy  */
 /* ------------------------------------------------------------------ */
 
 export function SvtrVisual() {
-  const n = 14
-  const cells = []
-  for (let r = 0; r < n; r++) {
-    for (let c = 0; c < n; c++) {
-      // A local-attention band around the diagonal plus a couple of long-range hits, fixed so it renders the same everywhere
-      const d = Math.abs(r - c)
-      const band = Math.max(0, 1 - d / 3)
-      const longRange = (r * 7 + c * 3) % 23 === 0 ? 0.55 : 0
-      const v = Math.min(1, band + longRange)
-      if (v > 0.04) cells.push({ r, c, v })
-    }
-  }
-  const mem = f.svtrv2PeakMemoryGB
-  const after = (mem.after / mem.before) * 100
+  // Crops of different aspect ratios on the left, SVTRv2's multi-size resize bins on the right.
+  // The learned router picks a bin per crop instead of a fixed aspect-ratio rule.
+  const crops = [
+    { w: 22, label: 'EXIT' },
+    { w: 44, label: 'KWH' },
+    { w: 62, label: 'METER' },
+    { w: 84, label: 'READING' },
+  ]
+  const bins = [
+    { w: 28, h: 28 },
+    { w: 44, h: 22 },
+    { w: 54, h: 19 },
+    { w: 64, h: 16 },
+  ]
+  const route = [0, 1, 3, 2] // crop i goes to bin route[i]; one crosses over, which is the point of learning it
+  const cy = (i: number) => 22 + i * 32
   return (
     <div className="absolute inset-0 flex flex-col p-5 lg:p-6">
       <div className="relative flex-1 min-h-0">
-        <svg viewBox={`0 0 ${n} ${n}`} className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-          <rect width={n} height={n} className="fill-[#0a0b0e]" />
-          {cells.map(({ r, c, v }) => (
-            <rect key={`${r}-${c}`} x={c + 0.06} y={r + 0.06} width={0.88} height={0.88} className="fill-detect" opacity={0.12 + v * 0.88} />
+        <svg viewBox="0 0 220 140" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <text x="4" y="6" className="fill-muted font-mono" fontSize="6" letterSpacing="1">CROPS</text>
+          <text x="216" y="6" textAnchor="end" className="fill-detect font-mono" fontSize="6" letterSpacing="1">RESIZE BINS</text>
+          {crops.map((c, i) => {
+            const j = route[i]
+            const by = cy(j)
+            const crossed = j !== i
+            return (
+              <g key={c.label}>
+                <path d={`M${4 + c.w + 2},${cy(i)} C120,${cy(i)} 120,${by} ${216 - bins[j].w - 2},${by}`} fill="none"
+                  className={crossed ? 'stroke-detect' : 'stroke-text/20'} strokeWidth={crossed ? 1.1 : 0.7} strokeDasharray={crossed ? undefined : '2 2'} />
+                <rect x="4" y={cy(i) - 7} width={c.w} height="14" rx="1.5" className="fill-raised stroke-line" strokeWidth="0.6" />
+                <text x={4 + c.w / 2} y={cy(i) + 2.2} textAnchor="middle" className="fill-text/80 font-mono" fontSize="6">{c.label}</text>
+              </g>
+            )
+          })}
+          {bins.map((b, j) => (
+            <rect key={j} x={216 - b.w} y={cy(j) - b.h / 2} width={b.w} height={b.h} rx="1.5"
+              className={route.indexOf(j) !== j ? 'fill-detect/15 stroke-detect' : 'fill-[#0a0b0e] stroke-text/25'} strokeWidth="0.8" />
           ))}
         </svg>
       </div>
-      <div className="mt-5 space-y-2 font-mono text-[10px] uppercase tracking-widest text-muted">
-        <div className="flex justify-between"><span>Peak VRAM</span><span className="text-text">{mem.before} → <span className="text-detect">{mem.after} GB</span></span></div>
-        <div className="relative h-1.5 w-full bg-line">
-          <div className="absolute inset-y-0 left-0 bg-muted/30" style={{ width: '100%' }} />
-          <div className="absolute inset-y-0 left-0 bg-detect wc-grow" style={{ width: `${after}%` }} />
-        </div>
+      <div className="mt-5 flex justify-between font-mono text-[10px] uppercase tracking-widest text-muted">
+        <span>Tests passing</span>
+        <span className="text-text">{METRICS.svtrv2.tests.value} / {METRICS.svtrv2.tests.value} · served model unchanged</span>
       </div>
     </div>
   )
 }
 
 /* ------------------------------------------------------------------ */
-/* ECHOME: three memory tiers, twelve planted facts                    */
+/* ECHOME: three memory tiers, twelve recall scenarios                 */
 /* ------------------------------------------------------------------ */
 
 export function EchomeVisual() {
+  // memoryRecall's context records 11 of 12 scenarios; the dots draw that
   const facts = 12
-  const recalled = 11
-  const missed = 4 // which planted fact the illustration shows as missed
+  const recalled = Math.round((METRICS.echome.memoryRecall.value / 100) * facts)
+  const missed = 4 // which scenario the illustration shows as missed
   const tiers = [
     { r: 30, label: 'WORKING' },
     { r: 52, label: 'EPISODIC' },
@@ -192,10 +207,10 @@ export function EchomeVisual() {
             </g>
           ))}
           {Array.from({ length: facts }).map((_, i) => {
-            // Spread facts over the three rings, offset so none sits on a ring label at 12 o'clock
+            // Spread scenarios over the three rings, offset so none sits on a ring label at 12 o'clock
             const a = ((i + 0.5) / facts) * Math.PI * 2 - Math.PI / 2
             const ring = tiers[i % 3].r
-            const hit = i !== missed
+            const hit = recalled === facts || i !== missed
             const x = Math.cos(a) * ring
             const y = Math.sin(a) * ring
             return (
@@ -211,71 +226,53 @@ export function EchomeVisual() {
         </svg>
       </div>
       <div className="mt-5 flex justify-between font-mono text-[10px] uppercase tracking-widest text-muted">
-        <span>Planted-fact recall</span>
-        <span className="text-text">{recalled} / {facts}</span>
+        <span>Multi-session recall</span>
+        <span className="text-text">{recalled} / {facts} scenarios</span>
       </div>
     </div>
   )
 }
 
 /* ------------------------------------------------------------------ */
-/* FinSentinelAI: two rankings fused into one                          */
+/* FinSentinelAI: retrieved candidates rescored by a cross-encoder     */
 /* ------------------------------------------------------------------ */
 
 export function FinSentinelVisual() {
-  // Document ids as they appear in each ranking; the fused list is what reciprocal-rank fusion produces from them
-  const bm25 = ['D-17', 'D-04', 'D-31', 'D-09', 'D-22']
-  const dense = ['D-04', 'D-12', 'D-17', 'D-31', 'D-40']
-  const fused = rrf([bm25, dense]).slice(0, 5)
-  const row = 12
-  const srcY = (li: number, i: number) => (li === 0 ? 16 : 88) + i * row
-  const outY = (j: number) => 46 + j * 16
+  // Illustrative document ids: vector-search order on the left, cross-encoder order on the right
+  const retrieved = ['STMT-0218', 'INV-0412', 'GST-0091', 'PO-0733', 'INV-0388']
+  const reranked = ['INV-0412', 'INV-0388', 'STMT-0218', 'GST-0091', 'PO-0733']
+  const y = (i: number) => 26 + i * 20
   return (
     <div className="absolute inset-0 flex flex-col p-5 lg:p-6">
       <div className="relative flex-1 min-h-0">
-        <svg viewBox="0 0 220 152" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-          <text x="4" y="10" className="fill-muted font-mono" fontSize="6" letterSpacing="1">BM25</text>
-          <text x="4" y="82" className="fill-muted font-mono" fontSize="6" letterSpacing="1">DENSE</text>
-          <text x="216" y="36" textAnchor="end" className="fill-accent font-mono" fontSize="6" letterSpacing="1">FUSED · RRF</text>
-          {[bm25, dense].map((list, li) =>
-            list.map((id, i) => {
-              const j = fused.indexOf(id)
-              if (j < 0) return null
-              const y1 = srcY(li, i) + 4.5
-              const y2 = outY(j) + 5
-              return (
-                <path key={`${li}-${id}`} d={`M70,${y1} C110,${y1} 110,${y2} 146,${y2}`} fill="none"
-                  className={j === 0 ? 'stroke-accent' : 'stroke-text/15'} strokeWidth={j === 0 ? 1.1 : 0.7} />
-              )
-            })
-          )}
-          {[bm25, dense].map((list, li) =>
-            list.map((id, i) => (
-              <g key={`${li}${id}`}>
-                <rect x="4" y={srcY(li, i)} width="66" height="9" rx="1" className={fused.indexOf(id) === 0 ? 'fill-accent/20' : 'fill-raised'} />
-                <text x="8" y={srcY(li, i) + 6.5} className="fill-text/70 font-mono" fontSize="5.5">{i + 1}  {id}</text>
-              </g>
-            ))
-          )}
-          {fused.map((id, j) => (
-            <g key={`f${id}`}>
-              <rect x="146" y={outY(j)} width="70" height="10" rx="1" className={j === 0 ? 'fill-accent' : 'fill-raised'} />
-              <text x="151" y={outY(j) + 7} className={j === 0 ? 'fill-bg font-mono' : 'fill-text font-mono'} fontSize="6" fontWeight={j === 0 ? 700 : 400}>{j + 1}  {id}</text>
+        <svg viewBox="0 0 220 132" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <text x="4" y="10" className="fill-muted font-mono" fontSize="6" letterSpacing="1">CHROMADB · user_id</text>
+          <text x="216" y="10" textAnchor="end" className="fill-accent font-mono" fontSize="6" letterSpacing="1">CROSS-ENCODER</text>
+          {retrieved.map((id, i) => {
+            const j = reranked.indexOf(id)
+            return (
+              <path key={`l${id}`} d={`M74,${y(i)} C110,${y(i)} 110,${y(j)} 146,${y(j)}`} fill="none"
+                className={j === 0 ? 'stroke-accent' : 'stroke-text/15'} strokeWidth={j === 0 ? 1.1 : 0.7} />
+            )
+          })}
+          {retrieved.map((id, i) => (
+            <g key={`r${id}`}>
+              <rect x="4" y={y(i) - 6} width="70" height="12" rx="1" className="fill-raised" />
+              <text x="9" y={y(i) + 2} className="fill-text/70 font-mono" fontSize="6">{i + 1}  {id}</text>
+            </g>
+          ))}
+          {reranked.map((id, j) => (
+            <g key={`k${id}`}>
+              <rect x="146" y={y(j) - 6} width="70" height="12" rx="1" className={j === 0 ? 'fill-accent' : 'fill-raised'} />
+              <text x="151" y={y(j) + 2} className={j === 0 ? 'fill-bg font-mono' : 'fill-text font-mono'} fontSize="6" fontWeight={j === 0 ? 700 : 400}>{j + 1}  {id}</text>
             </g>
           ))}
         </svg>
       </div>
       <div className="mt-5 flex justify-between font-mono text-[10px] uppercase tracking-widest text-muted">
-        <span>Hybrid retrieval</span>
-        <span className="text-text">BM25 + dense → RRF</span>
+        <span>Local Ollama</span>
+        <span className="text-text">0 external API calls</span>
       </div>
     </div>
   )
-}
-
-// Reciprocal-rank fusion with the usual k = 60
-function rrf(lists: string[][], k = 60) {
-  const score = new Map<string, number>()
-  for (const list of lists) list.forEach((id, i) => score.set(id, (score.get(id) ?? 0) + 1 / (k + i + 1)))
-  return [...score.entries()].sort((a, b) => b[1] - a[1]).map(([id]) => id)
 }

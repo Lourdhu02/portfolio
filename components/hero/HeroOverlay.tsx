@@ -4,7 +4,7 @@ import { TRUTH } from '@/content/truth'
 // The typographic frame around the particle name: meta row, tagline, calls to action and a scroll cue.
 // Server-rendered so the tagline and CTAs are in the first HTML paint, before the canvas boots.
 export function HeroOverlay() {
-  const { role, focus, company, location, mission, links } = TRUTH.identity
+  const { role, focus, company, location, headline, links } = TRUTH.identity
 
   return (
     <div className="pointer-events-none absolute inset-0 z-10 flex flex-col justify-between px-6 pb-8 pt-28 md:px-12 md:pb-10">
@@ -29,7 +29,7 @@ export function HeroOverlay() {
       {/* Tagline + CTAs sit under the particle name, which the canvas centres in the viewport */}
       <div className="absolute inset-x-6 top-[61%] mx-auto flex max-w-3xl flex-col items-center text-center">
         <p className="hero-in text-balance text-lg leading-snug text-text/85 md:text-2xl" style={{ '--d': '1.6s' } as React.CSSProperties}>
-          {mission}
+          {headline}
         </p>
         <div className="hero-in pointer-events-auto mt-8 flex flex-wrap items-center justify-center gap-3" style={{ '--d': '1.9s' } as React.CSSProperties}>
           <Link

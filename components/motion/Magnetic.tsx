@@ -1,6 +1,6 @@
 "use client"
-import { useRef, useState } from 'react'
-import { m, useSpring } from 'motion/react'
+import { useRef } from 'react'
+import { m, useReducedMotion, useSpring } from 'motion/react'
 import { spring } from '@/lib/tokens'
 
 interface MagneticProps {
@@ -8,31 +8,24 @@ interface MagneticProps {
   strength?: number;
 }
 
+// Pulls its child toward a mouse pointer. Touch, pen and reduced-motion users get a static element.
 export function Magnetic({ children, strength = 10 }: MagneticProps) {
   const ref = useRef<HTMLDivElement>(null)
-  
+  const reduce = useReducedMotion()
+
   const x = useSpring(0, spring.magnetic)
   const y = useSpring(0, spring.magnetic)
-  
-  function onMouseMove(e: React.MouseEvent<HTMLDivElement>) {
-    if (!ref.current) return
+
+  function onPointerMove(e: React.PointerEvent<HTMLDivElement>) {
+    if (!ref.current || reduce || e.pointerType !== 'mouse') return
     const { left, top, width, height } = ref.current.getBoundingClientRect()
-    const centerX = left + width / 2
-    const centerY = top + height / 2
-    const distanceX = e.clientX - centerX
-    const distanceY = e.clientY - centerY
-    
-    // Check if within 80px magnetic pull radius
-    if (Math.abs(distanceX) < width / 2 + 80 && Math.abs(distanceY) < height / 2 + 80) {
-      x.set((distanceX / (width / 2 + 80)) * strength)
-      y.set((distanceY / (height / 2 + 80)) * strength)
-    } else {
-      x.set(0)
-      y.set(0)
-    }
+    const distanceX = e.clientX - (left + width / 2)
+    const distanceY = e.clientY - (top + height / 2)
+    x.set((distanceX / (width / 2 + 80)) * strength)
+    y.set((distanceY / (height / 2 + 80)) * strength)
   }
 
-  function onMouseLeave() {
+  function onPointerLeave() {
     x.set(0)
     y.set(0)
   }
@@ -40,8 +33,8 @@ export function Magnetic({ children, strength = 10 }: MagneticProps) {
   return (
     <m.div
       ref={ref}
-      onMouseMove={onMouseMove}
-      onMouseLeave={onMouseLeave}
+      onPointerMove={onPointerMove}
+      onPointerLeave={onPointerLeave}
       style={{ x, y }}
       className="inline-block"
     >

@@ -1,30 +1,38 @@
 ---
 title: "Achilles: Core AI from First Principles"
-summary: "Building an 18-lab open-source curriculum covering transformers, Triton FlashAttention, and speculative decoding with 229 CI tests."
-date: 2025-12-10
+summary: "18 test-driven labs that rebuild the modern LLM stack, from autograd to FlashAttention in Triton to GRPO, with 229 reference tests in CI."
+date: 2026-09-27
 tags: ["Open Source", "Triton", "PyTorch", "Transformers"]
 ---
 
 ## Why Achilles?
 
-Most AI education falls into one of two extremes: high-level library API wrappers (`model.generate()`) or dense academic papers with no runnable code. 
+Most AI learning material is either a library call (`model.generate()`) or a paper with no runnable code. **Achilles** sits in between: you implement each piece of a modern model yourself, and a test tells you whether it is actually right.
 
-**Achilles** (`github.com/Lourdhu02/achilles`) was built to bridge this gap: an open-source, test-driven curriculum where you implement every fundamental primitive of modern frontier models from scratch, validated against 229 automated unit tests in CI across Linux, macOS, and Windows.
+- **Code and docs**: [github.com/Lourdhu02/achilles](https://github.com/Lourdhu02/achilles)
+- **Runs on**: a laptop CPU for every lab; an 8 GB GPU unlocks pretraining, Triton on the GPU, LoRA and DPO on a 0.5B model.
 
-## The 18 Test-Driven Labs
+## The 18 labs
 
-The curriculum progresses through the entire deep learning stack:
+1. **Autograd**: reverse-mode autodiff in NumPy, then train an MLP with it.
+2. **Training core**: AdamW that matches PyTorch to 1e-10 over 25 steps, Muon, WSD schedules, correct gradient accumulation.
+3. **Napkin math**: parameters, FLOPs, KV cache, roofline, MFU and $/token.
+4. **Tokenizer**: byte-level BPE with GPT-4 and o200k pre-tokenization.
+5. **Transformer**: a Llama-style GPT with RoPE, GQA, SwiGLU and QK-norm.
+6. **Attention kernels**: online softmax, FlashAttention forward and backward, a Triton kernel.
+7. **KV cache and sampling**: chunked prefill, top-k, top-p and min-p.
+8. **Scaling laws**: power-law fits, Chinchilla-optimal and inference-aware sizing.
+9. **Parallelism**: ring all-reduce, Megatron tensor parallelism, ZeRO memory, real DDP on two CPU processes.
+10. **LoRA**: adapters, merging, and a direct test of the low-rank hypothesis.
+11. **DPO**: DPO, IPO and SimPO, with a numerical proof of DPO's closed-form optimum.
+12. **GRPO**: REINFORCE to GRPO with clipping and a k3 KL penalty.
+13. **Quantization**: INT8, INT4, NF4, SmoothQuant and GPTQ.
+14. **Speculative decoding**: exact rejection sampling, statistically verified to be lossless.
+15. **Eval statistics**: confidence intervals, paired tests, clustered standard errors, pass@k.
+16. **Interpretability**: induction heads, activation patching, sparse autoencoders.
+17. **Retrieval**: BM25, RRF, MMR, nDCG and an IVF vector index.
+18. **Mixture of experts**: top-k routing, load balancing, capacity and token dropping.
 
-1. **Autograd Engine**: Reverse-mode automatic differentiation on multidimensional tensors with dynamic DAG tape.
-2. **Llama-Style Transformer**: RMSNorm, SwiGLU activations, and Rotary Position Embeddings (RoPE).
-3. **FlashAttention in OpenAI Triton**: Custom GPU fused forward and backward attention kernels, bypassing intermediate HBM roundtrips.
-4. **KV Cache & Generation**: Paged attention and continuous batching primitives.
-5. **LoRA & Parameter-Efficient Tuning**: Low-rank matrix decomposition with rank scaling $\alpha / r$.
-6. **Alignment (DPO & GRPO)**: Direct Preference Optimization and Group Relative Policy Optimization loss functions.
-7. **Quantization**: INT8 vector-quantized matrix multiply and FP8 scaling factors.
-8. **Speculative Decoding**: Draft-target verification loops achieving 2.2× decode speedups.
-9. **Mixture of Experts (MoE)**: Top-k expert routing with load-balancing auxiliary loss.
+## Tests are the teacher
 
-## Continuous Integration & Test Suite
-
-Every lab comes with strict unit tests (`pytest`). No PR merges without passing all 229 tests verifying numerical precision against reference PyTorch and Hugging Face implementations down to $10^{-6}$ tolerance.
+Every lab ships a handout, an exercise and a reference solution. The tests compare your code against PyTorch or a closed form, check invariants, and include the edge case that catches the usual bug. All **229** reference tests pass in CI on Linux, Windows and macOS, with the Triton kernels running in Triton's CPU interpreter.

@@ -1,33 +1,49 @@
 import { notFound } from 'next/navigation'
 import { posts } from '#velite'
 import Link from 'next/link'
+import { ViewTransition } from 'react'
+import type { Metadata } from 'next'
+import { TRUTH, METRICS, show } from '@/content/truth'
 
 interface PageProps {
   params: Promise<{ slug: string }>
 }
 
-// Work projects metadata for deep case-study context
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params
+  const post = posts.find(p => p.slug === slug)
+  if (!post) return {}
+  const url = `/work/${slug}`
+  return {
+    title: post.title,
+    description: post.summary,
+    alternates: { canonical: url },
+    openGraph: { type: 'article', title: post.title, description: post.summary, url, publishedTime: post.date },
+  }
+}
+
+// Case-study header for each project. Figures come from content/truth.ts.
 const PROJECTS_META: Record<string, { role: string; timeline: string; stack: string; impact: string; github?: string }> = {
   'svtrv2-ard': {
-    role: 'ML Engineer',
-    timeline: '2025 – 2026',
-    stack: 'PyTorch, Triton, SDPA, SVTRv2',
-    impact: '87.7% → 90.1% Exact Match, 3.8× Faster Training',
-    github: 'https://github.com/Lourdhu02'
+    role: 'Sole author',
+    timeline: '2026',
+    stack: 'PyTorch, CTC, LMDB, Union14M-L, pytest',
+    impact: `ARD method shipped with ${METRICS.svtrv2.tests.value}/${METRICS.svtrv2.tests.value} tests passing; served model unchanged`,
+    github: TRUTH.identity.links.svtrv2
   },
   'echome': {
-    role: 'Lead ML Engineer',
-    timeline: '2025',
-    stack: 'LangGraph, Qdrant, IRT, Whisper, XTTSv2',
-    impact: '11/12 Fact Recall @ 1ms, 50% Shorter Personality Tests',
-    github: 'https://github.com/Lourdhu02/echome'
+    role: 'Sole author',
+    timeline: '2026',
+    stack: 'FastAPI, LangGraph, Qdrant, IRT, Whisper, XTTSv2, Ollama',
+    impact: `${show(METRICS.echome.memoryRecall)} memory recall vs 0% without; ${show(METRICS.echome.assessmentCut)} shorter assessment`,
+    github: TRUTH.identity.links.echome
   },
   'finsentinel': {
-    role: 'AI Architect',
-    timeline: '2024 – 2025',
-    stack: 'FastAPI, Ollama, ChromaDB, BM25, Cross-Encoder',
-    impact: '15% → 100% ID Lookup Retrieval, Zero Leakage Private RAG',
-    github: 'https://github.com/Lourdhu02/fin-sentinal.ai'
+    role: 'Sole author',
+    timeline: '2026',
+    stack: 'React, FastAPI, ChromaDB, SentenceTransformers, cross-encoder, Ollama',
+    impact: 'Fully local finance RAG with per-user isolation inside the vector store',
+    github: TRUTH.identity.links.finSentinel
   }
 }
 
@@ -41,10 +57,10 @@ export default async function WorkSlugPage({ params }: PageProps) {
   }
 
   const meta = PROJECTS_META[slug] || {
-    role: 'Machine Learning Engineer',
-    timeline: '2025 – 2026',
-    stack: 'Deep Learning, GPU Inference',
-    impact: 'Production Performance'
+    role: 'Sole author',
+    timeline: '2026',
+    stack: post.tags.join(', '),
+    impact: post.summary
   }
 
   return (
@@ -54,9 +70,11 @@ export default async function WorkSlugPage({ params }: PageProps) {
       </Link>
       
       <header className="mb-16">
-        <h1 className="font-display text-6xl md:text-8xl leading-[0.85] mb-6 uppercase">
-          {post.title}
-        </h1>
+        <ViewTransition name={`work-title-${slug}`} share="morph" default="none">
+          <h1 className="font-display text-6xl md:text-8xl leading-[0.85] mb-6 uppercase w-fit">
+            {post.title}
+          </h1>
+        </ViewTransition>
         <p className="font-mono text-muted uppercase tracking-widest">{post.summary}</p>
       </header>
 
