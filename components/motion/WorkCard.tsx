@@ -1,7 +1,8 @@
 "use client"
-import { useRef, useState, ViewTransition } from 'react'
-import { m, useMotionTemplate, useMotionValue, useSpring } from 'motion/react'
+import { m, useMotionTemplate, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react'
 import Link from 'next/link'
+import { ViewTransition } from 'react'
+import { spring } from '@/lib/tokens'
 
 interface WorkCardProps {
   id: string;
@@ -17,56 +18,70 @@ interface WorkCardProps {
 }
 
 export function WorkCard({ id, title, kicker, href, index, summary, tags = [], aspect = 'aspect-video', className = '', children }: WorkCardProps) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [isHovered, setIsHovered] = useState(false)
-  
-  const mouseX = useMotionValue(0)
-  const mouseY = useMotionValue(0)
-  
-  const springX = useSpring(mouseX, { stiffness: 320, damping: 30 })
-  const springY = useSpring(mouseY, { stiffness: 320, damping: 30 })
-  
-  function onMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
-    const { left, top } = currentTarget.getBoundingClientRect()
-    mouseX.set(clientX - left)
-    mouseY.set(clientY - top)
+  const reduce = useReducedMotion()
+
+  // Pointer position within the cover, 0..1 on each axis (mouse only)
+  const px = useMotionValue(0.5)
+  const py = useMotionValue(0.5)
+  const sx = useSpring(px, spring.ui)
+  const sy = useSpring(py, spring.ui)
+
+  const rotateX = useTransform(sy, [0, 1], [4, -4])
+  const rotateY = useTransform(sx, [0, 1], [-5, 5])
+  const glowX = useTransform(sx, (v) => `${v * 100}%`)
+  const glowY = useTransform(sy, (v) => `${v * 100}%`)
+  const maskImage = useMotionTemplate`radial-gradient(420px at ${glowX} ${glowY}, white, transparent 75%)`
+
+  function onPointerMove(e: React.PointerEvent<HTMLDivElement>) {
+    if (e.pointerType !== 'mouse') return
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect()
+    px.set((e.clientX - left) / width)
+    py.set((e.clientY - top) / height)
   }
 
-  const maskImage = useMotionTemplate`radial-gradient(400px at ${springX}px ${springY}px, white, transparent 80%)`
+  function onPointerLeave() {
+    px.set(0.5)
+    py.set(0.5)
+  }
 
   return (
-    <Link 
+    <Link
       href={href}
-      className={`group relative flex flex-col gap-5 ${className}`}
+      data-cursor="view"
+      data-cursor-label="Open"
+      className={`group relative flex flex-col gap-5 outline-none [perspective:1400px] ${className}`}
     >
       <m.div
-        ref={ref}
-        onMouseMove={onMouseMove}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        whileHover={{ scale: 0.99 }}
+        layoutId={`cover-${id}`}
+        onPointerMove={onPointerMove}
+        onPointerLeave={onPointerLeave}
         whileTap={{ scale: 0.97 }}
-        transition={{ type: "spring", stiffness: 320, damping: 30 }}
-        className={`relative overflow-hidden bg-surface ${aspect} rounded-none w-full`}
-        style={{
-          borderBottomRightRadius: '14px' // signature cut corner
-        }}
+        transition={{ type: "spring", ...spring.ui }}
+        style={reduce ? undefined : { rotateX, rotateY, transformStyle: 'preserve-3d' }}
+        className={`relative overflow-hidden bg-surface ${aspect} w-full rounded-none rounded-br-[var(--radius-cut)] group-focus-visible:ring-2 group-focus-visible:ring-accent group-focus-visible:ring-offset-4 group-focus-visible:ring-offset-bg`}
       >
-        {/* Glow effect on hover */}
-        <m.div 
-          className="pointer-events-none absolute inset-0 z-10 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          style={{ maskImage, WebkitMaskImage: maskImage }}
-        />
-        
-        {/* Border */}
-        <div className="absolute inset-0 z-20 border border-line group-hover:border-muted/40 transition-colors duration-300 pointer-events-none rounded-none" style={{ borderBottomRightRadius: '14px' }} />
-        {/* Accent rule that draws in on hover */}
-        <div className="absolute left-0 top-0 z-20 h-px w-full origin-left scale-x-0 bg-accent transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100 pointer-events-none" />
-        
-        {/* Media / Code composition */}
-        <div className="absolute inset-0 z-0">
+        {/* Media / Code composition: eases in on hover and focus */}
+        <div className="absolute inset-0 z-0 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none group-hover:scale-[1.03] group-focus-visible:scale-[1.03]">
           {children}
         </div>
+
+        {/* Pointer-following spotlight */}
+        <m.div
+          className="pointer-events-none absolute inset-0 z-10 bg-white/[0.06] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          style={{ maskImage, WebkitMaskImage: maskImage }}
+        />
+
+        {/* Hover / focus reveal: case-study prompt rises from the bottom edge */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex items-end bg-gradient-to-t from-bg/90 via-bg/50 to-transparent px-5 pb-4 pt-12 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
+          <span className="translate-y-3 font-mono text-[11px] uppercase tracking-[0.2em] text-text transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:translate-y-0 group-hover:translate-y-0 group-focus-visible:translate-y-0">
+            Read the case study <span className="text-accent">→</span>
+          </span>
+        </div>
+
+        {/* Border */}
+        <div className="pointer-events-none absolute inset-0 z-30 rounded-none rounded-br-[var(--radius-cut)] border border-line transition-colors duration-300 group-hover:border-muted/40" />
+        {/* Accent rule that draws in on hover */}
+        <div className="pointer-events-none absolute left-0 top-0 z-30 h-px w-full origin-left scale-x-0 bg-accent transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100 group-focus-visible:scale-x-100" />
       </m.div>
 
       <div className="grid grid-cols-[auto_1fr_auto] items-start gap-x-4 gap-y-1">
@@ -86,7 +101,7 @@ export function WorkCard({ id, title, kicker, href, index, summary, tags = [], a
             </ul>
           )}
         </div>
-        <span aria-hidden="true" className="mt-1 grid h-10 w-10 place-items-center rounded-full border border-line text-text transition-all duration-300 group-hover:border-accent group-hover:bg-accent group-hover:text-bg group-hover:-rotate-45">
+        <span aria-hidden="true" className="mt-1 grid h-10 w-10 place-items-center rounded-full border border-line text-text transition-all duration-300 group-hover:border-accent group-hover:bg-accent group-hover:text-bg group-hover:-rotate-45 group-focus-visible:border-accent group-focus-visible:bg-accent group-focus-visible:text-bg group-focus-visible:-rotate-45">
           →
         </span>
       </div>

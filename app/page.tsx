@@ -1,7 +1,8 @@
 import { ParticleName } from '@/components/three/ParticleName'
 import { Counter } from '@/components/motion/Counter'
 import { WorkCard } from '@/components/motion/WorkCard'
-import { LabCommand } from '@/components/ui/LabCommand'
+import { LabDock } from '@/components/interaction/LabDock'
+import { CopyEmail } from '@/components/interaction/CopyEmail'
 import { Magnetic } from '@/components/motion/Magnetic'
 import { HeroScroll } from '@/components/motion/HeroScroll'
 import { ParallaxGrid } from '@/components/motion/Parallax'
@@ -130,7 +131,7 @@ export default function Home() {
         </ParallaxGrid>
       </section>
 
-      {/* SC.04: Lab (cmdk) */}
+      {/* SC.04: Lab console (same command menu as ⌘K) */}
       <section className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-text">
         <Reveal>
           <SectionHead
@@ -140,7 +141,7 @@ export default function Home() {
           />
         </Reveal>
         <Reveal>
-          <LabCommand />
+          <LabDock />
         </Reveal>
       </section>
 
@@ -211,20 +212,23 @@ export default function Home() {
 
       {/* SC.07: Footer */}
       <footer className="relative z-10 w-full bg-surface border-t border-line py-24 px-6 flex flex-col items-center justify-center overflow-hidden">
-        <Reveal>
+        <Reveal className="flex flex-col items-center">
         <Magnetic strength={20}>
           <a 
             href={`mailto:${TRUTH.identity.email}`} 
+            data-cursor="view"
+            data-cursor-label="Say hi"
             className="group flex flex-col items-center justify-center px-12 py-10 rounded-full border border-line bg-bg hover:border-accent transition-all shadow-2xl"
           >
             <span className="font-display text-4xl md:text-5xl group-hover:text-accent transition-colors uppercase">
               Got a model to ship?
             </span>
-            <span className="font-mono text-xs text-muted mt-2 group-hover:text-text transition-colors">
-              {TRUTH.identity.email}
-            </span>
           </a>
         </Magnetic>
+        <CopyEmail
+          email={TRUTH.identity.email}
+          className="mt-6 rounded-full px-4 py-2 font-mono text-xs text-muted transition-colors hover:text-text"
+        />
         </Reveal>
 
         <div className="mt-16 flex flex-wrap justify-center gap-6 font-mono text-xs uppercase tracking-widest text-muted">

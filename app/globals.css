@@ -31,6 +31,13 @@
     -moz-osx-font-smoothing: grayscale;
   }
   
+  /* Keyboard focus: always visible, never shown for mouse clicks */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
   /* Text selection */
   ::selection {
     background-color: var(--color-accent-dim);
@@ -163,6 +170,33 @@ html.lenis body {
     transform: none !important;
     opacity: 1 !important;
   }
+}
+
+/* Custom cursor (components/interaction/Cursor.tsx) hides the native one for mice only.
+   Text fields keep the I-beam so editing still feels native. */
+@media (hover: hover) and (pointer: fine) {
+  html.has-custom-cursor,
+  html.has-custom-cursor * {
+    cursor: none !important;
+  }
+  html.has-custom-cursor :is(input, textarea, [contenteditable="true"]) {
+    cursor: text !important;
+  }
+}
+
+/* Command palette enter/exit (Radix keeps it mounted until the exit animation ends) */
+.cmdk-overlay[data-state="open"] { animation: cmdk-fade-in 180ms ease-out; }
+.cmdk-overlay[data-state="closed"] { animation: cmdk-fade-out 140ms ease-in forwards; }
+.cmdk-content[data-state="open"] { animation: cmdk-rise-in 260ms cubic-bezier(0.22, 1, 0.36, 1); }
+.cmdk-content[data-state="closed"] { animation: cmdk-sink-out 140ms ease-in forwards; }
+
+@keyframes cmdk-fade-in { from { opacity: 0; } }
+@keyframes cmdk-fade-out { to { opacity: 0; } }
+@keyframes cmdk-rise-in { from { opacity: 0; transform: translateY(12px) scale(0.98); filter: blur(4px); } }
+@keyframes cmdk-sink-out { to { opacity: 0; transform: translateY(6px) scale(0.985); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .cmdk-overlay, .cmdk-content { animation-duration: 1ms !important; }
 }
 
 /* ---------- Hero frame ---------- */

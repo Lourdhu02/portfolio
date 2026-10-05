@@ -16,6 +16,12 @@ function setJinx(on: boolean) {
   }
 }
 
+export function toggleJinx() {
+  const on = !('jinx' in document.documentElement.dataset)
+  setJinx(on)
+  return on
+}
+
 function isTyping(target: EventTarget | null) {
   if (!(target instanceof HTMLElement)) return false
   return target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)
@@ -33,7 +39,8 @@ export function JinxMode() {
 
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') {
-        setJinx(false)
+        // Esc inside the command palette or menu closes that, not Jinx.
+        if (!document.querySelector('[role="dialog"]:not([data-state="closed"])')) setJinx(false)
         return
       }
       if (isTyping(e.target) || e.metaKey || e.ctrlKey || e.altKey) return
