@@ -10,6 +10,7 @@ import { Receipt } from '@/components/ui/Receipt'
 import Link from 'next/link'
 import { HeroOverlay } from '@/components/hero/HeroOverlay'
 import { SectionHead } from '@/components/ui/SectionHead'
+import { SnapRail } from '@/components/ui/SnapRail'
 import { MeterOcrVisual, SvtrVisual, EchomeVisual, FinSentinelVisual } from '@/components/work/CardVisuals'
 
 export default function Home() {
@@ -27,8 +28,8 @@ export default function Home() {
       </section>
 
       {/* SC.02: Proof */}
-      <section className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-text">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-6 pt-16 pb-24 border-t border-line">
+      <section className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24 text-text">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-6 pt-12 sm:pt-16 pb-8 sm:pb-24 border-t border-line">
           
           <div className="flex flex-col space-y-4">
             <h2 className="font-display text-6xl md:text-8xl leading-none">
@@ -67,10 +68,10 @@ export default function Home() {
       </section>
 
       {/* SC.03: Work Grid */}
-      <section id="work" className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-text scroll-mt-16">
+      <section id="work" className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24 text-text scroll-mt-16">
         <SectionHead index="01" title="Selected Work" aside="Production systems & research" />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-16">
+        <SnapRail label="Selected work" desktopClassName="lg:grid-cols-3 lg:gap-x-8 lg:gap-y-16">
           <WorkCard
             id="meter-ocr"
             index="01"
@@ -79,8 +80,8 @@ export default function Home() {
             href="/work/meter-ocr"
             summary="Reads electricity meters from field photos on Triton and TensorRT, and answers NA instead of guessing when a photo can't be read."
             tags={['TensorRT', 'Triton', 'NVIDIA L4']}
-            aspect="aspect-[4/3] md:aspect-[21/9]"
-            className="md:col-span-3"
+            aspect="aspect-[4/3] lg:aspect-[21/9]"
+            className="lg:col-span-3"
           >
             <MeterOcrVisual />
           </WorkCard>
@@ -123,11 +124,11 @@ export default function Home() {
           >
             <FinSentinelVisual />
           </WorkCard>
-        </div>
+        </SnapRail>
       </section>
 
       {/* SC.04: Lab console (same command menu as ⌘K) */}
-      <section className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-text">
+      <section className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24 text-text">
         <SectionHead
           index="02"
           title="Lab"
@@ -137,9 +138,9 @@ export default function Home() {
       </section>
 
       {/* SC.05: Principles */}
-      <section className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-text">
+      <section className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24 text-text">
         <SectionHead index="03" title="Engineering Creed" />
-        <h2 className="font-display text-5xl md:text-7xl mb-12 leading-[1.05]">
+        <h2 className="font-display text-[clamp(2.75rem,13vw,3rem)] sm:text-5xl md:text-7xl mb-4 sm:mb-12 leading-[1.05]">
           <SplitLines>Measure before you claim.</SplitLines>
           <br />
           <SplitLines>Ship behind a canary.</SplitLines>
@@ -149,7 +150,7 @@ export default function Home() {
       </section>
 
       {/* SC.06: Credentials, Open Source & Studio */}
-      <section className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-text border-t border-line">
+      <section className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24 text-text border-t border-line">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           <div>
             <div className="font-mono text-xs text-accent uppercase tracking-widest mb-2">04 / Credentials</div>
@@ -161,18 +162,18 @@ export default function Home() {
             <p className="text-text/80 max-w-md leading-relaxed text-sm mb-6">
               {TRUTH.identity.mission} Author of Achilles, {achillesLabs.value} test-driven labs that rebuild the modern LLM stack, and a PhilArchive preprint on identity in persistent AI agents.
             </p>
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-3 sm:gap-4">
               <a 
                 href="/LourduRaju_Resume.pdf" 
                 target="_blank"
-                className="px-4 py-2 bg-surface border border-line hover:border-accent text-accent font-mono text-xs uppercase tracking-wider transition-colors"
+                className="inline-flex min-h-11 items-center px-4 py-2 bg-surface border border-line hover:border-accent text-accent font-mono text-xs uppercase tracking-wider transition-colors"
                 style={{ borderRadius: '6px' }}
               >
                 Resume PDF ↓
               </a>
               <Link 
                 href="/about"
-                className="px-4 py-2 border border-line hover:border-text text-text font-mono text-xs uppercase tracking-wider transition-colors"
+                className="inline-flex min-h-11 items-center px-4 py-2 border border-line hover:border-text text-text font-mono text-xs uppercase tracking-wider transition-colors"
                 style={{ borderRadius: '6px' }}
               >
                 Full Story →
@@ -180,59 +181,59 @@ export default function Home() {
             </div>
           </div>
           
-          <div className="grid grid-cols-2 gap-6">
-            <div className="p-6 bg-surface border border-line">
+          <div className="grid grid-cols-2 gap-3 sm:gap-6">
+            <div className="p-4 sm:p-6 bg-surface border border-line">
               <div className="text-4xl font-display text-accent mb-2">{achillesTests.value}</div>
-              <div className="text-xs font-mono uppercase tracking-widest text-muted">CI tests passing (Achilles)</div>
+              <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">CI tests passing (Achilles)</div>
             </div>
-            <div className="p-6 bg-surface border border-line">
+            <div className="p-4 sm:p-6 bg-surface border border-line">
               <div className="text-4xl font-display text-text mb-2">₹{studio.revenueLakh}L</div>
-              <div className="text-xs font-mono uppercase tracking-widest text-muted">spacedrift revenue ({studio.clients} clients)</div>
+              <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">spacedrift revenue ({studio.clients} clients)</div>
             </div>
-            <div className="p-6 bg-surface border border-line">
+            <div className="p-4 sm:p-6 bg-surface border border-line">
               <div className="text-4xl font-display text-detect mb-2">{achillesLabs.value}</div>
-              <div className="text-xs font-mono uppercase tracking-widest text-muted">Test-driven AI labs</div>
+              <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">Test-driven AI labs</div>
             </div>
-            <div className="p-6 bg-surface border border-line">
+            <div className="p-4 sm:p-6 bg-surface border border-line">
               <div className="text-4xl font-display text-success mb-2">{Math.round(factor(classifierCompute))}×</div>
-              <div className="text-xs font-mono uppercase tracking-widest text-muted">TensorRT speedup ({show(classifierCompute, 'before')} → {show(classifierCompute)})</div>
+              <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">TensorRT speedup ({show(classifierCompute, 'before')} → {show(classifierCompute)})</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* SC.07: Footer */}
-      <footer className="relative z-10 w-full bg-surface border-t border-line py-24 px-6 flex flex-col items-center justify-center overflow-hidden">
+      <footer className="relative z-10 w-full bg-surface border-t border-line pt-20 sm:pt-24 pb-[max(4rem,calc(env(safe-area-inset-bottom)+3rem))] sm:pb-24 px-4 sm:px-6 flex flex-col items-center justify-center overflow-hidden">
         <Magnetic strength={20}>
           <a 
             href={`mailto:${TRUTH.identity.email}`} 
             data-cursor="view"
             data-cursor-label="Say hi"
-            className="group flex flex-col items-center justify-center px-12 py-10 rounded-full border border-line bg-bg hover:border-accent transition-all shadow-2xl"
+            className="group flex flex-col items-center justify-center text-center px-8 py-9 sm:px-12 sm:py-10 rounded-[2.5rem] sm:rounded-full border border-line bg-bg hover:border-accent transition-all shadow-2xl"
           >
-            <span className="font-display text-4xl md:text-5xl group-hover:text-accent transition-colors uppercase">
+            <span className="font-display text-[2.5rem] leading-[0.95] sm:text-4xl md:text-5xl group-hover:text-accent group-active:text-accent transition-colors uppercase">
               Got a model to ship?
             </span>
           </a>
         </Magnetic>
         <CopyEmail
           email={TRUTH.identity.email}
-          className="mt-6 rounded-full px-4 py-2 font-mono text-xs text-muted transition-colors hover:text-text"
+          className="mt-4 sm:mt-6 min-h-11 rounded-full px-4 py-2 font-mono text-xs text-muted transition-colors hover:text-text"
         />
 
-        <div className="mt-16 flex flex-wrap justify-center gap-6 font-mono text-xs uppercase tracking-widest text-muted">
-          <a href={TRUTH.identity.links.github} target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">GitHub</a>
-          <span>·</span>
-          <a href={TRUTH.identity.links.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">LinkedIn</a>
-          <span>·</span>
-          <a href={TRUTH.identity.links.kaggle} target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">Kaggle</a>
-          <span>·</span>
-          <a href={TRUTH.identity.links.studio} target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">spacedrift.in</a>
-          <span>·</span>
-          <a href={TRUTH.identity.links.preprint} target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">PhilArchive</a>
+        <div className="mt-10 sm:mt-16 flex flex-wrap justify-center gap-x-6 gap-y-1 sm:gap-6 font-mono text-xs uppercase tracking-widest text-muted">
+          <a href={TRUTH.identity.links.github} target="_blank" rel="noopener noreferrer" className="py-3 sm:py-0 hover:text-accent transition-colors">GitHub</a>
+          <span className="hidden sm:inline" aria-hidden="true">·</span>
+          <a href={TRUTH.identity.links.linkedin} target="_blank" rel="noopener noreferrer" className="py-3 sm:py-0 hover:text-accent transition-colors">LinkedIn</a>
+          <span className="hidden sm:inline" aria-hidden="true">·</span>
+          <a href={TRUTH.identity.links.kaggle} target="_blank" rel="noopener noreferrer" className="py-3 sm:py-0 hover:text-accent transition-colors">Kaggle</a>
+          <span className="hidden sm:inline" aria-hidden="true">·</span>
+          <a href={TRUTH.identity.links.studio} target="_blank" rel="noopener noreferrer" className="py-3 sm:py-0 hover:text-accent transition-colors">spacedrift.in</a>
+          <span className="hidden sm:inline" aria-hidden="true">·</span>
+          <a href={TRUTH.identity.links.preprint} target="_blank" rel="noopener noreferrer" className="py-3 sm:py-0 hover:text-accent transition-colors">PhilArchive</a>
         </div>
 
-        <div className="mt-12 font-mono text-xs text-muted/60 uppercase tracking-widest text-center">
+        <div className="mt-10 sm:mt-12 font-mono text-[11px] sm:text-xs leading-relaxed text-muted/60 uppercase tracking-widest text-center text-balance">
           © {new Date().getFullYear()} Lourdu Raju · Bengaluru, India · Built with Next.js, Three.js & Motion
         </div>
       </footer>

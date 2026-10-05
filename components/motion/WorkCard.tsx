@@ -87,7 +87,7 @@ export function WorkCard({ id, title, kicker, href, index, summary, tags = [], a
         <span className="font-mono text-xs text-accent pt-1.5">{index}</span>
         <div className="flex flex-col gap-1 min-w-0">
           <span className="font-mono text-[11px] uppercase tracking-widest text-muted">{kicker}</span>
-          <h3 className="font-display text-4xl md:text-5xl uppercase leading-[0.9] tracking-tight">{title}</h3>
+          <h3 className="font-display text-[clamp(1.75rem,8vw,2.25rem)] sm:text-4xl xl:text-5xl uppercase leading-[0.9] tracking-tight">{title}</h3>
           {summary && <p className="mt-2 max-w-md text-sm leading-relaxed text-text/70">{summary}</p>}
           {tags.length > 0 && (
             <ul className="mt-3 flex flex-wrap gap-2">

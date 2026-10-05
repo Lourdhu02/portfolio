@@ -16,18 +16,18 @@ export default async function WritingSlugPage({ params }: PageProps) {
   }
 
   return (
-    <main className="relative w-full max-w-4xl mx-auto px-6 py-32 text-text">
-      <Link href="/writing" className="inline-block font-mono text-xs uppercase tracking-widest text-muted hover:text-accent transition-colors mb-16">
+    <main className="relative w-full max-w-4xl mx-auto px-4 sm:px-6 pt-24 pb-16 sm:py-32 text-text">
+      <Link href="/writing" className="inline-block font-mono text-xs uppercase tracking-widest text-muted hover:text-accent transition-colors -mt-2 py-2 mb-8 sm:mb-14">
         ← Back to Writing
       </Link>
       
-      <header className="mb-16">
+      <header className="mb-10 sm:mb-16">
         <div className="flex flex-wrap items-center gap-3 font-mono text-xs text-muted uppercase tracking-widest mb-4">
           <span>{new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
           <span>·</span>
           <span>Engineering Note</span>
         </div>
-        <h1 className="font-display text-5xl md:text-7xl leading-[0.95] mb-6">
+        <h1 className="font-display text-[2.75rem] sm:text-5xl md:text-7xl leading-[0.95] mb-6">
           {post.title}
         </h1>
         <p className="font-mono text-muted text-sm uppercase tracking-wider">{post.summary}</p>
@@ -37,7 +37,7 @@ export default async function WritingSlugPage({ params }: PageProps) {
         <div dangerouslySetInnerHTML={{ __html: post.content }} />
       </article>
 
-      <footer className="mt-24 pt-8 border-t border-line flex justify-between items-center font-mono text-xs text-muted">
+      <footer className="mt-16 sm:mt-24 pt-8 border-t border-line flex flex-wrap gap-4 justify-between items-center font-mono text-xs text-muted">
         <Link href="/writing" className="hover:text-accent transition-colors uppercase tracking-widest">
           ← All Articles
         </Link>

@@ -6,16 +6,16 @@ export default function WritingIndexPage() {
   const sortedPosts = [...posts].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
   return (
-    <main className="relative w-full max-w-4xl mx-auto px-6 py-32 text-text">
-      <Link href="/" className="inline-block font-mono text-xs uppercase tracking-widest text-muted hover:text-accent transition-colors mb-16">
+    <main className="relative w-full max-w-4xl mx-auto px-4 sm:px-6 pt-24 pb-16 sm:py-32 text-text">
+      <Link href="/" className="inline-block font-mono text-xs uppercase tracking-widest text-muted hover:text-accent transition-colors -mt-2 py-2 mb-8 sm:mb-14">
         ← Back to Home
       </Link>
 
-      <header className="mb-20">
-        <h1 className="font-display text-6xl md:text-8xl leading-[0.85] mb-6 uppercase">
+      <header className="mb-10 sm:mb-20">
+        <h1 className="font-display text-[clamp(3.25rem,16vw,3.75rem)] sm:text-6xl md:text-8xl leading-[0.85] mb-6 uppercase">
           Writing
         </h1>
-        <p className="font-mono text-muted uppercase tracking-widest max-w-xl">
+        <p className="font-mono text-xs sm:text-base text-muted uppercase tracking-wider sm:tracking-widest max-w-xl">
           Post-mortems, inference notes and research. Every number links back to where it was measured.
         </p>
       </header>

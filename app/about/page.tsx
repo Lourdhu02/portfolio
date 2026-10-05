@@ -6,25 +6,25 @@ export default function AboutPage() {
   const studio = TRUTH.studio
 
   return (
-    <main className="relative w-full max-w-4xl mx-auto px-6 py-32 text-text">
-      <Link href="/" className="inline-block font-mono text-xs uppercase tracking-widest text-muted hover:text-accent transition-colors mb-16">
+    <main className="relative w-full max-w-4xl mx-auto px-4 sm:px-6 pt-24 pb-16 sm:py-32 text-text">
+      <Link href="/" className="inline-block font-mono text-xs uppercase tracking-widest text-muted hover:text-accent transition-colors -mt-2 py-2 mb-8 sm:mb-14">
         ← Back to Home
       </Link>
 
-      <header className="mb-20">
+      <header className="mb-12 sm:mb-20">
         <div className="font-mono text-xs text-accent uppercase tracking-widest mb-3">
           Machine Learning Engineer · Studio Founder
         </div>
-        <h1 className="font-display text-6xl md:text-8xl leading-[0.85] mb-6 uppercase">
+        <h1 className="font-display text-[clamp(3.5rem,18vw,3.75rem)] sm:text-6xl md:text-8xl leading-[0.85] mb-6 uppercase">
           Lourdu Raju
         </h1>
-        <p className="font-mono text-muted uppercase tracking-widest max-w-xl leading-relaxed">
+        <p className="font-mono text-xs sm:text-base text-muted uppercase tracking-wider sm:tracking-widest max-w-xl leading-relaxed">
           {TRUTH.identity.mission}
         </p>
       </header>
 
       {/* Quick Identity Matrix */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-6 py-8 border-y border-line mb-20 text-xs font-mono">
+      <section className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-6 sm:gap-6 py-8 border-y border-line mb-12 sm:mb-20 text-xs font-mono">
         <div>
           <div className="text-muted uppercase mb-1">Current Role</div>
           <div className="text-text font-medium">ML Engineer @ Sujanix</div>
@@ -47,8 +47,8 @@ export default function AboutPage() {
       </section>
 
       {/* Story & Technical Creed */}
-      <section className="mb-20 space-y-6 text-text/80 leading-relaxed text-base">
-        <h2 className="font-display text-4xl text-text uppercase tracking-wide">
+      <section className="mb-12 sm:mb-20 space-y-6 text-text/80 leading-relaxed text-base">
+        <h2 className="font-display text-[2.5rem] leading-none sm:text-4xl text-text uppercase tracking-wide">
           The Engineering Creed
         </h2>
         <p>
@@ -60,7 +60,7 @@ export default function AboutPage() {
       </section>
 
       {/* Studio / spacedrift */}
-      <section className="mb-20 p-8 bg-surface border border-line" style={{ borderBottomRightRadius: '14px' }}>
+      <section className="mb-12 sm:mb-20 p-5 sm:p-8 bg-surface border border-line" style={{ borderBottomRightRadius: '14px' }}>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
           <div>
             <span className="font-mono text-xs text-accent uppercase tracking-widest">Studio</span>
@@ -95,12 +95,12 @@ export default function AboutPage() {
       </section>
 
       {/* Publications & Open Source */}
-      <section className="mb-20">
-        <h2 className="font-display text-4xl uppercase mb-8">Publications & Open Source</h2>
+      <section className="mb-12 sm:mb-20">
+        <h2 className="font-display text-[2.5rem] leading-none sm:text-4xl uppercase mb-6 sm:mb-8">Publications & Open Source</h2>
         <div className="space-y-6">
           
-          <div className="p-6 bg-surface border border-line" style={{ borderBottomRightRadius: '12px' }}>
-            <div className="flex justify-between items-baseline mb-2">
+          <div className="p-5 sm:p-6 bg-surface border border-line" style={{ borderBottomRightRadius: '12px' }}>
+            <div className="flex flex-wrap justify-between items-baseline gap-x-4 gap-y-1 mb-2">
               <h3 className="font-display text-2xl text-text">No Final Save</h3>
               <span className="font-mono text-xs text-muted">PhilArchive · 2026</span>
             </div>
@@ -121,8 +121,8 @@ export default function AboutPage() {
             </a>
           </div>
 
-          <div className="p-6 bg-surface border border-line" style={{ borderBottomRightRadius: '12px' }}>
-            <div className="flex justify-between items-baseline mb-2">
+          <div className="p-5 sm:p-6 bg-surface border border-line" style={{ borderBottomRightRadius: '12px' }}>
+            <div className="flex flex-wrap justify-between items-baseline gap-x-4 gap-y-1 mb-2">
               <h3 className="font-display text-2xl text-text">Achilles</h3>
               <span className="font-mono text-xs text-accent">{METRICS.achilles.tests.value} CI tests passing</span>
             </div>
@@ -147,8 +147,8 @@ export default function AboutPage() {
       </section>
 
       {/* Experience & Certifications */}
-      <section className="mb-20">
-        <h2 className="font-display text-4xl uppercase mb-8">Career & Qualifications</h2>
+      <section className="mb-12 sm:mb-20">
+        <h2 className="font-display text-[2.5rem] leading-none sm:text-4xl uppercase mb-6 sm:mb-8">Career & Qualifications</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           
           <div className="space-y-6">
@@ -186,9 +186,9 @@ export default function AboutPage() {
       <footer className="border-t border-line pt-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <div className="font-display text-2xl uppercase">Got a model to ship?</div>
-          <div className="font-mono text-xs text-muted mt-1">{TRUTH.identity.email} · {TRUTH.identity.phone}</div>
+          <div className="font-mono text-xs text-muted mt-1 break-all">{TRUTH.identity.email} · {TRUTH.identity.phone}</div>
         </div>
-        <div className="flex gap-4 font-mono text-xs uppercase tracking-wider">
+        <div className="flex flex-wrap gap-x-6 gap-y-2 font-mono text-xs uppercase tracking-wider">
           <a href={TRUTH.identity.links.github} target="_blank" rel="noopener noreferrer" className="text-muted hover:text-text">GitHub ↗</a>
           <a href={TRUTH.identity.links.linkedin} target="_blank" rel="noopener noreferrer" className="text-muted hover:text-text">LinkedIn ↗</a>
           <a href={TRUTH.identity.links.kaggle} target="_blank" rel="noopener noreferrer" className="text-muted hover:text-text">Kaggle ↗</a>

@@ -23,7 +23,15 @@
 }
 
 @layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   body {
+    /* Guard against a stray wide child scrolling the whole page sideways on phones */
+    overflow-x: clip;
     background-color: var(--color-bg);
     color: var(--color-text);
     font-family: var(--font-sans);
@@ -43,6 +51,25 @@
     background-color: var(--color-accent-dim);
     color: var(--color-text);
   }
+}
+
+/* Form fields under 16px make iOS Safari zoom the page on focus */
+@media (pointer: coarse) {
+  input,
+  textarea,
+  select {
+    font-size: max(16px, 1em);
+  }
+}
+
+/* Horizontal snap rail used for card rows on phones */
+.snap-rail {
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+.snap-rail::-webkit-scrollbar {
+  display: none;
 }
 
 /* Custom scrollbar */

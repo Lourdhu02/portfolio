@@ -128,20 +128,20 @@ export default function LabPage() {
   }
 
   return (
-    <main className="relative w-full max-w-6xl mx-auto px-6 py-32 text-text">
-      <Link href="/" className="inline-block font-mono text-xs uppercase tracking-widest text-muted hover:text-accent transition-colors mb-16">
+    <main className="relative w-full max-w-6xl mx-auto px-4 sm:px-6 pt-24 pb-16 sm:py-32 text-text">
+      <Link href="/" className="inline-block font-mono text-xs uppercase tracking-widest text-muted hover:text-accent transition-colors -mt-2 py-2 mb-8 sm:mb-14">
         ← Back to Home
       </Link>
       
-      <header className="mb-16">
+      <header className="mb-10 sm:mb-16">
         <div className="flex items-center gap-3 font-mono text-xs text-detect uppercase tracking-widest mb-4">
           <span className="w-2 h-2 rounded-full bg-detect animate-pulse" />
           <span>Interactive walkthrough</span>
         </div>
-        <h1 className="font-display text-6xl md:text-8xl leading-[0.85] mb-6 uppercase">
+        <h1 className="font-display text-[clamp(3.25rem,16vw,3.75rem)] sm:text-6xl md:text-8xl leading-[0.85] mb-6 uppercase">
           Lab: Meter OCR
         </h1>
-        <p className="font-mono text-muted uppercase tracking-widest max-w-2xl leading-relaxed">
+        <p className="font-mono text-xs sm:text-base text-muted uppercase tracking-wider sm:tracking-widest max-w-2xl leading-relaxed">
           A scripted walkthrough of how a meter reading pipeline works: detection, cropping and CTC decoding. The samples are synthetic and the timings are illustrative, not production numbers. A live in-browser model is coming.
         </p>
       </header>
@@ -149,12 +149,12 @@ export default function LabPage() {
       {/* Preset Selectors */}
       <section className="mb-8">
         <div className="font-mono text-xs text-muted uppercase tracking-widest mb-3">Select Test Target:</div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="snap-rail -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 scroll-px-4 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0">
           {SAMPLES.map((sample) => (
             <button
               key={sample.id}
               onClick={() => runSimulation(sample)}
-              className={`p-4 text-left border transition-all ${
+              className={`w-[78%] shrink-0 snap-start sm:w-auto p-4 text-left border transition-all ${
                 selectedSample.id === sample.id 
                   ? 'border-detect bg-detect/10 text-text' 
                   : 'border-line bg-surface hover:border-muted text-muted'
@@ -172,10 +172,10 @@ export default function LabPage() {
       </section>
 
       {/* Visual Workspace Canvas */}
-      <section className="relative w-full bg-surface border border-line p-6 md:p-8 mb-8 overflow-hidden" style={{ borderBottomRightRadius: '14px' }}>
+      <section className="relative w-full bg-surface border border-line p-4 sm:p-6 md:p-8 mb-8 overflow-hidden" style={{ borderBottomRightRadius: '14px' }}>
         
         {/* Top Status Bar */}
-        <div className="flex flex-wrap items-center justify-between pb-6 mb-6 border-b border-line/60 font-mono text-xs text-muted">
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-4 mb-4 sm:pb-6 sm:mb-6 border-b border-line/60 font-mono text-[11px] sm:text-xs text-muted">
           <div className="flex items-center gap-2">
             <span className="text-detect">ENGINE:</span>
             <span>TensorRT FP16</span>
@@ -188,7 +188,7 @@ export default function LabPage() {
             <button 
               onClick={() => runSimulation(selectedSample)}
               disabled={isProcessing}
-              className="px-3 py-1 bg-detect/20 border border-detect text-detect hover:bg-detect/30 transition-all uppercase tracking-wider disabled:opacity-50"
+              className="min-h-9 px-3 py-1 bg-detect/20 border border-detect text-detect hover:bg-detect/30 transition-all uppercase tracking-wider disabled:opacity-50"
             >
               {isProcessing ? 'Analyzing...' : 'Re-Run Pass'}
             </button>
@@ -196,7 +196,7 @@ export default function LabPage() {
         </div>
 
         {/* Visual Simulated Meter Screen */}
-        <div className="relative w-full aspect-[21/9] bg-[#050507] border border-line rounded flex items-center justify-center overflow-hidden">
+        <div className="relative w-full aspect-[4/3] sm:aspect-[21/9] bg-[#050507] border border-line rounded flex items-center justify-center overflow-hidden">
           
           {/* Subtle Grid Backdrop */}
           <div 
@@ -218,10 +218,10 @@ export default function LabPage() {
           )}
 
           {/* Meter Frame Simulator */}
-          <div className="relative z-10 w-full max-w-xl p-6 bg-[#09090D] border border-line/80 rounded-lg flex flex-col items-center">
+          <div className="relative z-10 w-[calc(100%-2rem)] sm:w-full max-w-xl px-3 py-6 sm:p-6 bg-[#09090D] border border-line/80 rounded-lg flex flex-col items-center">
             
             {/* OBB Detection Box Overlay */}
-            <div className={`relative px-8 py-5 border transition-all duration-300 ${
+            <div className={`relative px-4 py-4 sm:px-8 sm:py-5 border transition-all duration-300 ${
               activeStep === 'detecting' || activeStep === 'cropping' || activeStep === 'reading' || activeStep === 'done'
                 ? 'border-detect shadow-[0_0_20px_rgba(45,226,230,0.2)]'
                 : 'border-line'
@@ -234,12 +234,12 @@ export default function LabPage() {
               <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b-2 border-r-2 border-detect" />
               
               {/* Target ID Label */}
-              <div className="absolute -top-6 left-0 font-mono text-[10px] text-detect tracking-widest uppercase">
+              <div className="absolute -top-6 left-0 whitespace-nowrap font-mono text-[9px] sm:text-[10px] text-detect tracking-wider sm:tracking-widest uppercase">
                 [OBB: DIAL_REGION 99.4%]
               </div>
 
               {/* Display Digits */}
-              <div className="font-mono text-3xl md:text-5xl font-bold tracking-[0.25em] text-[#E0E0E0] select-none flex items-center">
+              <div className="font-mono text-[1.75rem] sm:text-3xl md:text-5xl font-bold tracking-[0.12em] sm:tracking-[0.25em] text-[#E0E0E0] select-none flex items-center">
                 {activeStep === 'idle' ? (
                   <span className="text-muted/40">------.-</span>
                 ) : (
@@ -266,7 +266,7 @@ export default function LabPage() {
         </div>
 
         {/* Inference Telemetry & Latency Breakdown */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-line/60">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-line/60">
           <div className="p-3 bg-bg/50 border border-line">
             <div className="font-mono text-[10px] text-muted uppercase">01 / Detect (YOLO-OBB)</div>
             <div className="font-display text-2xl text-detect mt-1">{selectedSample.latencies.detect}</div>
@@ -287,12 +287,12 @@ export default function LabPage() {
 
         {/* JSON Export Strip */}
         <div className="mt-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 bg-bg border border-line font-mono text-xs">
-          <div className="text-muted truncate max-w-xl">
+          <div className="text-muted truncate min-w-0 w-full md:w-auto max-w-xl">
             <span className="text-detect">OUTPUT:</span> {JSON.stringify({ reading: selectedSample.reading, confidence: `${selectedSample.confidence}%`, latency: selectedSample.latencies.total })}
           </div>
           <button 
             onClick={copyPayload}
-            className="px-3 py-1.5 border border-line bg-surface hover:border-accent text-text transition-colors uppercase tracking-wider text-[11px] whitespace-nowrap"
+            className="min-h-10 px-3 py-1.5 border border-line bg-surface hover:border-accent text-text transition-colors uppercase tracking-wider text-[11px] whitespace-nowrap"
             style={{ borderRadius: '6px' }}
           >
             {copied ? '✓ Copied Payload' : 'Copy JSON Telemetry'}

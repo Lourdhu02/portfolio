@@ -54,8 +54,8 @@ export function Navigation() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center mix-blend-difference pointer-events-none">
-        <Link href="/" aria-label="Lourdu Raju, home" className="font-display text-2xl text-text pointer-events-auto hover:text-accent transition-colors">
+      <nav className="fixed top-0 left-0 w-full z-50 px-4 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:p-6 flex justify-between items-center mix-blend-difference pointer-events-none">
+        <Link href="/" aria-label="Lourdu Raju, home" className="font-display text-2xl text-text pointer-events-auto hover:text-accent transition-colors min-h-11 min-w-11 flex items-center">
           LR
         </Link>
         <div className="flex items-center gap-6 pointer-events-auto">
@@ -78,7 +78,7 @@ export function Navigation() {
               onClick={() => setIsOpen(true)}
               aria-expanded={isOpen}
               aria-controls="site-menu"
-              className="font-mono text-xs uppercase tracking-widest text-text hover:text-accent transition-colors"
+              className="font-mono text-xs uppercase tracking-widest text-text hover:text-accent transition-colors min-h-11 px-2 -mr-2"
             >
               [ Menu ]
             </button>
@@ -98,12 +98,12 @@ export function Navigation() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[60] bg-bg/90 backdrop-blur-md flex flex-col items-center justify-center"
+            className="fixed inset-0 z-[60] bg-bg/90 backdrop-blur-md flex flex-col items-center justify-center pb-[env(safe-area-inset-bottom)]"
           >
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="absolute top-6 right-6 font-mono text-xs uppercase tracking-widest text-text hover:text-accent transition-colors"
+              className="absolute top-[max(0.75rem,env(safe-area-inset-top))] right-2 sm:top-6 sm:right-4 min-h-11 px-2 font-mono text-xs uppercase tracking-widest text-text hover:text-accent transition-colors"
             >
               [ Close ]
             </button>
@@ -128,7 +128,7 @@ export function Navigation() {
                 </m.li>
               ))}
             </ul>
-            <p className="absolute bottom-8 font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
+            <p className="absolute bottom-[max(2rem,env(safe-area-inset-bottom))] hidden sm:block font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
               Tip: press {mod} K anywhere
             </p>
           </m.div>
