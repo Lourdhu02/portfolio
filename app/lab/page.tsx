@@ -1,7 +1,7 @@
 "use client"
 import { useState } from 'react'
 import Link from 'next/link'
-import { motion, AnimatePresence } from 'motion/react'
+import { m, AnimatePresence } from 'motion/react'
 
 interface SampleMeter {
   id: string
@@ -22,7 +22,7 @@ interface SampleMeter {
 const SAMPLES: SampleMeter[] = [
   {
     id: 'sample-1',
-    name: 'Sample 01 · Analog Dial (State Utility)',
+    name: 'Sample 01 · Analog Dial',
     type: 'Analog Dial · YOLO26n-OBB + SVTRv2',
     reading: '4777.1 kWh',
     confidence: 99.2,
@@ -44,7 +44,7 @@ const SAMPLES: SampleMeter[] = [
   },
   {
     id: 'sample-2',
-    name: 'Sample 02 · Digital LCD (Commercial)',
+    name: 'Sample 02 · Digital LCD',
     type: '7-Segment LCD · MobileViTv2 + CTC',
     reading: '08429.5 kWh',
     confidence: 99.7,
@@ -142,7 +142,7 @@ export default function LabPage() {
           Lab: Meter OCR
         </h1>
         <p className="font-mono text-muted uppercase tracking-widest max-w-2xl leading-relaxed">
-          In-browser inference simulation of our production 5-model pipeline. Select a production crop to observe real-time bounding box detection, perspective rectification, and CTC sequence decoding.
+          A scripted walkthrough of how a meter reading pipeline works: detection, cropping and CTC decoding. The samples are synthetic and the timings are illustrative, not production numbers. A live in-browser model is coming.
         </p>
       </header>
 
@@ -209,7 +209,7 @@ export default function LabPage() {
 
           {/* Laser Scan Line during processing */}
           {isProcessing && (
-            <motion.div 
+            <m.div 
               initial={{ top: '0%' }}
               animate={{ top: '100%' }}
               transition={{ duration: 1.2, repeat: Infinity, ease: 'linear' }}
@@ -244,7 +244,7 @@ export default function LabPage() {
                   <span className="text-muted/40">------.-</span>
                 ) : (
                   selectedSample.chars.map((item, idx) => (
-                    <motion.span 
+                    <m.span 
                       key={idx}
                       initial={{ opacity: 0, y: 5 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -253,7 +253,7 @@ export default function LabPage() {
                       title={`Confidence: ${item.conf}%`}
                     >
                       {item.char}
-                    </motion.span>
+                    </m.span>
                   ))
                 )}
               </div>
@@ -301,13 +301,13 @@ export default function LabPage() {
 
       </section>
 
-      {/* Production Truth Guarantee */}
+      {/* Honesty note: this page is a demo, never production */}
       <footer className="border-t border-line pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs font-mono text-muted">
         <div>
-          BENCHMARK TRACE: NVIDIA TensorRT 10.x · Triton FP16 Engines · L4 Peak 181 img/s
+          Synthetic samples · scripted demo · not the production system
         </div>
         <Link href="/work/meter-ocr" className="text-accent hover:underline uppercase tracking-wider">
-          Read Full Meter OCR Architecture →
+          See the production system →
         </Link>
       </footer>
     </main>

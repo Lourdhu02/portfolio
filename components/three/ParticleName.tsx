@@ -7,11 +7,21 @@ import { BlendFunction } from 'postprocessing'
 import * as THREE from 'three'
 import { ParticleSystem } from './ParticleSystem'
 import { usePerformanceTier, Tier } from './tiers'
+import { displayFontFamily } from '@/utils/canvasSampling'
 
 export function ParticleName() {
   const defaultTier = usePerformanceTier()
   const [tier, setTier] = useState<Tier>(defaultTier)
   const [isInView, setIsInView] = useState(true)
+  const [fontReady, setFontReady] = useState(false)
+
+  // Particle targets are sampled from canvas text, so the display font must be loaded first
+  useEffect(() => {
+    let cancelled = false
+    const ready = () => { if (!cancelled) setFontReady(true) }
+    document.fonts.load(`900 100px ${displayFontFamily()}`).then(ready, ready)
+    return () => { cancelled = true }
+  }, [])
 
   // Very basic intersection observer for pausing when far off screen
   useEffect(() => {
@@ -61,7 +71,7 @@ export function ParticleName() {
           onFallback={() => setTier('low')}
         />
         <Suspense fallback={null}>
-          <ParticleSystem tier={tier} />
+          {fontReady && <ParticleSystem tier={tier} />}
           <EffectComposer multisampling={0}>
             <Bloom 
               luminanceThreshold={0.8} 

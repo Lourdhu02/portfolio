@@ -1,7 +1,14 @@
+// The display font family as next/font registered it (a hashed name), read from the CSS variable
+// that app/layout.tsx puts on <html>. Canvas text needs the real family name, not the variable.
+export function displayFontFamily() {
+  const family = getComputedStyle(document.documentElement).getPropertyValue('--font-big-shoulders').trim()
+  return family || '"Arial Narrow", sans-serif'
+}
+
 export function sampleTextToParticles(
   text: string,
   particleCount: number,
-  font = '900 120px "Oswald", sans-serif'
+  fontFamily = displayFontFamily()
 ) {
   // Create an offscreen canvas
   const canvas = document.createElement('canvas')
@@ -19,13 +26,12 @@ export function sampleTextToParticles(
   ctx.fillRect(0, 0, width, height)
 
   // Draw text
-  ctx.font = font
   ctx.fillStyle = '#fff'
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
   
   // Adjust font size for scale
-  ctx.font = `900 ${140 * scale}px "Oswald", sans-serif`
+  ctx.font = `900 ${140 * scale}px ${fontFamily}`
   ctx.fillText(text, width / 2, height / 2)
 
   // Get image data
