@@ -12,7 +12,9 @@ let cached: Tier | null = null
 
 function getDeviceTier(): Tier {
   if (cached) return cached
-  const webgl2 = !!document.createElement('canvas').getContext('webgl2')
+  // A feature check, not a throwaway context: creating one costs as much as the real canvas
+  // (hundreds of ms on software GL). If the real context fails, ParticleName falls back to static.
+  const webgl2 = typeof WebGL2RenderingContext !== 'undefined'
   const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8
   const cores = navigator.hardwareConcurrency || 4
   const coarse = window.matchMedia('(pointer: coarse)').matches

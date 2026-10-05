@@ -4,19 +4,9 @@ import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import type { MotionValue } from 'motion/react'
 import { vertexShader, fragmentShader } from './shaders/particle'
-import { sampleTextToParticles } from '@/utils/canvasSampling'
+import { buildParticles, NO_SHOCK } from './particleData'
 import { PARTICLE_COUNT, Tier } from './tiers'
 import { color } from '@/lib/tokens'
-
-// Seeded PRNG (mulberry32) so the particle layout is deterministic and render stays pure
-function createRandom(seed: number) {
-  return () => {
-    seed = (seed + 0x6d2b79f5) | 0
-    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed)
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
-  }
-}
 
 interface ParticleSystemProps {
   tier: Exclude<Tier, 'static'>
@@ -32,8 +22,6 @@ interface ParticleSystemProps {
   onReady?: () => void
 }
 
-const NO_SHOCK = 100 // seconds; old enough that the ring has fully faded
-
 export function ParticleSystem({ tier, lines, reducedMotion, scrollProgress, fitHeight = 0.55, offsetY = 0, onReady }: ParticleSystemProps) {
   const groupRef = useRef<THREE.Group>(null)
   const materialRef = useRef<THREE.ShaderMaterial>(null)
@@ -42,38 +30,10 @@ export function ParticleSystem({ tier, lines, reducedMotion, scrollProgress, fit
   const particleCount = PARTICLE_COUNT[tier]
   const linesKey = lines.join('\n')
 
-  const { positions, targets, seeds, sizes, accents, textWidth, textHeight } = useMemo(() => {
-    const random = createRandom(particleCount)
-    const sampled = sampleTextToParticles(linesKey.split('\n'), particleCount, random)
-
-    const posArray = new Float32Array(particleCount * 3)
-    const seedArray = new Float32Array(particleCount)
-    const sizeArray = new Float32Array(particleCount)
-    const accentArray = new Float32Array(particleCount)
-
-    for (let i = 0; i < particleCount; i++) {
-      // Nebula-like initial distribution
-      posArray[i * 3] = (random() - 0.5) * 40
-      posArray[i * 3 + 1] = (random() - 0.5) * 40
-      posArray[i * 3 + 2] = (random() - 0.5) * 40 - 10
-
-      seedArray[i] = random()
-      sizeArray[i] = random() * 0.028 + 0.012 // world units
-
-      // 6-8% tinted signal red
-      accentArray[i] = random() < 0.07 ? 1.0 : 0.0
-    }
-
-    return {
-      positions: posArray,
-      targets: sampled.targets,
-      seeds: seedArray,
-      sizes: sizeArray,
-      accents: accentArray,
-      textWidth: sampled.width,
-      textHeight: sampled.height,
-    }
-  }, [particleCount, linesKey])
+  const { positions, targets, seeds, sizes, accents, textWidth, textHeight } = useMemo(
+    () => buildParticles(particleCount, linesKey.split('\n')),
+    [particleCount, linesKey]
+  )
 
   // Scale the whole block so the name always fits the width and its allotted band of height
   const fit = Math.min(1, (viewport.width * 0.88) / textWidth, (viewport.height * fitHeight) / textHeight)

@@ -49,18 +49,24 @@ export function sampleTextToParticles(
   })
 
   const data = ctx.getImageData(0, 0, width, height).data
-  const filled: number[] = []
+  // Filled pixel coordinates in a typed array (x, y pairs): no per-pixel array growth or boxing
+  const filled = new Uint32Array(Math.ceil(width / 2) * Math.ceil(height / 2) * 2)
+  let filledLength = 0
   const step = 2
   for (let y = 0; y < height; y += step) {
+    const row = y * width
     for (let x = 0; x < width; x += step) {
-      if (data[(y * width + x) * 4] > 128) filled.push(x, y)
+      if (data[(row + x) * 4] > 128) {
+        filled[filledLength++] = x
+        filled[filledLength++] = y
+      }
     }
   }
 
   const worldW = width * WORLD_PER_PX
   const worldH = height * WORLD_PER_PX
   const targets = new Float32Array(particleCount * 3)
-  const pixels = filled.length / 2
+  const pixels = filledLength / 2
 
   for (let i = 0; i < particleCount; i++) {
     if (pixels === 0 || random() < 0.12) {
