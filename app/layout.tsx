@@ -4,6 +4,7 @@ import "./globals.css";
 import { JinxMode } from "@/components/JinxMode";
 import { Navigation } from "@/components/ui/Navigation";
 import { MotionProvider } from "@/components/motion/MotionProvider";
+import { TRUTH } from "@/content/truth";
 
 // Big Shoulders Display now ships on Google Fonts as the variable "Big Shoulders" family (opsz axis).
 const fontDisplay = Big_Shoulders({
@@ -25,9 +26,34 @@ const fontMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
+const { name, role, pitch, siteUrl, links } = TRUTH.identity;
+
 export const metadata: Metadata = {
-  title: "Lourdu Raju · Machine Learning Engineer",
-  description: "I make vision models fast, honest and boring to run.",
+  metadataBase: new URL(siteUrl),
+  title: { default: `${name} · ${role}`, template: `%s · ${name}` },
+  description: pitch,
+  authors: [{ name, url: siteUrl }],
+  openGraph: {
+    type: "website",
+    siteName: name,
+    title: `${name} · ${role}`,
+    description: pitch,
+    url: "/",
+    locale: "en_US",
+  },
+  twitter: { card: "summary_large_image", title: `${name} · ${role}`, description: pitch },
+};
+
+// Lets search engines show Raju as a person with a role, employer and profiles.
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name,
+  jobTitle: role,
+  url: siteUrl,
+  worksFor: { "@type": "Organization", name: TRUTH.identity.company },
+  address: { "@type": "PostalAddress", addressLocality: "Bengaluru", addressCountry: "IN" },
+  sameAs: [links.github, links.linkedin, links.kaggle, links.studio],
 };
 
 export default function RootLayout({
@@ -38,6 +64,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${fontDisplay.variable} ${fontSans.variable} ${fontMono.variable}`}>
       <body className="antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd).replace(/</g, "\\u003c") }}
+        />
         <MotionProvider>
           <JinxMode />
           <Navigation />

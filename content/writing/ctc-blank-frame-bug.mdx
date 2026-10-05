@@ -1,50 +1,51 @@
 ---
 title: "Post-Mortem: The CTC Decoder Bug"
-summary: "How missing blank-frame state resets corrupted repeat digits (4777.1 to 47.1) and the CI gate we built."
+summary: "How a decoder that skipped blank frames turned 4777.1 into 47.1, and the release gate that now catches this class of bug."
 date: 2026-02-15
 tags: ["OCR", "PyTorch", "Debugging", "Production"]
 ---
 
 ## The Incident
 
-During a staged deployment of the SVTRv2 sequence recognition model, canary telemetry flagged an anomalous drop in end-to-end exact match accuracy from **84.0% down to 64.2%** on a batch of 2,950 meter images. 
+After a release of the SVTRv2 reader, readings with repeated digits started coming back short. A meter showing `4777.1` was decoded as `47.1`. Nothing crashed and the confidence scores looked healthy, which is exactly what made it dangerous.
 
-Field verification showed that numeric readings with repeated consecutive digits were severely truncated. For example, a meter displaying `4777.1 kWh` was consistently decoded as `47.1 kWh`.
+## Root Cause
 
-## Root Cause Analysis
+The recognizer emits one prediction per time step, and CTC decoding turns that frame sequence into text with two rules:
 
-The sequence recognizer outputs CTC (Connectionist Temporal Classification) frame logits. Under CTC decoding rules:
-1. Identical consecutive tokens emitted across contiguous time steps must be collapsed into a single token.
-2. A special **blank token** (`ε`) separates distinct consecutive occurrences of the same character.
+1. Identical consecutive tokens collapse into one.
+2. A **blank** token (`ε`) separates genuine repeats, so `7 ε 7` means two sevens.
 
-In our vectorized C++ post-processing kernel, an optimization had inadvertently cached the previous emission index without resetting upon encountering the blank token:
+The regression updated the "previous token" only on non-blank frames, so a blank never broke a run:
 
 ```python
-# The regression:
-if token != blank_id and token != prev_token:
-    decoded.append(token)
-prev_token = token  # Blank tokens did not clear prev_token!
+# The regression: blanks are skipped before prev is updated
+for token in frames:
+    if token == blank_id:
+        continue
+    if token != prev:
+        decoded.append(token)
+    prev = token
 ```
 
-When the sequence `[4, ε, 7, ε, 7, ε, 7, 1]` passed through, the second and third `7` were ignored because `prev_token` remained `7` despite intervening blanks!
+For the frames `4 ε 7 ε 7 ε 7 ε 1`, `prev` stays `7` across every blank, so the second and third sevens are dropped as "repeats".
 
 ## The Fix
 
-The fix was straightforward but critical:
+Let the blank update `prev` like any other frame. It never emits a character, but it resets the repeat check:
 
 ```python
-# The fix:
-if token != blank_id:
-    if token != prev_token:
+# The fix: every frame updates prev, blanks included
+for token in frames:
+    if token != blank_id and token != prev:
         decoded.append(token)
-    prev_token = token
-else:
-    prev_token = None  # Reset state on blank frame
+    prev = token
 ```
+
+This is the decoder that runs in production today.
 
 ## Production Safeguards
 
-To prevent similar silent regressions from reaching production:
-1. **PyTorch → ONNX Parity Gate**: Release CI now computes maximum absolute difference between PyTorch and exported ONNX logits, gating promotion on `delta <= 1.2e-5`.
-2. **Gold Standard Test Suite**: A locked benchmark of 3,965 challenging real-world crops with high repeating digit frequency must pass with zero delta before container tagging.
-3. **Canary Verification**: Releases deploy behind a hash router with automatic fallback to serverless Lambda if error rate exceeds 0.01% or p95 exceeds 340ms.
+1. **A fixed test set every release must reproduce**: 3,965 labelled images. Reading accuracy on its 2,950 meter photos must come out at exactly 83.4% before a change ships; any deviation means something moved and has to be explained.
+2. **Regression tests**: 211 API and router tests run on every change.
+3. **A router that cannot make callers worse off**: deterministic sha256 bucketing between the GPU path and the serverless path, fallback on any error or a 4-second timeout, and a circuit breaker after 5 consecutive failures.

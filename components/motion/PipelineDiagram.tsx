@@ -1,12 +1,16 @@
 "use client"
 import { useState } from 'react'
 import { m } from 'motion/react'
+import { METRICS, show } from '@/content/truth'
+
+const p50 = METRICS.meterOcr.p50
+const gpuShare = `${((p50.value / (p50.before ?? p50.value)) * 100).toFixed(1)}%`
 
 const nodes = [
   { id: 'presence', label: 'Meter Presence', model: 'MobileViTv2', input: '3×256×256', engine: 'TensorRT FP16' },
   { id: 'dial', label: 'Dial Detection', model: 'YOLO26n-OBB', input: '3×352×352', engine: 'TensorRT FP16' },
-  { id: 'type', label: 'Digital/Analog', model: 'MobileViTv2', input: 'Crop', engine: 'TensorRT FP16' },
-  { id: 'read', label: 'Readers', model: 'SVTRv2 + CTC', input: 'Sequence', engine: 'TensorRT FP16' },
+  { id: 'type', label: 'Digital/Analog', model: 'MobileViTv2', input: 'UINT8 96×288×3', engine: 'TensorRT FP16' },
+  { id: 'read', label: 'Readers', model: 'SVTRv2 + CTC ×6', input: 'Digital 3×96×W · analog 3×64×W', engine: 'TensorRT FP16' },
 ]
 
 export function PipelineDiagram() {
@@ -24,24 +28,24 @@ export function PipelineDiagram() {
           className="px-4 py-2 bg-raised border border-line text-sm font-mono hover:bg-line transition-colors"
           style={{ borderRadius: '10px' }}
         >
-          Path: {isGpu ? 'GPU (Triton)' : 'Serverless (ONNX)'}
+          Path: {isGpu ? 'GPU (Triton)' : 'Serverless fallback'}
         </button>
       </div>
 
       {/* Latency Viz */}
       <div className="mb-16">
-        <div className="text-xs font-mono text-muted mb-2 uppercase tracking-widest">End-to-End Latency (p50)</div>
+        <div className="text-xs font-mono text-muted mb-2 uppercase tracking-widest">End-to-end p50, same 1,000 photos</div>
         <div className="h-4 bg-raised w-full overflow-hidden" style={{ borderRadius: '999px' }}>
           <m.div 
             className="h-full bg-accent"
             initial={false}
-            animate={{ width: isGpu ? '11%' : '100%' }} // 156ms vs 1415ms
+            animate={{ width: isGpu ? gpuShare : '100%' }}
             transition={{ type: "spring", stiffness: 320, damping: 30 }}
           />
         </div>
         <div className="flex justify-between text-xs font-mono mt-2">
-          <span className="text-accent">{isGpu ? '156ms' : '1,415ms'}</span>
-          <span className="text-muted">1.4s</span>
+          <span className="text-accent">{isGpu ? show(p50) : show(p50, 'before')}</span>
+          <span className="text-muted">{show(p50, 'before')}</span>
         </div>
       </div>
 
@@ -109,7 +113,7 @@ export function PipelineDiagram() {
                   <div className="text-sm font-medium mb-3">{node.input}</div>
                   
                   <div className="text-xs font-mono text-muted mb-1">ENGINE</div>
-                  <div className="text-sm font-medium text-accent">{isGpu ? node.engine : 'ONNX / TFLite'}</div>
+                  <div className="text-sm font-medium text-accent">{isGpu ? node.engine : 'Serverless function'}</div>
                 </m.div>
               )}
             </div>

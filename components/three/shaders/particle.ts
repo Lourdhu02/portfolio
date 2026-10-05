@@ -142,11 +142,12 @@ void main() {
     vec4 mvPosition = modelViewMatrix * vec4(currentPos, 1.0);
     
     // Size attenuation
-    gl_PointSize = size * (20.0 / -mvPosition.z);
+    gl_PointSize = size * (26.0 / -mvPosition.z);
     gl_Position = projectionMatrix * mvPosition;
     
     // Depth-based alpha
-    float depthAlpha = smoothstep(-25.0, 5.0, mvPosition.z);
+    // Camera sits at z=15, so the name plane is at view depth -15: keep it near full brightness and fade the far nebula
+    float depthAlpha = smoothstep(-40.0, -12.0, mvPosition.z);
     vAlpha = depthAlpha * (0.2 + p * 0.8);
 }
 `
