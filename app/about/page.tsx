@@ -52,7 +52,7 @@ export default function AboutPage() {
           I specialize in <strong>production computer vision, edge optimization, and low-latency GPU serving</strong>. Over the last two years, I have owned a utility-scale five-model OCR pipeline from training runs to TensorRT/Triton serving, scaling from early prototypes to processing over <strong>40,000,000 live meter readings</strong> while lifting live accuracy from <strong>79% to 91%</strong>.
         </p>
         <p>
-          My baseline rule is simple: <em>measure before you claim, ship behind a canary, and make deployments boring to run</em>. I don&apos;t celebrate synthetic benchmark numbers on multi-A100 clusters if the real system cannot sustain 180+ images/sec on a cost-effective NVIDIA L4 under heavy production bursts.
+          My baseline rule is simple: <em>measure before you claim, ship behind a canary, and make deployments boring to run</em>. I don't celebrate synthetic benchmark numbers on multi-A100 clusters if the real system cannot sustain 180+ images/sec on a cost-effective NVIDIA L4 under heavy production bursts.
         </p>
       </section>
 
