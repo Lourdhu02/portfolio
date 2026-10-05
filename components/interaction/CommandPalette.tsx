@@ -1,19 +1,20 @@
 "use client"
-import { Command } from 'cmdk'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
-import { useEffect, useMemo, useState } from 'react'
-import { COMMANDS, GO_SHORTCUTS, postCommands, type PostSummary } from '@/lib/commands'
+import { useEffect, useState } from 'react'
+import { GO_SHORTCUTS, type PostSummary } from '@/lib/commands'
 import { OPEN_PALETTE_EVENT, isTypingTarget, toast } from '@/lib/interaction'
-import { useModKey } from '@/lib/useMediaQuery'
-import { CommandMenu, Kbd, useRunCommand } from './CommandMenu'
+
+// cmdk and the menu only load once someone opens it, so they stay out of every page's first load.
+const CommandPaletteDialog = dynamic(() => import('./CommandPaletteDialog'), { ssr: false })
 
 // Global ⌘K / Ctrl+K menu, plus "/" to open and "g <letter>" to jump between pages.
 export function CommandPalette({ posts }: { posts: PostSummary[] }) {
   const [open, setOpen] = useState(false)
   const router = useRouter()
-  const run = useRunCommand()
-  const mod = useModKey()
-  const commands = useMemo(() => [...COMMANDS, ...postCommands(posts)], [posts])
+  // Mount the dialog on first open and keep it mounted, so its close animation still plays.
+  const [loaded, setLoaded] = useState(false)
+  if (open && !loaded) setLoaded(true)
 
   useEffect(() => {
     let goPending = false
@@ -59,29 +60,6 @@ export function CommandPalette({ posts }: { posts: PostSummary[] }) {
   }, [router])
 
   return (
-    <Command.Dialog
-      open={open}
-      onOpenChange={setOpen}
-      label="Command menu"
-      loop
-      overlayClassName="cmdk-overlay fixed inset-0 z-[90] bg-bg/70 backdrop-blur-sm"
-      contentClassName="cmdk-content fixed left-1/2 top-[14vh] z-[91] w-[min(640px,calc(100vw-2rem))] -translate-x-1/2 overflow-hidden border border-line bg-surface/95 shadow-[0_40px_120px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl rounded-[10px] rounded-br-[var(--radius-cut)] outline-none"
-    >
-      <CommandMenu
-        commands={commands}
-        onRun={(cmd) => {
-          setOpen(false)
-          run(cmd)
-        }}
-      />
-      <div className="flex items-center justify-between border-t border-line px-4 py-2.5 font-mono text-[10px] uppercase tracking-widest text-muted">
-        <span className="flex items-center gap-3">
-          <span className="flex items-center gap-1"><Kbd>↑</Kbd><Kbd>↓</Kbd> move</span>
-          <span className="flex items-center gap-1"><Kbd>↵</Kbd> open</span>
-          <span className="hidden items-center gap-1 sm:flex"><Kbd>esc</Kbd> close</span>
-        </span>
-        <span className="flex items-center gap-1"><Kbd>{mod}</Kbd><Kbd>K</Kbd></span>
-      </div>
-    </Command.Dialog>
+    loaded ? <CommandPaletteDialog posts={posts} open={open} onOpenChange={setOpen} /> : null
   )
 }
