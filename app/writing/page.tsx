@@ -1,4 +1,11 @@
 import Link from 'next/link'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Writing',
+  description: 'Post-mortems, inference notes and research by Lourdu Raju. Every number links back to where it was measured.',
+  alternates: { canonical: '/writing' },
+}
 import { posts } from '#velite'
 
 export default function WritingIndexPage() {

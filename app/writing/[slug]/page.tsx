@@ -1,9 +1,23 @@
 import { notFound } from 'next/navigation'
 import { posts } from '#velite'
 import Link from 'next/link'
+import type { Metadata } from 'next'
 
 interface PageProps {
   params: Promise<{ slug: string }>
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params
+  const post = posts.find(p => p.slug === slug)
+  if (!post) return {}
+  const url = `/writing/${slug}`
+  return {
+    title: post.title,
+    description: post.summary,
+    alternates: { canonical: url },
+    openGraph: { type: 'article', title: post.title, description: post.summary, url, publishedTime: post.date },
+  }
 }
 
 export default async function WritingSlugPage({ params }: PageProps) {

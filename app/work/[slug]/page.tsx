@@ -1,10 +1,24 @@
 import { notFound } from 'next/navigation'
 import { posts } from '#velite'
 import Link from 'next/link'
+import type { Metadata } from 'next'
 import { TRUTH, METRICS, show } from '@/content/truth'
 
 interface PageProps {
   params: Promise<{ slug: string }>
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params
+  const post = posts.find(p => p.slug === slug)
+  if (!post) return {}
+  const url = `/work/${slug}`
+  return {
+    title: post.title,
+    description: post.summary,
+    alternates: { canonical: url },
+    openGraph: { type: 'article', title: post.title, description: post.summary, url, publishedTime: post.date },
+  }
 }
 
 // Case-study header for each project. Figures come from content/truth.ts.

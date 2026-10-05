@@ -2,6 +2,15 @@ import { PipelineDiagram } from '@/components/motion/PipelineDiagram'
 import { Receipt } from '@/components/ui/Receipt'
 import { METRICS, show, factor, fmt, headroom } from '@/content/truth'
 import Link from 'next/link'
+import type { Metadata } from 'next'
+
+const ocr = METRICS.meterOcr
+
+export const metadata: Metadata = {
+  title: 'Meter OCR',
+  description: `Production meter-reading OCR for two state utilities: ${ocr.engines.value} TensorRT engines behind Triton, ${Math.round(factor(ocr.p50))}× faster end to end than serverless, ${show(ocr.invalidDetection)} of unreadable photos refused.`,
+  alternates: { canonical: '/work/meter-ocr' },
+}
 
 export default function MeterOCRCaseStudy() {
   const m = METRICS.meterOcr
