@@ -1,5 +1,12 @@
 import Link from 'next/link'
+import type { Metadata } from 'next'
 import { TRUTH, METRICS, show, factor } from '@/content/truth'
+
+export const metadata: Metadata = {
+  title: 'About',
+  description: `${TRUTH.identity.role} in ${TRUTH.identity.location}: production computer vision, TensorRT and Triton serving, founder of spacedrift.`,
+  alternates: { canonical: '/about' },
+}
 
 export default function AboutPage() {
   const m = METRICS.meterOcr
@@ -186,7 +193,7 @@ export default function AboutPage() {
       <footer className="border-t border-line pt-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <div className="font-display text-2xl uppercase">Got a model to ship?</div>
-          <div className="font-mono text-xs text-muted mt-1">{TRUTH.identity.email} · {TRUTH.identity.phone}</div>
+          <div className="font-mono text-xs text-muted mt-1">{TRUTH.identity.email}</div>
         </div>
         <div className="flex gap-4 font-mono text-xs uppercase tracking-wider">
           <a href={TRUTH.identity.links.github} target="_blank" rel="noopener noreferrer" className="text-muted hover:text-text">GitHub ↗</a>
