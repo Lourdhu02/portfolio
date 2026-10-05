@@ -15,18 +15,18 @@ export default function LabPage() {
   const date = new Date(card.trainedOn + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
 
   return (
-    <main className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 py-28 md:py-32 text-text">
-      <Link href="/" className="inline-block font-mono text-xs uppercase tracking-widest text-muted hover:text-accent transition-colors mb-14">
+    <main className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-16 sm:py-32 text-text">
+      <Link href="/" className="inline-block font-mono text-xs uppercase tracking-widest text-muted hover:text-accent transition-colors -mt-2 py-2 mb-8 sm:mb-14">
         ← Back to Home
       </Link>
 
-      <header className="mb-14 grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
+      <header className="mb-10 sm:mb-14 grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
         <div className="lg:col-span-8">
           <div className="flex items-center gap-3 font-mono text-xs text-detect uppercase tracking-widest mb-4">
             <span className="w-2 h-2 rounded-full bg-detect animate-pulse" />
             <span>Lab 01 · Live model</span>
           </div>
-          <h1 className="font-display text-6xl sm:text-7xl md:text-8xl leading-[0.85] uppercase">
+          <h1 className="font-display text-[clamp(3.25rem,16vw,3.75rem)] sm:text-7xl md:text-8xl leading-[0.85] uppercase">
             Read the meter
             <br />
             <span className="text-muted">yourself.</span>
