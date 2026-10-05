@@ -10,6 +10,38 @@ interface ParticleSystemProps {
   tier: Tier;
 }
 
+function buildParticleAttributes(particleCount: number) {
+  // Generate target positions from text
+  const targetArray = sampleTextToParticles('LOURDU RAJU', particleCount)
+
+  // Initial random positions
+  const posArray = new Float32Array(particleCount * 3)
+  const seedArray = new Float32Array(particleCount)
+  const sizeArray = new Float32Array(particleCount)
+  const accentArray = new Float32Array(particleCount)
+
+  for(let i = 0; i < particleCount; i++) {
+    // Nebula-like initial distribution
+    posArray[i * 3] = (Math.random() - 0.5) * 40
+    posArray[i * 3 + 1] = (Math.random() - 0.5) * 40
+    posArray[i * 3 + 2] = (Math.random() - 0.5) * 40 - 10
+
+    seedArray[i] = Math.random()
+    sizeArray[i] = Math.random() * 0.5 + 0.1
+
+    // 6-8% tinted signal red
+    accentArray[i] = Math.random() < 0.07 ? 1.0 : 0.0
+  }
+
+  return {
+    positions: posArray,
+    targets: targetArray,
+    seeds: seedArray,
+    sizes: sizeArray,
+    accents: accentArray
+  }
+}
+
 export function ParticleSystem({ tier }: ParticleSystemProps) {
   const pointsRef = useRef<THREE.Points>(null)
   const materialRef = useRef<THREE.ShaderMaterial>(null)
@@ -18,37 +50,10 @@ export function ParticleSystem({ tier }: ParticleSystemProps) {
   const particleCount = tier === 'high' ? 24000 : tier === 'medium' ? 12000 : 6000
 
   // Geometry attributes
-  const { positions, targets, seeds, sizes, accents } = useMemo(() => {
-    // Generate target positions from text
-    const targetArray = sampleTextToParticles('LOURDU RAJU', particleCount)
-    
-    // Initial random positions
-    const posArray = new Float32Array(particleCount * 3)
-    const seedArray = new Float32Array(particleCount)
-    const sizeArray = new Float32Array(particleCount)
-    const accentArray = new Float32Array(particleCount)
-    
-    for(let i = 0; i < particleCount; i++) {
-      // Nebula-like initial distribution
-      posArray[i * 3] = (Math.random() - 0.5) * 40
-      posArray[i * 3 + 1] = (Math.random() - 0.5) * 40
-      posArray[i * 3 + 2] = (Math.random() - 0.5) * 40 - 10
-      
-      seedArray[i] = Math.random()
-      sizeArray[i] = Math.random() * 0.5 + 0.1
-      
-      // 6-8% tinted signal red
-      accentArray[i] = Math.random() < 0.07 ? 1.0 : 0.0
-    }
-    
-    return {
-      positions: posArray,
-      targets: targetArray,
-      seeds: seedArray,
-      sizes: sizeArray,
-      accents: accentArray
-    }
-  }, [particleCount])
+  const { positions, targets, seeds, sizes, accents } = useMemo(
+    () => buildParticleAttributes(particleCount),
+    [particleCount]
+  )
 
   const uniforms = useMemo(() => ({
     uTime: { value: 0 },
