@@ -48,15 +48,17 @@ export function PipelineDiagram() {
       {/* SVG Pipeline */}
       <div className="relative w-full h-[200px]">
         {/* Draw Line */}
-        <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
-          <path d="M 50,100 L calc(100% - 50px),100" stroke="#1C1C22" strokeWidth="2" fill="none" />
+        {/* SVG path data cannot use calc(), so the 50px insets live on the box and the path spans a 0-100 viewBox. */}
+        <svg className="absolute inset-y-0 left-[50px] right-[50px] h-full w-[calc(100%-100px)]" viewBox="0 0 100 200" preserveAspectRatio="none">
+          <path d="M 0,100 L 100,100" stroke="#1C1C22" strokeWidth="2" fill="none" vectorEffect="non-scaling-stroke" />
           
           {/* Animated Pulse */}
           <m.path 
-            d="M 50,100 L calc(100% - 50px),100" 
+            d="M 0,100 L 100,100" 
             stroke={isGpu ? "#FF4655" : "#8A8A96"} 
             strokeWidth="4" 
             fill="none"
+            vectorEffect="non-scaling-stroke"
             initial={{ pathLength: 0, pathOffset: 0, opacity: 0 }}
             animate={{ 
               pathLength: [0, 0.2, 0.2, 0], 

@@ -35,22 +35,23 @@ export function LabCommand() {
                 <span className="text-muted text-xs">ONNX/WASM</span>
               </Link>
             </Command.Item>
-            <Command.Item value="fluid-sim" className="aria-selected:bg-raised aria-selected:text-accent cursor-pointer rounded-none px-2 py-3 text-sm font-mono transition-colors">
-              <Link href="/404" className="flex items-center justify-between w-full">
+            {/* Not built yet: no link, so nothing prefetches a missing route. */}
+            <Command.Item value="fluid-sim" disabled className="rounded-none px-2 py-3 text-sm font-mono text-muted cursor-default">
+              <div className="flex items-center justify-between w-full">
                 <span>02. Fluid Sim</span>
-                <span className="text-muted text-xs">Compute</span>
-              </Link>
+                <span className="text-xs">Compute · Soon</span>
+              </div>
             </Command.Item>
           </Command.Group>
 
           <Command.Separator className="h-px w-full bg-line my-2" />
 
           <Command.Group heading={<div className="px-2 py-2 text-xs font-mono text-muted uppercase tracking-widest">Archived</div>}>
-            <Command.Item value="legacy-particles" className="aria-selected:bg-raised aria-selected:text-accent cursor-pointer rounded-none px-2 py-3 text-sm font-mono text-muted transition-colors">
-              <Link href="/404" className="flex items-center justify-between w-full">
+            <Command.Item value="legacy-particles" disabled className="rounded-none px-2 py-3 text-sm font-mono text-muted cursor-default">
+              <div className="flex items-center justify-between w-full">
                 <span>Legacy Particles</span>
-                <span className="text-xs">Canvas2D</span>
-              </Link>
+                <span className="text-xs">Canvas2D · Retired</span>
+              </div>
             </Command.Item>
           </Command.Group>
         </Command.List>

@@ -113,9 +113,12 @@ void main() {
     // Starting position (nebula)
     vec3 pos = position; 
     
-    // Add curl noise over time
-    vec3 noise = curlNoise(pos * 0.5 + uTime * 0.2);
-    pos += noise * 2.0 * (1.0 - uProgress);
+    // Add curl noise over time. It is 18 simplex lookups per particle and fades out with
+    // uProgress, so skip it once the name has formed (a uniform branch, same for every vertex).
+    if (uProgress < 1.0) {
+        vec3 noise = curlNoise(pos * 0.5 + uTime * 0.2);
+        pos += noise * 2.0 * (1.0 - uProgress);
+    }
     
     // Stagger based on seed
     float stagger = seed * 0.4;
