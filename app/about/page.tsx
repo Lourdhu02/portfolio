@@ -1,5 +1,12 @@
 import Link from 'next/link'
+import type { Metadata } from 'next'
 import { TRUTH, METRICS, show, factor } from '@/content/truth'
+
+export const metadata: Metadata = {
+  title: 'About',
+  description: `${TRUTH.identity.role} in ${TRUTH.identity.location}: production computer vision, TensorRT and Triton serving, founder of spacedrift.`,
+  alternates: { canonical: '/about' },
+}
 
 export default function AboutPage() {
   const m = METRICS.meterOcr
