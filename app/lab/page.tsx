@@ -136,7 +136,7 @@ export default function LabPage() {
       <header className="mb-16">
         <div className="flex items-center gap-3 font-mono text-xs text-detect uppercase tracking-widest mb-4">
           <span className="w-2 h-2 rounded-full bg-detect animate-pulse" />
-          <span>Interactive Benchmark</span>
+          <span>Interactive walkthrough</span>
         </div>
         <h1 className="font-display text-6xl md:text-8xl leading-[0.85] mb-6 uppercase">
           Lab: Meter OCR

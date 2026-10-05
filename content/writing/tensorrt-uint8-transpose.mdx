@@ -1,47 +1,36 @@
 ---
-title: "94x Speedup: Patching TensorRT's Rejection of UINT8 Transpose"
-summary: "Tracing a throughput cliff on NVIDIA L4: from ONNX Runtime (309.5ms) to TensorRT FP16 (3.3ms) via graph rewrite."
-date: 2026-01-20
-tags: ["TensorRT", "GPU", "CUDA", "Inference"]
+title: "94× on One Classifier: Getting a UINT8 Transpose Past TensorRT"
+summary: "Why one ONNX Runtime model made throughput fall as load rose, and the one-node graph patch that moved it to TensorRT: 309.5 ms to 3.3 ms."
+date: 2026-09-10
+tags: ["TensorRT", "GPU", "Triton", "Inference"]
 ---
 
-## The Throughput Cliff
+## The cliff
 
-While serving our 5-model pipeline on an NVIDIA L4 GPU instance, load tests at 200 requests/sec revealed an unexpected bottleneck. While the dial detector and recognition networks finished in sub-15ms, the preliminary dial classifier took **309.5ms** under load.
+The meter-OCR pipeline serves its models from Triton. Eight of the nine were TensorRT FP16 engines. The ninth, the classifier that decides whether a dial is digital or analog, still ran on ONNX Runtime.
 
-Throughput hit a hard ceiling at **19 img/s**, causing request queues to swell and p99 latency to exceed 2.4 seconds.
+That one model cost **309.5 ms** of compute per request, roughly 100× its TensorRT neighbours and around 96% of total request latency. Worse, throughput *fell* as load rose: at 16 concurrent requests the pipeline managed **19 img/s** with a p50 of **873 ms**.
 
-## Investigation
+## Why it was slow
 
-Inspecting our Triton Inference Server model repository, we found that the dial classifier was running on the default ONNX Runtime CPU execution provider rather than a TensorRT engine. 
+ONNX Runtime assigns the graph's 33 `Shape` ops to the CPU and handles its 21 `InstanceNormalization` ops poorly, so every request bounced between host and device. The obvious fix was to build a TensorRT engine like the others.
 
-When attempting to build the TensorRT engine using `trtexec`:
+TensorRT refused. The model takes raw UINT8 pixels (96×288×3) and its very first node is a `Transpose` on that UINT8 input. TensorRT wants the cast to float to come first.
 
-```bash
-[E] [TRT] ModelImporter.cpp:896: ERROR: ... Node (Transpose_4) of type Transpose has unsupported input type: UINT8
-```
+## The patch
 
-The model architecture accepted raw decoded UINT8 JPEG buffers `(H, W, C)` and performed a transpose to `(C, H, W)` inside the computation graph before normalization. TensorRT's builder rejected UINT8 transpose operations on this CUDA compute capability!
-
-## The Solution: ONNX Graph Transformation
-
-Rather than retraining or performing the transpose in Python on the host CPU (which would introduce expensive host-to-device memory copies), we patched the ONNX graph using `onnx-graphsurgeon`:
-
-1. We inserted a `Cast` node immediately following the input tensor, converting `UINT8 -> FP32` prior to the transpose.
-2. TensorRT fully supports FP32 transpose and fuses it directly into the subsequent convolution/normalization kernel.
-3. We rebuilt the engine with TensorRT 10.x with FP16 precision:
-
-```bash
-trtexec --onnx=classifier_patched.onnx \
-        --saveEngine=classifier_fp16.engine \
-        --fp16 \
-        --minShapes=input:1x3x224x224 \
-        --optShapes=input:8x3x224x224 \
-        --maxShapes=input:32x32x224x224
-```
+Retraining or moving the transpose to Python on the host would both have cost something. Instead, `build/patch_classifier_onnx.py` rewrites the exported graph: `Transpose → Cast` becomes `Cast → Transpose`. The two are numerically identical, and TensorRT accepts the second. The build script runs the patch automatically, so nobody has to remember it.
 
 ## Results
 
-- **Compute Time**: Dropped from **309.5 ms** down to **3.3 ms** (a **94× reduction**).
-- **Throughput**: Scaled from **19 img/s** to **321 img/s** on a single NVIDIA L4.
-- **Latency Stability**: Eliminated queue buildup during burst loads up to 12.6× production peak.
+Same box, same 16 concurrent requests:
+
+- **Classifier compute**: **309.5 ms → 3.3 ms** (94×).
+- **Single-image p50**: **873 ms → 47 ms**.
+- **Throughput**: **19 → 321 img/s**, and it no longer falls as load rises.
+
+These were measured on the GB10 development box. On the production NVIDIA L4 the full pipeline sustains **181 img/s**, where the ceiling is the host CPU rather than the GPU.
+
+## The lesson
+
+One model left on the wrong runtime can own almost all of your latency while looking like a rounding error in the architecture diagram. Profile per stage, not per request.
