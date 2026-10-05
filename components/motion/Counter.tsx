@@ -6,10 +6,11 @@ interface CounterProps {
   value: number;
   prefix?: string;
   suffix?: string;
+  decimals?: number;
   duration?: number;
 }
 
-export function Counter({ value, prefix = "", suffix = "", duration = 1.5 }: CounterProps) {
+export function Counter({ value, prefix = "", suffix = "", decimals = 0, duration = 1.5 }: CounterProps) {
   const ref = useRef<HTMLSpanElement>(null)
   const inView = useInView(ref, { once: true, margin: "-50px" })
   
@@ -29,15 +30,15 @@ export function Counter({ value, prefix = "", suffix = "", duration = 1.5 }: Cou
   useEffect(() => {
     return springValue.on("change", (latest) => {
       if (ref.current) {
-        ref.current.textContent = `${prefix}${Math.floor(latest)}${suffix}`
+        ref.current.textContent = `${prefix}${latest.toFixed(decimals)}${suffix}`
       }
     })
-  }, [springValue, prefix, suffix])
+  }, [springValue, prefix, suffix, decimals])
 
   return (
     <span ref={ref} className="tabular-nums font-mono">
       {/* SSR fallback for SEO */}
-      {prefix}{value}{suffix}
+      {prefix}{value.toFixed(decimals)}{suffix}
     </span>
   )
 }

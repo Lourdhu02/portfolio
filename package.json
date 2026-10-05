@@ -7,7 +7,8 @@
     "dev": "velite && next dev",
     "build": "velite && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "check:claims": "node --experimental-strip-types --no-warnings=ExperimentalWarning scripts/check-claims.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",

@@ -24,6 +24,10 @@ jobs:
       
     - name: Lint
       run: pnpm lint
+
+    # Every bold figure in a post must exist in content/truth.ts
+    - name: Check claims
+      run: pnpm check:claims
       
     # Build runs velite first, which generates the #velite types the typecheck needs
     - name: Build

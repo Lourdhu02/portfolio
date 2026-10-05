@@ -1,31 +1,32 @@
 ---
-title: "SVTRv2-ARD: Production OCR Retraining"
-summary: "Retraining SVTRv2 on production utility crops, accelerating DGX training 3.8×, and gating release regressions."
-date: 2026-01-15
-tags: ["PyTorch", "torch.compile", "SDPA", "OCR"]
+title: "SVTRv2-ARD: Teaching a CTC Recognizer New Tricks Without Changing It"
+summary: "A paper-first SVTRv2 reimplementation, verified against the official code, plus ARD: adaptive routing and distillation that leave the served model byte-identical."
+date: 2026-09-09
+tags: ["PyTorch", "OCR", "CTC", "Research"]
 ---
 
-## Overview
+## The question
 
-SVTRv2 (Single Visual Model for Text Recognition v2) represents our core text extraction backbone across tens of millions of challenging field meter photos. Operating in low light, through scratched glass, and under steep perspective angles required retraining on held-out production distributions.
+SVTRv2 (ICCV 2025) showed that a CTC-only text recognizer can beat encoder-decoder models. CTC models are fast and simple to serve, so anything that improves them *without touching the served graph* is worth a lot in production.
 
-## Architectural Optimizations
+ARD (Adaptive Routing and Distillation) is my attempt at that. It changes how the model is trained and how images are routed into it, and leaves inference exactly as cheap as the baseline.
 
-Training the base model on large high-resolution crop batches previously exhausted VRAM on high-end clusters. We implemented two architectural interventions:
+- **Code**: [github.com/Lourdhu02/svtrv2](https://github.com/Lourdhu02/svtrv2)
+- **Stack**: Python, PyTorch, CTC decoding, an LMDB data pipeline over Union14M-L, YAML configs, pytest.
 
-1. **Fused Scaled Dot-Product Attention (SDPA)**: Replaced custom multi-head attention kernels with PyTorch's native FlashAttention-backed SDPA backend.
-2. **Static `torch.compile`**: Replaced dynamic graph tracing with ahead-of-time graph compilation with fixed batch dimensions, fusing element-wise normalization and activation kernels.
+## Step one: be faithful to the paper
 
-## Performance Gains
+Before adding anything, the baseline had to be right. The architecture is checked line by line against the official OpenOCR SVTRv2: multi-size resizing (MSR), the feature rearrangement module (FRM), the train-only semantic guidance module (SGM), the local/global mixing rules, no positional encoding, and W/4 timesteps. A novelty is meaningless if the baseline underneath it is subtly wrong.
 
-- **Training Speedup**: Achieved **3.8× faster training iterations** on a DGX Spark cluster.
-- **Peak Memory**: Reduced peak VRAM footprint from **50.5 GB down to 14.7 GB**, enabling larger effective batch sizes without gradient accumulation overhead.
-- **Exact Match Accuracy**:
-  - Overall benchmark: Lifted from **87.7% to 90.1%** on a fixed validation set of 3,965 challenging images.
-  - Low-quality photo subset: Gained **+8.7 percentage points**.
-  - Analog dial readings: Gained **67.2% → 79.6%**.
-  - Digital LCD releases: Improved **83.4% → 87.8%**.
+The data layer reads the 3.2M usable Union14M-L samples straight from LMDB, with no image extraction step, and `svtrv2 benchmark` scores one checkpoint across every benchmark pack with per-set and macro-averaged exact match and CER.
 
-## Production Rollout & Checksum Gating
+## ARD: two ideas, both inference-preserving
 
-Models are frozen with cryptographic checksums, containerized into a 2.2 GB runtime (down from 4.43 GB), and gated in CI with a mandatory $1.2 \times 10^{-5}$ PyTorch-to-ONNX numerical parity check before deployment to Triton.
+1. **Adaptive routing (`--route`)**: MSR sends each crop to a fixed resize bin by aspect ratio. ARD learns that routing policy instead of hard-coding it.
+2. **SGM → CTC distillation (`--distill`)**: SGM carries linguistic context during training and is thrown away at test time. ARD distills what it knows into the CTC head, using a Viterbi alignment that is checked against exhaustive brute-force enumeration.
+
+Both ship behind flags and default off. The exported model stays **byte-identical** to the baseline, so serving cost cannot change.
+
+## Where it stands
+
+**49 of 49** tests pass, 17 of them for ARD, including an end-to-end CPU fit with routing and distillation both on, and GPU smoke runs pass on an 8 GB RTX 5060. No checkpoint has been trained on the full benchmark suite yet, so there are no accuracy numbers here. The next step is the baseline run, then the ARD ablation grid, and the results will be published either way.

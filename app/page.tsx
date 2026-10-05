@@ -7,12 +7,14 @@ import { HeroScroll } from '@/components/motion/HeroScroll'
 import { ParallaxGrid } from '@/components/motion/Parallax'
 import { Reveal, RevealItem } from '@/components/motion/Reveal'
 import { ScrollWords } from '@/components/motion/ScrollWords'
-import { TRUTH } from '@/content/truth'
+import { TRUTH, METRICS, show, factor } from '@/content/truth'
+import { Receipt } from '@/components/ui/Receipt'
 import Link from 'next/link'
 
 export default function Home() {
-  const { readingsProcessed, accuracy, latencyP50 } = TRUTH.metrics.flagship
-  const speedup = Math.round(latencyP50.before / latencyP50.after)
+  const { busiestDay, p50, invalidDetection, sustainedL4, readingAccuracy, engines, classifierCompute } = METRICS.meterOcr
+  const { tests: achillesTests, labs: achillesLabs } = METRICS.achilles
+  const studio = TRUTH.studio
 
   return (
     <main className="relative w-full">
@@ -28,31 +30,34 @@ export default function Home() {
           
           <RevealItem className="flex flex-col space-y-4">
             <h2 className="font-display text-5xl md:text-7xl">
-              <Counter value={readingsProcessed / 1000000} suffix="M+" />
+              <Counter value={Math.round(busiestDay.value / 1000)} suffix="K" />
             </h2>
             <div className="flex flex-col">
-              <span className="font-mono text-sm tracking-wider uppercase text-muted">Readings Processed</span>
-              <span className="text-muted/80 text-sm mt-1">Utility-scale five-model pipeline in live production.</span>
-            </div>
-          </RevealItem>
-
-          <RevealItem className="flex flex-col space-y-4">
-            <h2 className="font-display text-5xl md:text-7xl text-success">
-              <Counter value={accuracy.after} suffix="%" />
-            </h2>
-            <div className="flex flex-col">
-              <span className="font-mono text-sm tracking-wider uppercase text-muted">Live Production Accuracy</span>
-              <span className="text-muted/80 text-sm mt-1">Lifted from {accuracy.before}% across field camera conditions.</span>
+              <span className="font-mono text-sm tracking-wider uppercase text-muted">Meter photos read in one day</span>
+              <span className="text-muted/80 text-sm mt-1">{busiestDay.value.toLocaleString('en-US')} requests on production&apos;s busiest day, for a state electricity utility.</span>
+              <Receipt metric={busiestDay} className="mt-3" />
             </div>
           </RevealItem>
 
           <RevealItem className="flex flex-col space-y-4">
             <h2 className="font-display text-5xl md:text-7xl text-accent">
-              <Counter value={speedup} suffix="×" />
+              <Counter value={Math.round(factor(p50))} suffix="×" />
             </h2>
             <div className="flex flex-col">
-              <span className="font-mono text-sm tracking-wider uppercase text-muted">Faster p50 Latency</span>
-              <span className="text-muted/80 text-sm mt-1">Dropped from {latencyP50.before}ms to {latencyP50.after}ms on Triton + L4.</span>
+              <span className="font-mono text-sm tracking-wider uppercase text-muted">Faster, end to end</span>
+              <span className="text-muted/80 text-sm mt-1">p50 from {show(p50, 'before')} on serverless to {show(p50)} on Triton and TensorRT.</span>
+              <Receipt metric={p50} className="mt-3" />
+            </div>
+          </RevealItem>
+
+          <RevealItem className="flex flex-col space-y-4">
+            <h2 className="font-display text-5xl md:text-7xl text-success">
+              <Counter value={invalidDetection.value} decimals={invalidDetection.decimals} suffix="%" />
+            </h2>
+            <div className="flex flex-col">
+              <span className="font-mono text-sm tracking-wider uppercase text-muted">Bad photos refused</span>
+              <span className="text-muted/80 text-sm mt-1">Blurred, blank and non-meter photos get &ldquo;NA&rdquo;, never a confident wrong number.</span>
+              <Receipt metric={invalidDetection} className="mt-3" />
             </div>
           </RevealItem>
 
@@ -72,25 +77,25 @@ export default function Home() {
           <WorkCard 
             id="meter-ocr"
             title="Meter OCR"
-            kicker="State Utility · 40M+ Readings"
+            kicker={`Two state utilities · ${busiestDay.value.toLocaleString('en-US')} requests on the busiest day`}
             href="/work/meter-ocr"
           >
             <div className="w-full h-full bg-[#0E0E12] p-6 flex flex-col justify-between border-t border-accent/40">
               <div className="flex justify-between items-center font-mono text-[11px] text-muted uppercase">
                 <span className="text-accent">FLAGSHIP PIPELINE</span>
-                <span>9 TENSORRT ENGINES</span>
+                <span>{engines.value} TENSORRT ENGINES</span>
               </div>
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-success" />
-                  <span className="font-mono text-xs text-text">181 img/s sustained on 1× NVIDIA L4</span>
+                  <span className="font-mono text-xs text-text">{show(sustainedL4)} sustained on one NVIDIA L4</span>
                 </div>
                 <div className="w-full bg-line h-1 rounded-full overflow-hidden">
-                  <div className="bg-accent h-full w-[91%]" />
+                  <div className="bg-accent h-full" style={{ width: `${readingAccuracy.value}%` }} />
                 </div>
                 <div className="flex justify-between font-mono text-[10px] text-muted">
-                  <span>ACCURACY: 91%</span>
-                  <span>P50: 156ms</span>
+                  <span>READING ACCURACY: {show(readingAccuracy)}</span>
+                  <span>P50: {show(p50)}</span>
                 </div>
               </div>
             </div>
@@ -100,17 +105,17 @@ export default function Home() {
           <WorkCard 
             id="svtrv2-ard"
             title="SVTRv2-ARD"
-            kicker="Research · DGX 3.8× Accelerated"
+            kicker="Research · SVTRv2 (ICCV 2025) + a new method"
             href="/work/svtrv2-ard"
           >
             <div className="w-full h-full bg-[#0E0E12] p-6 flex flex-col justify-between border-t border-detect/40">
               <div className="flex justify-between items-center font-mono text-[11px] text-muted uppercase">
-                <span className="text-detect">ATTENTION REFACTOR</span>
-                <span>FUSED SDPA + COMPILE</span>
+                <span className="text-detect">ADAPTIVE ROUTING</span>
+                <span>CTC DISTILLATION</span>
               </div>
               <div className="space-y-2">
-                <div className="font-mono text-xs text-text">VRAM footprint: 50.5GB → 14.7GB</div>
-                <div className="font-mono text-xs text-detect">+8.7 pp on low-quality photo crops</div>
+                <div className="font-mono text-xs text-text">Verified line by line against official OpenOCR</div>
+                <div className="font-mono text-xs text-detect">{METRICS.svtrv2.tests.value}/{METRICS.svtrv2.tests.value} tests · served model unchanged</div>
               </div>
             </div>
           </WorkCard>
@@ -125,11 +130,11 @@ export default function Home() {
             <div className="w-full h-full bg-[#0E0E12] p-6 flex flex-col justify-between border-t border-line">
               <div className="flex justify-between items-center font-mono text-[11px] text-muted uppercase">
                 <span>3-TIER MEMORY</span>
-                <span>1MS QDRANT RETRIEVAL</span>
+                <span>&lt;1 MS RETRIEVAL</span>
               </div>
               <div className="space-y-1">
-                <div className="font-mono text-xs text-text">11 of 12 planted facts recalled</div>
-                <div className="font-mono text-xs text-muted">Adaptive IRT psychometric testing · Offline</div>
+                <div className="font-mono text-xs text-text">Recalls the right fact in 11 of 12 sessions</div>
+                <div className="font-mono text-xs text-muted">{show(METRICS.echome.assessmentCut)} shorter adaptive assessment · fully offline</div>
               </div>
             </div>
           </WorkCard>
@@ -138,17 +143,17 @@ export default function Home() {
           <WorkCard 
             id="finsentinel"
             title="FinSentinelAI"
-            kicker="Private Financial RAG · Hybrid BM25"
+            kicker="Private finance RAG · runs on your machine"
             href="/work/finsentinel"
           >
             <div className="w-full h-full bg-[#0E0E12] p-6 flex flex-col justify-between border-t border-line">
               <div className="flex justify-between items-center font-mono text-[11px] text-muted uppercase">
-                <span>RECIPROCAL-RANK FUSION</span>
-                <span>AIR-GAPPED OLLAMA</span>
+                <span>CROSS-ENCODER RERANK</span>
+                <span>LOCAL OLLAMA</span>
               </div>
               <div className="space-y-1">
-                <div className="font-mono text-xs text-text">15% → 100% Exact-ID Lookup Recovery</div>
-                <div className="font-mono text-xs text-muted">Cross-encoder reranking over 1,000 PDFs</div>
+                <div className="font-mono text-xs text-text">Zero external API calls</div>
+                <div className="font-mono text-xs text-muted">{METRICS.finSentinel.corpus.value.toLocaleString('en-US')}-document test corpus · 10 layouts</div>
               </div>
             </div>
           </WorkCard>
@@ -159,9 +164,9 @@ export default function Home() {
       {/* SC.04: Lab (cmdk) */}
       <section className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-text">
         <Reveal className="flex justify-between items-baseline mb-12 border-b border-line pb-4">
-          <h2 className="font-mono text-sm tracking-widest uppercase text-muted">02 / Live ML Lab</h2>
+          <h2 className="font-mono text-sm tracking-widest uppercase text-muted">02 / Lab</h2>
           <Link href="/lab" className="font-mono text-xs text-detect hover:underline uppercase tracking-wider">
-            Launch Interactive Benchmark →
+            Walk through the pipeline →
           </Link>
         </Reveal>
         <Reveal>
@@ -193,7 +198,7 @@ export default function Home() {
               Founder at spacedrift · Bengaluru, India
             </p>
             <p className="text-text/80 max-w-md leading-relaxed text-sm mb-6">
-              {TRUTH.identity.mission} Author of Achilles (18 test-driven core-AI labs) and the PhilArchive preprint on persistent AI agents.
+              {TRUTH.identity.mission} Author of Achilles, {achillesLabs.value} test-driven labs that rebuild the modern LLM stack, and a PhilArchive preprint on identity in persistent AI agents.
             </p>
             <div className="flex gap-4">
               <a 
@@ -216,20 +221,20 @@ export default function Home() {
           
           <RevealItem className="grid grid-cols-2 gap-6">
             <div className="p-6 bg-surface border border-line">
-              <div className="text-4xl font-display text-accent mb-2">{TRUTH.metrics.openSource.testsPassing}</div>
-              <div className="text-xs font-mono uppercase tracking-widest text-muted">CI Tests Passing (Achilles)</div>
+              <div className="text-4xl font-display text-accent mb-2">{achillesTests.value}</div>
+              <div className="text-xs font-mono uppercase tracking-widest text-muted">CI tests passing (Achilles)</div>
             </div>
             <div className="p-6 bg-surface border border-line">
-              <div className="text-4xl font-display text-text mb-2">₹12L</div>
-              <div className="text-xs font-mono uppercase tracking-widest text-muted">spacedrift Revenue (36 Clients)</div>
+              <div className="text-4xl font-display text-text mb-2">₹{studio.revenueLakh}L</div>
+              <div className="text-xs font-mono uppercase tracking-widest text-muted">spacedrift revenue ({studio.clients} clients)</div>
             </div>
             <div className="p-6 bg-surface border border-line">
-              <div className="text-4xl font-display text-detect mb-2">18</div>
-              <div className="text-xs font-mono uppercase tracking-widest text-muted">Test-Driven AI Labs</div>
+              <div className="text-4xl font-display text-detect mb-2">{achillesLabs.value}</div>
+              <div className="text-xs font-mono uppercase tracking-widest text-muted">Test-driven AI labs</div>
             </div>
             <div className="p-6 bg-surface border border-line">
-              <div className="text-4xl font-display text-success mb-2">94×</div>
-              <div className="text-xs font-mono uppercase tracking-widest text-muted">TensorRT Speedup (3.3ms)</div>
+              <div className="text-4xl font-display text-success mb-2">{Math.round(factor(classifierCompute))}×</div>
+              <div className="text-xs font-mono uppercase tracking-widest text-muted">TensorRT speedup ({show(classifierCompute, 'before')} → {show(classifierCompute)})</div>
             </div>
           </RevealItem>
         </Reveal>
@@ -244,7 +249,7 @@ export default function Home() {
             className="group flex flex-col items-center justify-center px-12 py-10 rounded-full border border-line bg-bg hover:border-accent transition-all shadow-2xl"
           >
             <span className="font-display text-4xl md:text-5xl group-hover:text-accent transition-colors uppercase">
-              Let&apos;s Build Systems
+              Got a model to ship?
             </span>
             <span className="font-mono text-xs text-muted mt-2 group-hover:text-text transition-colors">
               {TRUTH.identity.email}
