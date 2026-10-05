@@ -237,7 +237,9 @@ export default function LiteParticles({ lines, className = 'absolute inset-0', s
         gl!.clear(gl!.COLOR_BUFFER_BIT)
         gl!.drawArrays(gl!.POINTS, 0, count)
 
-        if (!readySent) {
+        // Hand over from the page's heading once the name has mostly formed, not on the first
+        // (still scattered) frame; this also keeps the heading painted long enough to count as LCP.
+        if (!readySent && progress >= 0.5) {
           readySent = true
           live.current.onReady?.()
         }
