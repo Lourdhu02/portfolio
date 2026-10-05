@@ -1,7 +1,8 @@
 import { ParticleName } from '@/components/three/ParticleName'
 import { Counter } from '@/components/motion/Counter'
 import { WorkCard } from '@/components/motion/WorkCard'
-import { LabCommand } from '@/components/ui/LabCommand'
+import { LabDock } from '@/components/interaction/LabDock'
+import { CopyEmail } from '@/components/interaction/CopyEmail'
 import { Magnetic } from '@/components/motion/Magnetic'
 import { SplitLines } from '@/components/motion/SplitLines'
 import { TRUTH } from '@/content/truth'
@@ -68,6 +69,9 @@ export default function Home() {
           {/* Flagship: Meter OCR */}
           <WorkCard 
             id="meter-ocr"
+            index={1}
+            summary="Five-model pipeline that reads utility meters from field photos, served on Triton with TensorRT FP16 engines."
+            stack={["Triton", "TensorRT FP16", "YOLO26n-OBB", "SVTRv2", "NVIDIA L4"]}
             title="Meter OCR"
             kicker="State Utility · 40M+ Readings"
             href="/work/meter-ocr"
@@ -96,6 +100,9 @@ export default function Home() {
           {/* SVTRv2-ARD */}
           <WorkCard 
             id="svtrv2-ard"
+            index={2}
+            summary="Attention refactor of SVTRv2 with fused SDPA and torch.compile, cutting training memory from 50.5GB to 14.7GB."
+            stack={["PyTorch", "SDPA", "torch.compile", "SVTRv2"]}
             title="SVTRv2-ARD"
             kicker="Research · DGX 3.8× Accelerated"
             href="/work/svtrv2-ard"
@@ -115,6 +122,9 @@ export default function Home() {
           {/* ECHOME */}
           <WorkCard 
             id="echome"
+            index={3}
+            summary="Offline agent with three-tier memory and adaptive IRT personality testing, all running locally."
+            stack={["LangGraph", "Qdrant", "IRT", "Whisper"]}
             title="ECHOME"
             kicker="Local-First Agent · LangGraph"
             href="/work/echome"
@@ -134,6 +144,9 @@ export default function Home() {
           {/* FinSentinelAI */}
           <WorkCard 
             id="finsentinel"
+            index={4}
+            summary="Air-gapped financial RAG: hybrid BM25 and dense retrieval fused by reciprocal rank, then cross-encoder reranking."
+            stack={["FastAPI", "Ollama", "ChromaDB", "BM25"]}
             title="FinSentinelAI"
             kicker="Private Financial RAG · Hybrid BM25"
             href="/work/finsentinel"
@@ -153,7 +166,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SC.04: Lab (cmdk) */}
+      {/* SC.04: Lab console (same command menu as ⌘K) */}
       <section className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-text">
         <div className="flex justify-between items-baseline mb-12 border-b border-line pb-4">
           <h2 className="font-mono text-sm tracking-widest uppercase text-muted">02 / Live ML Lab</h2>
@@ -161,7 +174,7 @@ export default function Home() {
             Launch Interactive Benchmark →
           </Link>
         </div>
-        <LabCommand />
+        <LabDock />
       </section>
 
       {/* SC.05: Principles */}
@@ -234,16 +247,19 @@ export default function Home() {
         <Magnetic strength={20}>
           <a 
             href={`mailto:${TRUTH.identity.email}`} 
+            data-cursor="view"
+            data-cursor-label="Say hi"
             className="group flex flex-col items-center justify-center px-12 py-10 rounded-full border border-line bg-bg hover:border-accent transition-all shadow-2xl"
           >
             <span className="font-display text-4xl md:text-5xl group-hover:text-accent transition-colors uppercase">
               Let&apos;s Build Systems
             </span>
-            <span className="font-mono text-xs text-muted mt-2 group-hover:text-text transition-colors">
-              {TRUTH.identity.email}
-            </span>
           </a>
         </Magnetic>
+        <CopyEmail
+          email={TRUTH.identity.email}
+          className="mt-6 rounded-full px-4 py-2 font-mono text-xs text-muted transition-colors hover:text-text"
+        />
 
         <div className="mt-16 flex flex-wrap justify-center gap-6 font-mono text-xs uppercase tracking-widest text-muted">
           <a href={TRUTH.identity.links.github} target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">GitHub</a>
