@@ -18,24 +18,24 @@ export default function MeterOCRCaseStudy() {
   const results = [m.p50, m.p50AtLoad, m.throughput, m.classifierCompute]
 
   return (
-    <main className="relative w-full max-w-4xl mx-auto px-6 py-32 text-text">
+    <main className="relative w-full max-w-4xl mx-auto px-4 sm:px-6 pt-24 pb-16 sm:py-32 text-text">
 
-      <Link href="/#work" className="inline-block font-mono text-xs uppercase tracking-widest text-muted hover:text-text transition-colors mb-16">
+      <Link href="/#work" className="inline-block font-mono text-xs uppercase tracking-widest text-muted hover:text-text transition-colors -mt-2 py-2 mb-8 sm:mb-14">
         ← Back to Work
       </Link>
 
       {/* 1. Title Card */}
-      <header className="mb-24">
+      <header className="mb-10 sm:mb-24">
         <ViewTransition name="work-title-meter-ocr" share="morph" default="none">
-          <h1 className="font-display text-6xl md:text-8xl leading-[0.85] uppercase mb-6 w-fit">
+          <h1 className="font-display text-[clamp(3.25rem,16vw,3.75rem)] sm:text-6xl md:text-8xl leading-[0.85] uppercase mb-6 w-fit">
             Meter OCR
           </h1>
         </ViewTransition>
-        <p className="font-mono text-muted uppercase tracking-widest">One photo in, one reading out · two state electricity utilities</p>
+        <p className="font-mono text-xs sm:text-base text-muted uppercase tracking-wider sm:tracking-widest">One photo in, one reading out · two state electricity utilities</p>
       </header>
 
       {/* 2. TL;DR */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-8 py-8 border-y border-line mb-24">
+      <section className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-6 sm:gap-8 py-8 border-y border-line mb-12 sm:mb-24">
         <div>
           <div className="text-xs font-mono text-muted mb-2">ROLE</div>
           <div className="text-sm">Machine Learning Engineer, owner end to end</div>
@@ -55,8 +55,8 @@ export default function MeterOCRCaseStudy() {
       </section>
 
       {/* 3. Context */}
-      <section className="mb-24 prose prose-invert prose-p:text-text/80 max-w-none">
-        <h2 className="font-display text-4xl mb-6">Context & Constraints</h2>
+      <section className="mb-16 sm:mb-24 prose prose-invert prose-p:text-text/80 max-w-none">
+        <h2 className="font-display text-[2.5rem] leading-none sm:text-4xl mb-6">Context & Constraints</h2>
         <p>
           Meter readers photograph electricity meters on their phones, and the utility&apos;s billing backend needs the number. The service gets one photo and must return one reading with a confidence score, in the same response shape whatever happens, because the backend never branches on errors.
         </p>
@@ -66,8 +66,8 @@ export default function MeterOCRCaseStudy() {
       </section>
 
       {/* 4. Architecture */}
-      <section className="mb-24">
-        <h2 className="font-display text-4xl mb-6">Architecture</h2>
+      <section className="mb-16 sm:mb-24">
+        <h2 className="font-display text-[2.5rem] leading-none sm:text-4xl mb-6">Architecture</h2>
         <PipelineDiagram />
         <p className="mt-6 text-sm text-text/80 leading-relaxed">
           A router function picks the GPU path or the serverless path per request by deterministic sha256 bucketing, falls back on any error or a 4-second timeout, and opens a circuit breaker after 5 straight failures. Behind it, nginx and a Flask gateway feed {m.engines.value} TensorRT FP16 engines in Triton: meter presence, dial detection, digital-vs-analog, and short, medium and long readers for each dial type.
@@ -75,8 +75,8 @@ export default function MeterOCRCaseStudy() {
       </section>
 
       {/* 5. Decisions */}
-      <section className="mb-24 prose prose-invert prose-p:text-text/80 max-w-none">
-        <h2 className="font-display text-4xl mb-6">Trade-offs</h2>
+      <section className="mb-16 sm:mb-24 prose prose-invert prose-p:text-text/80 max-w-none">
+        <h2 className="font-display text-[2.5rem] leading-none sm:text-4xl mb-6">Trade-offs</h2>
         <p>
           Moving the last classifier from ONNX Runtime to TensorRT FP16 was the hardest cut. TensorRT refuses a Transpose on a UINT8 input, so the exported graph gets a patch that casts first, numerically identical, before conversion. Classifier compute went from <strong>{show(m.classifierCompute, 'before')}</strong> to <strong>{show(m.classifierCompute)}</strong>, and throughput stopped falling as load rose.
         </p>
@@ -86,8 +86,8 @@ export default function MeterOCRCaseStudy() {
       </section>
 
       {/* 6. Battle Log Cards */}
-      <section className="mb-24">
-        <h2 className="font-display text-4xl mb-6">Battle Log</h2>
+      <section className="mb-16 sm:mb-24">
+        <h2 className="font-display text-[2.5rem] leading-none sm:text-4xl mb-6">Battle Log</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
           <div className="p-6 bg-surface border border-line" style={{ borderBottomRightRadius: '14px' }}>
@@ -122,10 +122,10 @@ export default function MeterOCRCaseStudy() {
       </section>
 
       {/* 7. Results */}
-      <section className="mb-24">
-        <h2 className="font-display text-4xl mb-6">Results</h2>
-        <div className="w-full overflow-x-auto">
-          <table className="w-full text-left text-sm">
+      <section className="mb-16 sm:mb-24">
+        <h2 className="font-display text-[2.5rem] leading-none sm:text-4xl mb-6">Results</h2>
+        <div className="w-full overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+          <table className="w-full min-w-[320px] text-left text-xs sm:text-sm">
             <thead>
               <tr className="border-b border-line font-mono text-muted uppercase">
                 <th className="py-4 pr-4">Metric</th>
