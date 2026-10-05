@@ -16,7 +16,7 @@ export default function WritingIndexPage() {
           Writing
         </h1>
         <p className="font-mono text-muted uppercase tracking-widest max-w-xl">
-          Field notes, post-mortems, GPU kernel optimization logs, and research preprints.
+          Post-mortems, inference notes and research. Every number links back to where it was measured.
         </p>
       </header>
 

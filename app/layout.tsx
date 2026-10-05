@@ -4,6 +4,7 @@ import "./globals.css";
 import { JinxMode } from "@/components/JinxMode";
 import { Navigation } from "@/components/ui/Navigation";
 import { MotionProvider } from "@/components/motion/MotionProvider";
+import { TRUTH } from "@/content/truth";
 
 // Big Shoulders Display now ships on Google Fonts as the variable "Big Shoulders" family (opsz axis).
 const fontDisplay = Big_Shoulders({
@@ -27,7 +28,7 @@ const fontMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "Lourdu Raju · Machine Learning Engineer",
-  description: "I make vision models fast, honest and boring to run.",
+  description: TRUTH.identity.pitch,
 };
 
 export default function RootLayout({

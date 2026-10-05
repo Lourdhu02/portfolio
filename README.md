@@ -16,39 +16,37 @@
 
 This is the personal engineering portfolio of **Lourdu Raju**—ML Engineer at **Sujanix**, Founder of **spacedrift**, and author of **Achilles** and the **PhilArchive** preprint *No Final Save*.
 
-Designed with a dark cinematic 3D aesthetic inspired by modern film titles and engineering control planes. Every metric displayed is verified against production telemetry across over **40,000,000 live meter readings**.
+Designed with a dark cinematic 3D aesthetic inspired by film titles and engineering control planes. Every number on the site lives in [`content/truth.ts`](content/truth.ts) with how it was measured and the repository file that records it; pages read from there and print that source next to the figure.
 
 ---
 
 ## ⚡ Key Highlights & Systems
 
-### 1. [Flagship: Meter OCR Pipeline](/app/work/meter-ocr)
-- **Scale**: 5-model production pipeline handling up to 330,000 requests/day for a state electricity utility.
-- **Accuracy**: Lifted live exact-match accuracy from **79% to 91%** across 40M+ readings.
-- **Serving**: Triton Inference Server with 9 TensorRT FP16 engines on a single **NVIDIA L4**.
-- **Latency**: End-to-end p50 reduced from **1,415 ms to 156 ms** (**9× faster**); load-tested to **181 img/s sustained** at p95 340 ms with zero errors (12.6× production peak).
-- **Optimization**: Patched unsupported UINT8 Transpose graph operations, cutting classifier compute from **309.5 ms to 3.3 ms** (**94× faster**).
+### 1. [Flagship: Meter OCR](/app/work/meter-ocr/page.tsx)
+- **Scope**: production meter-reading OCR for two state electricity utilities; 330,707 requests on the busiest day.
+- **Serving**: 11 TensorRT FP16 engines behind Triton, with a hash-bucketed router, serverless fallback and a circuit breaker.
+- **Latency**: end-to-end p50 **1,386 ms → 60 ms** against the serverless path on the same 1,000 photos (23×).
+- **Throughput**: a UINT8 Transpose patch moved the last classifier to TensorRT: compute **309.5 → 3.3 ms** (94×), throughput **19 → 321 img/s** on the dev box; **181 img/s** sustained on one NVIDIA L4.
+- **Quality**: **83.4%** reading accuracy on 2,950 labelled photos and **99.8%** of 1,015 unreadable photos refused (West Bengal); **90.5%** in Bihar.
 
-### 2. [SVTRv2-ARD Research](/content/writing/svtrv2-ard.mdx)
-- Retrained SVTRv2 on production field crops with fused SDPA (FlashAttention) and ahead-of-time `torch.compile`.
-- Training speedup of **3.8×** on DGX Spark clusters while cutting peak VRAM from **50.5 GB down to 14.7 GB**.
-- Gated in CI with mandatory **$1.2 \times 10^{-5}$** PyTorch-to-ONNX numerical parity checks.
+### 2. [SVTRv2-ARD](content/writing/svtrv2-ard.mdx)
+- Paper-first SVTRv2 (ICCV 2025) reimplementation, verified against the official OpenOCR code.
+- ARD: adaptive routing and SGM→CTC distillation, both inference-preserving; 49/49 tests pass. No benchmark checkpoint trained yet.
 
-### 3. [ECHOME Local-First Agent](/content/writing/echome.mdx)
-- LangGraph agent with CoALA-style three-tier memory (episodic Qdrant vectors, semantic fact consolidation, procedural patterns).
-- Recalls 11 of 12 planted facts up to 52 turns prior in top-5 candidates at ~1 ms retrieval.
-- Adaptive personality assessment engine using Item Response Theory (IRT), halving questionnaire length at $r = 0.97$.
+### 3. [ECHOME](content/writing/echome.mdx)
+- Fully local digital twin: adaptive IRT personality assessment, voice clone, and a LangGraph agent with CoALA-style memory.
+- Recalls the needed fact in 11 of 12 multi-session scenarios (92%) vs 0% with memory off; assessment 70% shorter at SE < 0.32.
 
-### 4. [FinSentinelAI](/content/writing/finsentinel.mdx)
-- Self-contained, air-gapped financial document RAG engine (FastAPI, Ollama, ChromaDB).
-- Hybrid BM25 + dense semantic retrieval with reciprocal-rank fusion (RRF) and cross-encoder reranking over 1,000+ financial PDFs, boosting exact-ID lookups from **15% to 100%**.
+### 4. [FinSentinelAI](content/writing/finsentinel.mdx)
+- Fully local RAG over invoices, receipts and bank statements: ChromaDB, cross-encoder reranking, Ollama, per-user isolation inside the vector store.
+- 1,000-document synthetic finance test corpus across 10 layouts; zero external API calls.
 
 ### 5. [Achilles — Core AI from First Principles](https://github.com/Lourdhu02/achilles)
-- Open-source curriculum of **18 test-driven labs**: reverse-mode autograd, Llama transformer, FlashAttention kernels in OpenAI Triton, KV cache, LoRA, DPO, GRPO, quantization, and MoE.
-- **229 automated unit tests** passing in CI across Linux, macOS, and Windows.
+- 18 test-driven labs from autograd to FlashAttention in Triton, DPO, GRPO, quantization and MoE.
+- 229 reference tests passing in CI on Linux, macOS and Windows.
 
-### 6. [No Final Save: Research Preprint](https://philarchive.org/rec/BANNFS)
-- 23-page formal framework for persistent AI agents published on PhilArchive: causal-continuity criterion for agent identity, terminal vs instrumental self-preservation proofs, and developmental safety boundaries.
+### 6. [No Final Save](https://philarchive.org/rec/BANNFS)
+- 23-page preprint on persistent AI agents: a causal-continuity criterion for identity, a proof that terminal and instrumental self-preservation cannot be told apart from behaviour, and a developmental safety model.
 
 ---
 
@@ -56,7 +54,7 @@ Designed with a dark cinematic 3D aesthetic inspired by modern film titles and e
 
 - **Color Palette**: Void Black (`#050507`), Deep Surface (`#0B0B0F`), Signal Red (`#FF4655`), ML Detection Cyan (`#2DE2E6`).
 - **3D Hero**: React Three Fiber particle canvas sampling SVG vector glyphs into dynamic point clouds with physics restitution, pointer repulsion, and dynamic performance tiers (auto-downgrading from 24k to 12k/6k particles based on frame rate).
-- **Interactive ML Lab (`/lab`)**: Soundless in-browser OCR inference simulator featuring live OBB bounding box locks, laser sweep animations, character confidence matrices, and exportable JSON telemetry.
+- **Interactive ML Lab (`/lab`)**: Scripted walkthrough of the OCR pipeline on synthetic samples featuring live OBB bounding box locks, laser sweep animations, character confidence matrices, and exportable JSON telemetry.
 - **Micro-Interactions**: Magnetic hover pull buttons, split-line title reveal masks, velocity-linked scrolling, and smooth cmdk palette navigation.
 
 ---
