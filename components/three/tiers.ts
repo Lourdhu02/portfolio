@@ -1,42 +1,51 @@
+import { useSyncExternalStore } from 'react'
+
+// high/medium/low pick a particle budget; static means no WebGL2, so the hero stays typographic
 export type Tier = 'high' | 'medium' | 'low' | 'static'
 
-// Particle budget per tier. 'static' renders the plain text hero and never loads three.js.
-export const PARTICLE_COUNT: Record<Exclude<Tier, 'static'>, number> = {
-  high: 24000,
-  medium: 12000,
-  low: 8000,
+export const PARTICLE_COUNT = { high: 24000, medium: 12000, low: 6000 } as const
+
+// Device capabilities never change during a session, so there is nothing to subscribe to.
+const subscribe = () => () => {}
+
+let cached: Tier | null = null
+
+function getDeviceTier(): Tier {
+  if (cached) return cached
+  // A feature check, not a throwaway context: creating one costs as much as the real canvas
+  // (hundreds of ms on software GL). If the real context fails, ParticleName falls back to static.
+  const webgl2 = typeof WebGL2RenderingContext !== 'undefined'
+  const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8
+  const cores = navigator.hardwareConcurrency || 4
+  const coarse = window.matchMedia('(pointer: coarse)').matches
+
+  if (!webgl2) cached = 'static'
+  else if (coarse || memory <= 4 || cores <= 4) cached = 'low'
+  else if (memory <= 8 || cores <= 8) cached = 'medium'
+  else cached = 'high'
+  return cached
 }
 
-// One step down when PerformanceMonitor sees the frame rate drop.
-export const DOWNGRADE: Record<Tier, Tier> = {
-  high: 'medium',
-  medium: 'low',
-  low: 'static',
-  static: 'static',
+export function usePerformanceTier(): Tier {
+  return useSyncExternalStore(subscribe, getDeviceTier, () => 'static')
 }
 
-// A feature check only: actually creating a throwaway context costs as much as the real one.
-// If context creation fails later, ParticleName's error boundary falls back to the static hero.
-function hasWebGL() {
-  return typeof WebGL2RenderingContext !== 'undefined' || typeof WebGLRenderingContext !== 'undefined'
+export function lowerTier(tier: Tier): Tier {
+  return tier === 'high' ? 'medium' : tier === 'medium' ? 'low' : tier
 }
 
-// Runs once on the client, before three.js is requested, so phones never download or build the desktop budget.
-export function detectTier(): Tier {
-  const nav = navigator as Navigator & {
-    deviceMemory?: number
-    connection?: { saveData?: boolean }
-  }
-  const memory = nav.deviceMemory ?? 8
-  const cores = nav.hardwareConcurrency || 4
-  const saveData = nav.connection?.saveData === true
-  const isPhone =
-    window.matchMedia('(pointer: coarse)').matches ||
-    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+const reducedMotionQuery = '(prefers-reduced-motion: reduce)'
 
-  if (saveData || memory <= 2 || cores <= 2 || !hasWebGL()) return 'static'
-  if (isPhone) return 'low'
-  if (memory <= 4 || cores <= 4) return 'medium'
-  if (memory >= 8 && cores >= 8) return 'high'
-  return 'medium'
+function subscribeReducedMotion(onChange: () => void) {
+  const mq = window.matchMedia(reducedMotionQuery)
+  mq.addEventListener('change', onChange)
+  return () => mq.removeEventListener('change', onChange)
+}
+
+export function usePrefersReducedMotion(): boolean {
+  return useSyncExternalStore(
+    subscribeReducedMotion,
+    () => window.matchMedia(reducedMotionQuery).matches,
+    () => false
+  )
 }

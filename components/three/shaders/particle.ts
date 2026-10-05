@@ -3,6 +3,11 @@ uniform float uTime;
 uniform float uProgress;
 uniform vec3 uMouse;
 uniform float uMouseForce;
+uniform float uMouseRadius;
+uniform vec3 uShockOrigin;
+uniform float uShockAge;
+uniform float uScatter;
+uniform float uPointScale; // drawing-buffer pixels per world unit at distance 1
 
 attribute vec3 target;
 attribute float seed;
@@ -127,28 +132,36 @@ void main() {
     
     // Interpolate towards target
     vec3 currentPos = mix(pos, target, p);
-    
-    // Cursor repulsion
-    float dist = distance(currentPos, uMouse);
-    float force = smoothstep(3.0, 0.0, dist) * uMouseForce;
-    if(force > 0.0) {
-        vec3 dir = normalize(currentPos - uMouse);
-        currentPos += dir * force * 1.5;
-    }
-    
+
+    // Scroll dissolve: the name drifts back out into a wide starfield
+    vec3 star = position * vec3(1.4, 1.4, 1.0);
+    currentPos = mix(currentPos, star, smoothstep(0.0, 1.0, uScatter));
+
+    // Cursor repulsion in the screen plane, smooth falloff; the shader is stateless so particles spring back
+    vec2 away = currentPos.xy - uMouse.xy;
+    float dist = length(away);
+    float force = (1.0 - smoothstep(0.0, uMouseRadius, dist)) * uMouseForce;
+    currentPos.xy += normalize(away + vec2(0.0001)) * force * uMouseRadius * 0.45;
+
+    // Click shockwave: an expanding ring that pushes particles outward and fades
+    vec2 fromShock = currentPos.xy - uShockOrigin.xy;
+    float ringDist = length(fromShock) - uShockAge * 9.0;
+    float ring = exp(-ringDist * ringDist * 1.5) * exp(-uShockAge * 2.2);
+    currentPos.xy += normalize(fromShock + vec2(0.0001)) * ring * 0.9;
+
     // Breathing noise
     currentPos.y += sin(uTime * 2.0 + seed * 10.0) * 0.05 * p;
-    
+
     vec4 mvPosition = modelViewMatrix * vec4(currentPos, 1.0);
     
     // Size attenuation
-    gl_PointSize = size * (26.0 / -mvPosition.z);
+    // size is in world units, so dots look the same at any resolution or pixel ratio
+    gl_PointSize = max(1.0, size * uPointScale / -mvPosition.z);
     gl_Position = projectionMatrix * mvPosition;
     
     // Depth-based alpha
-    // Camera sits at z=15, so the name plane is at view depth -15: keep it near full brightness and fade the far nebula
-    float depthAlpha = smoothstep(-40.0, -12.0, mvPosition.z);
-    vAlpha = depthAlpha * (0.2 + p * 0.8);
+    float depthAlpha = smoothstep(-45.0, -10.0, mvPosition.z);
+    vAlpha = depthAlpha * (0.2 + p * 0.8) * (1.0 - 0.6 * uScatter);
 }
 `
 

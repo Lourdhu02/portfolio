@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { posts } from '#velite'
 import Link from 'next/link'
+import { ViewTransition } from 'react'
 import type { Metadata } from 'next'
 import { TRUTH, METRICS, show } from '@/content/truth'
 
@@ -69,9 +70,11 @@ export default async function WorkSlugPage({ params }: PageProps) {
       </Link>
       
       <header className="mb-16">
-        <h1 className="font-display text-6xl md:text-8xl leading-[0.85] mb-6 uppercase">
-          {post.title}
-        </h1>
+        <ViewTransition name={`work-title-${slug}`} share="morph" default="none">
+          <h1 className="font-display text-6xl md:text-8xl leading-[0.85] mb-6 uppercase w-fit">
+            {post.title}
+          </h1>
+        </ViewTransition>
         <p className="font-mono text-muted uppercase tracking-widest">{post.summary}</p>
       </header>
 

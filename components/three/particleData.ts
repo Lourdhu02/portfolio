@@ -1,7 +1,7 @@
 import { sampleTextToParticles } from '@/utils/canvasSampling'
 
-// Shared by the R3F hero (desktop) and the plain WebGL hero (phones), so both build the same name.
-// No three.js import here: phones load this without the three chunk.
+// Particle buffers for the hero name. Shared by ParticleSystem (three.js, desktop) and
+// LiteParticles (plain WebGL, phones) so both draw the same layout. No three.js import here.
 
 // Seeded PRNG (mulberry32) so the particle layout is deterministic and render stays pure
 function createRandom(seed: number) {
@@ -13,32 +13,38 @@ function createRandom(seed: number) {
   }
 }
 
-export const PARTICLE_COLOR = '#EDEDF0'
-export const PARTICLE_ACCENT = '#FF4655'
-
-export function buildParticles(particleCount: number) {
-  // Generate target positions from text
-  const targets = sampleTextToParticles('LOURDU RAJU', particleCount)
-
-  // Initial random positions
-  const positions = new Float32Array(particleCount * 3)
-  const seeds = new Float32Array(particleCount)
-  const sizes = new Float32Array(particleCount)
-  const accents = new Float32Array(particleCount)
+export function buildParticles(particleCount: number, lines: string[]) {
   const random = createRandom(particleCount)
+  const sampled = sampleTextToParticles(lines, particleCount, random)
+
+  const posArray = new Float32Array(particleCount * 3)
+  const seedArray = new Float32Array(particleCount)
+  const sizeArray = new Float32Array(particleCount)
+  const accentArray = new Float32Array(particleCount)
 
   for (let i = 0; i < particleCount; i++) {
     // Nebula-like initial distribution
-    positions[i * 3] = (random() - 0.5) * 40
-    positions[i * 3 + 1] = (random() - 0.5) * 40
-    positions[i * 3 + 2] = (random() - 0.5) * 40 - 10
+    posArray[i * 3] = (random() - 0.5) * 40
+    posArray[i * 3 + 1] = (random() - 0.5) * 40
+    posArray[i * 3 + 2] = (random() - 0.5) * 40 - 10
 
-    seeds[i] = random()
-    sizes[i] = random() * 0.5 + 0.1
+    seedArray[i] = random()
+    sizeArray[i] = random() * 0.028 + 0.012 // world units
 
     // 6-8% tinted signal red
-    accents[i] = random() < 0.07 ? 1.0 : 0.0
+    accentArray[i] = random() < 0.07 ? 1.0 : 0.0
   }
 
-  return { positions, targets, seeds, sizes, accents }
+  return {
+    positions: posArray,
+    targets: sampled.targets,
+    seeds: seedArray,
+    sizes: sizeArray,
+    accents: accentArray,
+    textWidth: sampled.width,
+    textHeight: sampled.height,
+  }
 }
+
+// Behaviour constants both renderers share
+export const NO_SHOCK = 100 // seconds; old enough that the ring has fully faded

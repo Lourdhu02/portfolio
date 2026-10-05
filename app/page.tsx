@@ -1,13 +1,15 @@
-import { ParticleName } from '@/components/three/ParticleName'
 import { Counter } from '@/components/motion/Counter'
 import { WorkCard } from '@/components/motion/WorkCard'
 import { LabDock } from '@/components/interaction/LabDock'
 import { CopyEmail } from '@/components/interaction/CopyEmail'
 import { Magnetic } from '@/components/motion/Magnetic'
-import { SplitLines } from '@/components/motion/SplitLines'
+import { ParallaxGrid } from '@/components/motion/Parallax'
+import { Reveal, RevealItem } from '@/components/motion/Reveal'
+import { ScrollWords } from '@/components/motion/ScrollWords'
 import { TRUTH, METRICS, show, factor } from '@/content/truth'
 import { Receipt } from '@/components/ui/Receipt'
 import Link from 'next/link'
+import { HeroStage } from '@/components/hero/HeroStage'
 import { HeroOverlay } from '@/components/hero/HeroOverlay'
 import { SectionHead } from '@/components/ui/SectionHead'
 import { MeterOcrVisual, SvtrVisual, EchomeVisual, FinSentinelVisual } from '@/components/work/CardVisuals'
@@ -21,16 +23,15 @@ export default function Home() {
     <main className="relative w-full">
       
       {/* SC.01: Hero */}
-      <section className="relative h-[100svh] min-h-[640px] w-full overflow-hidden">
-        <ParticleName />
+      <HeroStage>
         <HeroOverlay />
-      </section>
+      </HeroStage>
 
       {/* SC.02: Proof */}
       <section className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-text">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-6 pt-16 pb-24 border-t border-line">
+        <Reveal stagger={0.12} className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-6 pt-16 pb-24 border-t border-line">
           
-          <div className="flex flex-col space-y-4">
+          <RevealItem className="flex flex-col space-y-4">
             <h2 className="font-display text-6xl md:text-8xl leading-none">
               <Counter value={Math.round(busiestDay.value / 1000)} suffix="K" />
             </h2>
@@ -39,9 +40,9 @@ export default function Home() {
               <span className="text-muted/80 text-sm mt-1">{busiestDay.value.toLocaleString('en-US')} requests on production&apos;s busiest day, for a state electricity utility.</span>
               <Receipt metric={busiestDay} className="mt-3" />
             </div>
-          </div>
+          </RevealItem>
 
-          <div className="flex flex-col space-y-4">
+          <RevealItem className="flex flex-col space-y-4">
             <h2 className="font-display text-6xl md:text-8xl leading-none text-accent">
               <Counter value={Math.round(factor(p50))} suffix="×" />
             </h2>
@@ -50,9 +51,9 @@ export default function Home() {
               <span className="text-muted/80 text-sm mt-1">p50 from {show(p50, 'before')} on serverless to {show(p50)} on Triton and TensorRT.</span>
               <Receipt metric={p50} className="mt-3" />
             </div>
-          </div>
+          </RevealItem>
 
-          <div className="flex flex-col space-y-4">
+          <RevealItem className="flex flex-col space-y-4">
             <h2 className="font-display text-6xl md:text-8xl leading-none text-success">
               <Counter value={invalidDetection.value} decimals={invalidDetection.decimals} suffix="%" />
             </h2>
@@ -61,16 +62,18 @@ export default function Home() {
               <span className="text-muted/80 text-sm mt-1">Blurred, blank and non-meter photos get &ldquo;NA&rdquo;, never a confident wrong number.</span>
               <Receipt metric={invalidDetection} className="mt-3" />
             </div>
-          </div>
+          </RevealItem>
 
-        </div>
+        </Reveal>
       </section>
 
       {/* SC.03: Work Grid */}
       <section id="work" className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-text scroll-mt-16">
-        <SectionHead index="01" title="Selected Work" aside="Production systems & research" />
+        <Reveal>
+          <SectionHead index="01" title="Selected Work" aside="Production systems & research" />
+        </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-16">
+        <ParallaxGrid className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-16" itemClassNames={['md:col-span-3']}>
           <WorkCard
             id="meter-ocr"
             index="01"
@@ -123,35 +126,39 @@ export default function Home() {
           >
             <FinSentinelVisual />
           </WorkCard>
-        </div>
+        </ParallaxGrid>
       </section>
 
       {/* SC.04: Lab console (same command menu as ⌘K) */}
       <section className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-text">
-        <SectionHead
-          index="02"
-          title="Lab"
-          aside={<Link href="/lab" className="text-detect hover:text-text transition-colors">Walk through the pipeline →</Link>}
-        />
-        <LabDock />
+        <Reveal>
+          <SectionHead
+            index="02"
+            title="Lab"
+            aside={<Link href="/lab" className="text-detect hover:text-text transition-colors">Walk through the pipeline →</Link>}
+          />
+        </Reveal>
+        <Reveal>
+          <LabDock />
+        </Reveal>
       </section>
 
       {/* SC.05: Principles */}
-      <section className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-text">
-        <SectionHead index="03" title="Engineering Creed" />
-        <h2 className="font-display text-5xl md:text-7xl mb-12 leading-[1.05]">
-          <SplitLines>Measure before you claim.</SplitLines>
-          <br />
-          <SplitLines>Ship behind a canary.</SplitLines>
-          <br />
-          <SplitLines className="text-muted">Boring to run.</SplitLines>
-        </h2>
+      <section className="relative z-10 mx-auto max-w-7xl px-6 text-text">
+        <ScrollWords
+          label={<SectionHead index="03" title="Engineering Creed" />}
+          lines={[
+            { text: 'Measure before you claim.' },
+            { text: 'Ship behind a canary.' },
+            { text: 'Boring to run.', muted: true },
+          ]}
+        />
       </section>
 
       {/* SC.06: Credentials, Open Source & Studio */}
       <section className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-text border-t border-line">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <div>
+        <Reveal stagger={0.1} className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <RevealItem>
             <div className="font-mono text-xs text-accent uppercase tracking-widest mb-2">04 / Credentials</div>
             <h2 className="font-display text-4xl mb-4">Lourdu Raju</h2>
             <p className="font-mono text-sm text-muted uppercase tracking-widest mb-6">
@@ -178,9 +185,9 @@ export default function Home() {
                 Full Story →
               </Link>
             </div>
-          </div>
+          </RevealItem>
           
-          <div className="grid grid-cols-2 gap-6">
+          <RevealItem className="grid grid-cols-2 gap-6">
             <div className="p-6 bg-surface border border-line">
               <div className="text-4xl font-display text-accent mb-2">{achillesTests.value}</div>
               <div className="text-xs font-mono uppercase tracking-widest text-muted">CI tests passing (Achilles)</div>
@@ -197,12 +204,13 @@ export default function Home() {
               <div className="text-4xl font-display text-success mb-2">{Math.round(factor(classifierCompute))}×</div>
               <div className="text-xs font-mono uppercase tracking-widest text-muted">TensorRT speedup ({show(classifierCompute, 'before')} → {show(classifierCompute)})</div>
             </div>
-          </div>
-        </div>
+          </RevealItem>
+        </Reveal>
       </section>
 
       {/* SC.07: Footer */}
       <footer className="relative z-10 w-full bg-surface border-t border-line py-24 px-6 flex flex-col items-center justify-center overflow-hidden">
+        <Reveal className="flex flex-col items-center">
         <Magnetic strength={20}>
           <a 
             href={`mailto:${TRUTH.identity.email}`} 
@@ -219,6 +227,7 @@ export default function Home() {
           email={TRUTH.identity.email}
           className="mt-6 rounded-full px-4 py-2 font-mono text-xs text-muted transition-colors hover:text-text"
         />
+        </Reveal>
 
         <div className="mt-16 flex flex-wrap justify-center gap-6 font-mono text-xs uppercase tracking-widest text-muted">
           <a href={TRUTH.identity.links.github} target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">GitHub</a>
