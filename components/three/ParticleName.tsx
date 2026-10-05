@@ -44,9 +44,6 @@ export function ParticleName() {
         <h1 className="font-display text-[clamp(72px,12vw,220px)] leading-[0.85] text-text text-center tracking-tight">
           LOURDU RAJU
         </h1>
-        <div className="absolute top-[60%] text-muted font-mono tracking-widest text-sm uppercase">
-          Machine Learning Engineer
-        </div>
       </div>
     )
   }

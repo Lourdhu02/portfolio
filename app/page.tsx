@@ -10,9 +10,12 @@ import { ScrollWords } from '@/components/motion/ScrollWords'
 import { TRUTH, METRICS, show, factor } from '@/content/truth'
 import { Receipt } from '@/components/ui/Receipt'
 import Link from 'next/link'
+import { HeroOverlay } from '@/components/hero/HeroOverlay'
+import { SectionHead } from '@/components/ui/SectionHead'
+import { MeterOcrVisual, SvtrVisual, EchomeVisual, FinSentinelVisual } from '@/components/work/CardVisuals'
 
 export default function Home() {
-  const { busiestDay, p50, invalidDetection, sustainedL4, readingAccuracy, engines, classifierCompute } = METRICS.meterOcr
+  const { busiestDay, p50, invalidDetection, classifierCompute } = METRICS.meterOcr
   const { tests: achillesTests, labs: achillesLabs } = METRICS.achilles
   const studio = TRUTH.studio
 
@@ -22,6 +25,7 @@ export default function Home() {
       {/* SC.01: Hero */}
       <HeroScroll>
         <ParticleName />
+        <HeroOverlay />
       </HeroScroll>
 
       {/* SC.02: Proof */}
@@ -29,7 +33,7 @@ export default function Home() {
         <Reveal stagger={0.12} className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-6 pt-16 pb-24 border-t border-line">
           
           <RevealItem className="flex flex-col space-y-4">
-            <h2 className="font-display text-5xl md:text-7xl">
+            <h2 className="font-display text-6xl md:text-8xl leading-none">
               <Counter value={Math.round(busiestDay.value / 1000)} suffix="K" />
             </h2>
             <div className="flex flex-col">
@@ -40,7 +44,7 @@ export default function Home() {
           </RevealItem>
 
           <RevealItem className="flex flex-col space-y-4">
-            <h2 className="font-display text-5xl md:text-7xl text-accent">
+            <h2 className="font-display text-6xl md:text-8xl leading-none text-accent">
               <Counter value={Math.round(factor(p50))} suffix="×" />
             </h2>
             <div className="flex flex-col">
@@ -51,7 +55,7 @@ export default function Home() {
           </RevealItem>
 
           <RevealItem className="flex flex-col space-y-4">
-            <h2 className="font-display text-5xl md:text-7xl text-success">
+            <h2 className="font-display text-6xl md:text-8xl leading-none text-success">
               <Counter value={invalidDetection.value} decimals={invalidDetection.decimals} suffix="%" />
             </h2>
             <div className="flex flex-col">
@@ -65,109 +69,75 @@ export default function Home() {
       </section>
 
       {/* SC.03: Work Grid */}
-      <section id="work" className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-text">
-        <Reveal className="flex justify-between items-baseline mb-12 border-b border-line pb-4">
-          <h2 className="font-mono text-sm tracking-widest uppercase text-muted">01 / Selected Work</h2>
-          <span className="font-mono text-xs text-muted uppercase">Production Systems & Research</span>
+      <section id="work" className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-text scroll-mt-16">
+        <Reveal>
+          <SectionHead index="01" title="Selected Work" aside="Production systems & research" />
         </Reveal>
-        
-        <ParallaxGrid className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-          
-          {/* Flagship: Meter OCR */}
-          <WorkCard 
+
+        <ParallaxGrid className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-16" itemClassNames={['md:col-span-3']}>
+          <WorkCard
             id="meter-ocr"
+            index="01"
             title="Meter OCR"
             kicker={`Two state utilities · ${busiestDay.value.toLocaleString('en-US')} requests on the busiest day`}
             href="/work/meter-ocr"
+            summary="Reads electricity meters from field photos on Triton and TensorRT, and answers NA instead of guessing when a photo can't be read."
+            tags={['TensorRT', 'Triton', 'NVIDIA L4']}
+            aspect="aspect-[4/3] md:aspect-[21/9]"
+            className="md:col-span-3"
           >
-            <div className="w-full h-full bg-[#0E0E12] p-6 flex flex-col justify-between border-t border-accent/40">
-              <div className="flex justify-between items-center font-mono text-[11px] text-muted uppercase">
-                <span className="text-accent">FLAGSHIP PIPELINE</span>
-                <span>{engines.value} TENSORRT ENGINES</span>
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-success" />
-                  <span className="font-mono text-xs text-text">{show(sustainedL4)} sustained on one NVIDIA L4</span>
-                </div>
-                <div className="w-full bg-line h-1 rounded-full overflow-hidden">
-                  <div className="bg-accent h-full" style={{ width: `${readingAccuracy.value}%` }} />
-                </div>
-                <div className="flex justify-between font-mono text-[10px] text-muted">
-                  <span>READING ACCURACY: {show(readingAccuracy)}</span>
-                  <span>P50: {show(p50)}</span>
-                </div>
-              </div>
-            </div>
+            <MeterOcrVisual />
           </WorkCard>
 
-          {/* SVTRv2-ARD */}
-          <WorkCard 
+          <WorkCard
             id="svtrv2-ard"
+            index="02"
             title="SVTRv2-ARD"
             kicker="Research · SVTRv2 (ICCV 2025) + a new method"
             href="/work/svtrv2-ard"
+            summary="Learned routing into SVTRv2's resize bins plus SGM-to-CTC distillation, leaving the served model byte-identical."
+            tags={['PyTorch', 'CTC', 'OCR']}
+            aspect="aspect-[4/3]"
           >
-            <div className="w-full h-full bg-[#0E0E12] p-6 flex flex-col justify-between border-t border-detect/40">
-              <div className="flex justify-between items-center font-mono text-[11px] text-muted uppercase">
-                <span className="text-detect">ADAPTIVE ROUTING</span>
-                <span>CTC DISTILLATION</span>
-              </div>
-              <div className="space-y-2">
-                <div className="font-mono text-xs text-text">Verified line by line against official OpenOCR</div>
-                <div className="font-mono text-xs text-detect">{METRICS.svtrv2.tests.value}/{METRICS.svtrv2.tests.value} tests · served model unchanged</div>
-              </div>
-            </div>
+            <SvtrVisual />
           </WorkCard>
 
-          {/* ECHOME */}
-          <WorkCard 
+          <WorkCard
             id="echome"
+            index="03"
             title="ECHOME"
-            kicker="Local-First Agent · LangGraph"
+            kicker="Local-first agent · LangGraph"
             href="/work/echome"
+            summary={`An offline agent with three-tier memory and a ${show(METRICS.echome.assessmentCut)} shorter adaptive assessment.`}
+            tags={['LangGraph', 'Qdrant', 'Offline']}
+            aspect="aspect-[4/3]"
           >
-            <div className="w-full h-full bg-[#0E0E12] p-6 flex flex-col justify-between border-t border-line">
-              <div className="flex justify-between items-center font-mono text-[11px] text-muted uppercase">
-                <span>3-TIER MEMORY</span>
-                <span>&lt;1 MS RETRIEVAL</span>
-              </div>
-              <div className="space-y-1">
-                <div className="font-mono text-xs text-text">Recalls the right fact in 11 of 12 sessions</div>
-                <div className="font-mono text-xs text-muted">{show(METRICS.echome.assessmentCut)} shorter adaptive assessment · fully offline</div>
-              </div>
-            </div>
+            <EchomeVisual />
           </WorkCard>
-          
-          {/* FinSentinelAI */}
-          <WorkCard 
+
+          <WorkCard
             id="finsentinel"
+            index="04"
             title="FinSentinelAI"
             kicker="Private finance RAG · runs on your machine"
             href="/work/finsentinel"
+            summary="Question answering over invoices and bank statements with local embeddings, a cross-encoder reranker and Ollama. Zero external API calls."
+            tags={['ChromaDB', 'Cross-encoder', 'Ollama']}
+            aspect="aspect-[4/3]"
           >
-            <div className="w-full h-full bg-[#0E0E12] p-6 flex flex-col justify-between border-t border-line">
-              <div className="flex justify-between items-center font-mono text-[11px] text-muted uppercase">
-                <span>CROSS-ENCODER RERANK</span>
-                <span>LOCAL OLLAMA</span>
-              </div>
-              <div className="space-y-1">
-                <div className="font-mono text-xs text-text">Zero external API calls</div>
-                <div className="font-mono text-xs text-muted">{METRICS.finSentinel.corpus.value.toLocaleString('en-US')}-document test corpus · 10 layouts</div>
-              </div>
-            </div>
+            <FinSentinelVisual />
           </WorkCard>
-
         </ParallaxGrid>
       </section>
 
       {/* SC.04: Lab (cmdk) */}
       <section className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-text">
-        <Reveal className="flex justify-between items-baseline mb-12 border-b border-line pb-4">
-          <h2 className="font-mono text-sm tracking-widest uppercase text-muted">02 / Lab</h2>
-          <Link href="/lab" className="font-mono text-xs text-detect hover:underline uppercase tracking-wider">
-            Walk through the pipeline →
-          </Link>
+        <Reveal>
+          <SectionHead
+            index="02"
+            title="Lab"
+            aside={<Link href="/lab" className="text-detect hover:text-text transition-colors">Walk through the pipeline →</Link>}
+          />
         </Reveal>
         <Reveal>
           <LabCommand />
@@ -176,9 +146,8 @@ export default function Home() {
 
       {/* SC.05: Principles */}
       <section className="relative z-10 mx-auto max-w-7xl px-6 text-text">
-        <h2 className="sr-only">Engineering Creed</h2>
         <ScrollWords
-          label={<div className="font-mono text-xs text-muted uppercase tracking-widest mb-8">03 / Engineering Creed</div>}
+          label={<SectionHead index="03" title="Engineering Creed" />}
           lines={[
             { text: 'Measure before you claim.' },
             { text: 'Ship behind a canary.' },

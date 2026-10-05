@@ -23,12 +23,21 @@ export function Parallax({ children, className, offset = 60 }: ParallaxProps) {
   )
 }
 
-// Grid whose odd and even items drift at different rates, so two columns slide past each other
-export function ParallaxGrid({ children, className }: { children: React.ReactNode; className?: string }) {
+// Grid whose odd and even items drift at different rates, so neighbouring columns slide past each other.
+// itemClassNames[i] lands on item i's wrapper, for grid placement such as col-span.
+export function ParallaxGrid({
+  children,
+  className,
+  itemClassNames = [],
+}: {
+  children: React.ReactNode
+  className?: string
+  itemClassNames?: string[]
+}) {
   return (
     <div className={className}>
       {Children.toArray(children).map((child, i) => (
-        <Parallax key={i} offset={i % 2 ? 72 : 24}>
+        <Parallax key={i} offset={i % 2 ? 72 : 24} className={itemClassNames[i]}>
           {child}
         </Parallax>
       ))}
