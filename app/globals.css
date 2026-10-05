@@ -274,3 +274,36 @@ html.lenis body {
   .hero-in { animation: none; opacity: 1; }
   .hero-blink, .hero-scroll, .wc-scan, .wc-node, .wc-ping, .wc-grow, .wc-grow-r { animation: none; }
 }
+
+/* /lab stress sliders: an invisible native range over a drawn accuracy curve */
+.lab-range {
+  appearance: none;
+  background: transparent;
+  cursor: ew-resize;
+}
+.lab-range:focus-visible {
+  outline: 1px solid var(--color-detect);
+  outline-offset: 2px;
+}
+.lab-range::-webkit-slider-runnable-track {
+  height: 100%;
+  background: transparent;
+}
+.lab-range::-moz-range-track {
+  height: 100%;
+  background: transparent;
+}
+.lab-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 100%;
+  background: transparent;
+  border: 1px solid var(--color-accent);
+}
+.lab-range::-moz-range-thumb {
+  width: 12px;
+  height: 100%;
+  border-radius: 0;
+  background: transparent;
+  border: 1px solid var(--color-accent);
+}

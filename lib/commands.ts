@@ -45,7 +45,7 @@ export const COMMANDS: CommandDef[] = [
   { id: 'work-echome', label: 'ECHOME', group: 'Work', hint: 'Local-first agent', href: '/work/echome', keywords: ['langgraph', 'qdrant', 'memory'] },
   { id: 'work-finsentinel', label: 'FinSentinelAI', group: 'Work', hint: 'Private RAG', href: '/work/finsentinel', keywords: ['rag', 'bm25', 'ollama'] },
 
-  { id: 'lab-ocr', label: 'In-browser OCR demo', group: 'Lab', hint: 'ONNX / WASM', href: '/lab', keywords: ['demo', 'benchmark', 'experiment'] },
+  { id: 'lab-ocr', label: 'Read the meter yourself', group: 'Lab', hint: 'Live CTC model', href: '/lab', keywords: ['demo', 'ocr', 'ctc', 'model', 'benchmark'] },
   { id: 'lab-pipeline', label: 'Pipeline diagram', group: 'Lab', hint: 'Interactive', href: '/work/meter-ocr', keywords: ['diagram', 'architecture'] },
 
   { id: 'copy-email', label: 'Copy email address', group: 'Actions', hint: email, action: 'copy-email', keywords: ['contact', 'mail', 'hire'] },

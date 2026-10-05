@@ -143,7 +143,7 @@ export default function Home() {
           <SectionHead
             index="02"
             title="Lab"
-            aside={<Link href="/lab" className="text-detect hover:text-text transition-colors">Walk through the pipeline →</Link>}
+            aside={<Link href="/lab" className="text-detect hover:text-text transition-colors">Read the meter yourself →</Link>}
           />
         </Reveal>
         <Reveal>
