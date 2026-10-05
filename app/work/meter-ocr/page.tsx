@@ -2,6 +2,7 @@ import { PipelineDiagram } from '@/components/motion/PipelineDiagram'
 import { Receipt } from '@/components/ui/Receipt'
 import { METRICS, show, factor, fmt, headroom } from '@/content/truth'
 import Link from 'next/link'
+import { ViewTransition } from 'react'
 import type { Metadata } from 'next'
 
 const ocr = METRICS.meterOcr
@@ -25,9 +26,11 @@ export default function MeterOCRCaseStudy() {
 
       {/* 1. Title Card */}
       <header className="mb-10 sm:mb-24">
-        <h1 className="font-display text-[clamp(3.25rem,16vw,3.75rem)] sm:text-6xl md:text-8xl leading-[0.85] uppercase mb-6">
-          Meter OCR
-        </h1>
+        <ViewTransition name="work-title-meter-ocr" share="morph" default="none">
+          <h1 className="font-display text-[clamp(3.25rem,16vw,3.75rem)] sm:text-6xl md:text-8xl leading-[0.85] uppercase mb-6 w-fit">
+            Meter OCR
+          </h1>
+        </ViewTransition>
         <p className="font-mono text-xs sm:text-base text-muted uppercase tracking-wider sm:tracking-widest">One photo in, one reading out · two state electricity utilities</p>
       </header>
 

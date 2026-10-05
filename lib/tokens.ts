@@ -26,9 +26,11 @@ export const duration = {
 export const ease = {
   out: [0.22, 1, 0.36, 1],
   inOut: [0.65, 0, 0.35, 1],
+  expo: [0.16, 1, 0.3, 1],
 } as const
 
 export const spring = {
   ui: { stiffness: 320, damping: 30 },
   magnetic: { stiffness: 140, damping: 18 },
+  scroll: { stiffness: 220, damping: 40, restDelta: 0.0005 },
 } as const

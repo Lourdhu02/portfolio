@@ -62,7 +62,13 @@
   }
 }
 
-/* Horizontal snap rail used for card rows on phones */
+/* Horizontal snap rail used for card rows on phones; cards in the rail sit level, so the
+   scroll-linked parallax drift (Parallax.tsx) only runs once the rail becomes a grid at lg */
+@media (max-width: 1023.98px) {
+  .snap-rail [data-scroll-fx] {
+    transform: none !important;
+  }
+}
 .snap-rail {
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
@@ -99,6 +105,104 @@
   --color-accent: #FF4FA3;
   --color-accent-dim: #7A1F4E;
   --color-success: #2DE2E6;
+}
+
+/* Smooth scroll (Lenis). Native smooth-scroll would fight Lenis's own interpolation. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+/* Page transitions (React <ViewTransition> in app/template.tsx).
+   The old page sinks back and dims while the new one wipes up over it from below. */
+:root {
+  --vt-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --vt-ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --vt-duration: 900ms;
+}
+::view-transition {
+  pointer-events: none;
+}
+::view-transition-group(*) {
+  animation-duration: var(--vt-duration);
+  animation-timing-function: var(--vt-ease);
+}
+::view-transition-old(.page-exit) {
+  animation: page-exit var(--vt-duration) var(--vt-ease) both;
+  transform-origin: 50% 0%;
+}
+::view-transition-new(.page-enter) {
+  animation: page-enter var(--vt-duration) var(--vt-ease) both;
+}
+@keyframes page-exit {
+  to {
+    opacity: 0.25;
+    transform: translateY(-6vh) scale(0.96);
+    filter: brightness(0.4);
+  }
+}
+@keyframes page-enter {
+  from {
+    clip-path: inset(100% 0 0 0);
+    transform: translateY(12vh);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    transform: none;
+  }
+}
+
+/* Shared title between a work card and its case study */
+::view-transition-group(.morph) {
+  animation-duration: 800ms;
+  z-index: 10;
+}
+::view-transition-image-pair(.morph) {
+  animation-name: via-blur;
+}
+@keyframes via-blur {
+  40% { filter: blur(4px); }
+}
+
+/* Chrome that must not move while pages swap underneath it */
+::view-transition-group(site-nav),
+::view-transition-group(site-grain),
+::view-transition-group(scroll-progress) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-nav),
+::view-transition-old(site-grain),
+::view-transition-old(scroll-progress) {
+  display: none;
+}
+::view-transition-new(site-nav),
+::view-transition-new(site-grain),
+::view-transition-new(scroll-progress) {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+  /* Scroll-linked transforms (Parallax, HeroScroll) hold still */
+  [data-scroll-fx] {
+    transform: none !important;
+    opacity: 1 !important;
+  }
 }
 
 /* Custom cursor (components/interaction/Cursor.tsx) hides the native one for mice only.

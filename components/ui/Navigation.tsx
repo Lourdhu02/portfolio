@@ -1,10 +1,11 @@
 "use client"
 import Link from 'next/link'
-import { m, AnimatePresence } from 'motion/react'
+import { m, AnimatePresence, useMotionValueEvent, useScroll } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import { Magnetic } from '@/components/motion/Magnetic'
 import { openPalette } from '@/lib/interaction'
 import { useModKey } from '@/lib/useMediaQuery'
+import { duration, ease } from '@/lib/tokens'
 
 const links = [
   { label: 'Work', href: '/#work' },
@@ -18,6 +19,14 @@ export function Navigation() {
   const mod = useModKey()
   const menuButton = useRef<HTMLButtonElement>(null)
   const panel = useRef<HTMLDivElement>(null)
+  const [hidden, setHidden] = useState(false)
+  const { scrollY } = useScroll()
+
+  // Tuck the bar away while reading down the page; bring it back on any upward scroll
+  useMotionValueEvent(scrollY, 'change', (y) => {
+    const prev = scrollY.getPrevious() ?? 0
+    setHidden(y > 160 && y > prev)
+  })
 
   // Modal menu: lock scroll, focus the first link, trap Tab, Esc closes, focus returns.
   useEffect(() => {
@@ -54,7 +63,12 @@ export function Navigation() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 w-full z-50 px-4 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:p-6 flex justify-between items-center mix-blend-difference pointer-events-none">
+      <m.nav
+        className="fixed top-0 left-0 w-full z-50 px-4 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:p-6 flex justify-between items-center mix-blend-difference pointer-events-none"
+        style={{ viewTransitionName: 'site-nav' }}
+        animate={{ y: hidden && !isOpen ? '-110%' : '0%' }}
+        transition={{ duration: duration.reveal * 0.6, ease: ease.out }}
+      >
         <Link href="/" aria-label="Lourdu Raju, home" className="font-display text-2xl text-text pointer-events-auto hover:text-accent transition-colors min-h-11 min-w-11 flex items-center">
           LR
         </Link>
@@ -84,7 +98,7 @@ export function Navigation() {
             </button>
           </Magnetic>
         </div>
-      </nav>
+      </m.nav>
 
       <AnimatePresence>
         {isOpen && (

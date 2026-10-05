@@ -55,13 +55,16 @@ export function ParticleName() {
       
       {/* 
         We use frameloop="always" when in view to handle smooth mouse repulsion,
-        and "demand" when out of view to effectively pause it.
+        and "never" when out of view to pause it outright.
       */}
       <Canvas
         camera={{ position: [0, 0, 15], fov: 45 }}
         dpr={[1, 1.75]}
         gl={{ antialias: false, powerPreference: 'high-performance' }}
-        frameloop={isInView ? 'always' : 'demand'}
+        frameloop={isInView ? 'always' : 'never'}
+        // The canvas never moves within its section, so skip R3F's per-scroll-event re-measure;
+        // with it on, every smooth-scroll tick re-rendered the scene even while the hero was off-screen.
+        resize={{ scroll: false }}
       >
         <PerformanceMonitor 
           onDecline={() => setTier('medium')}
