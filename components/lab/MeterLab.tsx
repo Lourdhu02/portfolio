@@ -203,8 +203,8 @@ export function MeterLab() {
           <span className="font-mono text-[10px] text-muted">Hover a column to see the slice of the meter it looks at</span>
         </div>
         {result ? (
-          <div className="overflow-x-auto -mx-1 px-1">
-            <div className="min-w-[640px]">
+          <div>
+            <div>
               <Lattice result={result} alphabet={ALPHABET} hover={hover} onHover={setHover} />
               <div className="mt-3" style={{ paddingLeft: `${(22 / (22 + result.T * 18)) * 100}%` }}>
                 <CollapseStrip result={result} alphabet={ALPHABET} hover={hover} />
