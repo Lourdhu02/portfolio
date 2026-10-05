@@ -36,7 +36,7 @@ export function Counter({ value, prefix = "", suffix = "", decimals = 0, duratio
   }, [springValue, prefix, suffix, decimals])
 
   return (
-    <span ref={ref} className="tabular-nums font-mono">
+    <span ref={ref} className="tabular-nums">
       {/* SSR fallback for SEO */}
       {prefix}{value.toFixed(decimals)}{suffix}
     </span>
