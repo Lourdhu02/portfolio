@@ -10,7 +10,7 @@ import Link from 'next/link'
 import { HeroStage } from '@/components/hero/HeroStage'
 import { HeroOverlay } from '@/components/hero/HeroOverlay'
 import { SectionHead } from '@/components/ui/SectionHead'
-import { PetPen } from '@/components/pets/PetPen'
+import { RobotStage } from '@/components/robots/RobotStage'
 
 export default function Home() {
   const { busiestDay, p50, invalidDetection, classifierCompute } = METRICS.meterOcr
@@ -66,18 +66,19 @@ export default function Home() {
       </section>
 
       {/* SC.03: Work Grid */}
-      <section id="work" className="relative z-10 w-full px-5 sm:px-10 lg:px-16 py-16 sm:py-24 text-text scroll-mt-16">
-        <Reveal>
-          <SectionHead index="01" title="Selected Work" aside="Four pets, four projects" />
+      <section id="work" className="relative z-10 w-full pt-16 sm:pt-24 text-text scroll-mt-16">
+        <Reveal className="px-5 sm:px-10 lg:px-16">
+          <SectionHead index="01" title="Selected Work" aside="Four robots, four projects" />
         </Reveal>
 
-        <PetPen
-          pets={[
+        <RobotStage
+          bots={[
             {
               name: 'Jinx',
               kind: 'cat',
-              species: 'Cat',
-              job: 'Reads electricity meters by night, and would rather say nothing than guess.',
+              model: 'Scanner unit',
+              glow: '#2DE2E6',
+              job: 'Reads electricity meters all night, and would rather say nothing than guess.',
               project: {
                 id: 'meter-ocr',
                 title: 'Meter OCR',
@@ -89,7 +90,8 @@ export default function Home() {
             {
               name: 'Tobi',
               kind: 'dog',
-              species: 'Retriever',
+              model: 'Retriever unit',
+              glow: '#FFB547',
               job: 'Fetches the exact invoice line you asked for, and never leaves the house to do it.',
               project: {
                 id: 'finsentinel',
@@ -102,8 +104,9 @@ export default function Home() {
             {
               name: 'Mikey',
               kind: 'hamster',
-              species: 'Hamster',
-              job: 'Sorts every word image into the right bin before he takes a bite.',
+              model: 'Router unit',
+              glow: '#3DDC97',
+              job: 'Runs every word image to the right bin before the reader takes a look.',
               project: {
                 id: 'svtrv2-ard',
                 title: 'SVTRv2-ARD',
@@ -115,7 +118,8 @@ export default function Home() {
             {
               name: 'Luffy',
               kind: 'parrot',
-              species: 'Parrot',
+              model: 'Voice unit',
+              glow: '#FF4655',
               job: 'Remembers what you said last week and says it back in your voice.',
               project: {
                 id: 'echome',
