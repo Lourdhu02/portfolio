@@ -63,7 +63,7 @@ export default function ParticleScene({ lines, className = 'absolute inset-0', s
   if (tier === 'static') return null
 
   return (
-    <div ref={containerRef} aria-hidden="true" className={`${className} z-0 pointer-events-none`}>
+    <div ref={containerRef} aria-hidden="true" data-particles className={`${className} z-0 pointer-events-none`}>
       <Canvas
         camera={{ position: [0, 0, 15], fov: 45 }}
         dpr={[1, 1.75]}

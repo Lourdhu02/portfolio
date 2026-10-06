@@ -46,7 +46,7 @@ export function Lattice({
       ))}
       {Array.from({ length: T }, (_, t) => (
         <g key={t} onMouseEnter={() => onHover(t)} onFocus={() => onHover(t)}>
-          <rect x={LABEL_W + t * CELL} y={0} width={CELL} height={h} fill={hover === t ? 'rgba(45,226,230,0.08)' : 'transparent'} />
+          <rect x={LABEL_W + t * CELL} y={0} width={CELL} height={h} className={hover === t ? 'fill-detect/10' : 'fill-transparent'} />
           {rows.map((_, k) => {
             const p = probs[t * K + k]
             if (p < 0.02) return null
@@ -59,17 +59,17 @@ export function Lattice({
                 width={CELL - 4}
                 height={CELL - 4}
                 rx={2}
-                fill={blank ? '#8A8A96' : '#2DE2E6'}
+                className={blank ? 'fill-muted' : 'fill-detect'}
                 opacity={blank ? p * 0.35 : 0.15 + p * 0.85}
               />
             )
           })}
         </g>
       ))}
-      <polyline points={pts} fill="none" stroke="#FF4655" strokeWidth={1.25} strokeLinejoin="round" opacity={0.85} pointerEvents="none" />
+      <polyline points={pts} fill="none" className="stroke-accent" strokeWidth={1.25} strokeLinejoin="round" opacity={0.85} pointerEvents="none" />
       {path.map((k, t) =>
         k === 0 ? null : (
-          <circle key={t} cx={LABEL_W + t * CELL + CELL / 2} cy={k * CELL + CELL / 2} r={2.6} fill="#FF4655" pointerEvents="none" />
+          <circle key={t} cx={LABEL_W + t * CELL + CELL / 2} cy={k * CELL + CELL / 2} r={2.6} className="fill-accent" pointerEvents="none" />
         ),
       )}
     </svg>

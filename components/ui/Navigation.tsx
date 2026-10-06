@@ -6,6 +6,7 @@ import { Magnetic } from '@/components/motion/Magnetic'
 import { openPalette } from '@/lib/interaction'
 import { useModKey } from '@/lib/useMediaQuery'
 import { duration, ease } from '@/lib/tokens'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
 
 const links = [
   { label: 'Work', href: '/#work' },
@@ -65,14 +66,16 @@ export function Navigation() {
     <>
       <m.nav
         className="fixed top-0 left-0 w-full z-50 px-4 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:p-6 flex justify-between items-center mix-blend-difference pointer-events-none"
-        style={{ viewTransitionName: 'site-nav' }}
+        // The bar uses difference blending, which needs light ink to invert whatever is
+        // underneath: pin the text colour to the dark theme's so it works on both themes.
+        style={{ viewTransitionName: 'site-nav', ['--color-text' as string]: '#EDEDF0' }}
         animate={{ y: hidden && !isOpen ? '-110%' : '0%' }}
         transition={{ duration: duration.reveal * 0.6, ease: ease.out }}
       >
         <Link href="/" aria-label="Lourdu Raju, home" className="font-display text-2xl text-text pointer-events-auto hover:text-accent transition-colors min-h-11 min-w-11 flex items-center">
           LR
         </Link>
-        <div className="flex items-center gap-6 pointer-events-auto">
+        <div className="flex items-center gap-4 sm:gap-6 pointer-events-auto">
           <Magnetic strength={8}>
             <button
               type="button"
@@ -84,6 +87,9 @@ export function Navigation() {
               <span className="rounded-[4px] border border-text/30 px-1.5 py-0.5 text-[10px]">{mod} K</span>
               <span>Search</span>
             </button>
+          </Magnetic>
+          <Magnetic strength={8}>
+            <ThemeToggle className="-mx-2 hover:text-accent transition-colors" />
           </Magnetic>
           <Magnetic strength={8}>
             <button

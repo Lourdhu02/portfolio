@@ -138,6 +138,6 @@ export default function LiteParticles({ lines, className = 'absolute inset-0', s
   }, [linesKey, fitHeight, offsetY, reducedMotion])
 
   return (
-    <div ref={containerRef} aria-hidden="true" className={`${className} z-0 pointer-events-none`} />
+    <div ref={containerRef} aria-hidden="true" data-particles className={`${className} z-0 pointer-events-none`} />
   )
 }

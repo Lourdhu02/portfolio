@@ -54,14 +54,14 @@ export function MeterOcrVisual() {
         <div className="absolute inset-0 wc-grid opacity-60" />
         <svg viewBox="0 0 400 240" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
           {/* meter body */}
-          <rect x="70" y="40" width="260" height="160" rx="22" className="fill-[#101016] stroke-line" strokeWidth="2" />
+          <rect x="70" y="40" width="260" height="160" rx="22" className="fill-raised stroke-line" strokeWidth="2" />
           <circle cx="92" cy="62" r="4" className="fill-line" />
           <circle cx="308" cy="62" r="4" className="fill-line" />
           <circle cx="92" cy="178" r="4" className="fill-line" />
           <circle cx="308" cy="178" r="4" className="fill-line" />
           <text x="302" y="76" textAnchor="end" className="fill-muted font-mono" fontSize="8" letterSpacing="2">kWh · 1-PHASE</text>
           {/* LCD */}
-          <rect x="104" y="88" width="192" height="80" rx="6" className="fill-[#0b0d0c]" />
+          <rect x="104" y="88" width="192" height="80" rx="6" className="fill-surface" />
           {reading.split('').map((ch, i) => (
             <Digit key={i} ch={ch} x={116 + i * 34} y={98} w={26} h={52} />
           ))}
@@ -170,7 +170,7 @@ export function SvtrVisual() {
           })}
           {bins.map((b, j) => (
             <rect key={j} x={216 - b.w} y={cy(j) - b.h / 2} width={b.w} height={b.h} rx="1.5"
-              className={route.indexOf(j) !== j ? 'fill-detect/15 stroke-detect' : 'fill-[#0a0b0e] stroke-text/25'} strokeWidth="0.8" />
+              className={route.indexOf(j) !== j ? 'fill-detect/15 stroke-detect' : 'fill-surface stroke-text/25'} strokeWidth="0.8" />
           ))}
         </svg>
       </div>

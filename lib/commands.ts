@@ -1,6 +1,6 @@
 import { TRUTH } from '@/content/truth'
 
-export type CommandAction = 'copy-email' | 'toggle-jinx'
+export type CommandAction = 'copy-email' | 'toggle-jinx' | 'toggle-theme'
 
 export interface CommandDef {
   id: string
@@ -50,6 +50,7 @@ export const COMMANDS: CommandDef[] = [
 
   { id: 'copy-email', label: 'Copy email address', group: 'Actions', hint: email, action: 'copy-email', keywords: ['contact', 'mail', 'hire'] },
   { id: 'resume', label: 'Open résumé (PDF)', group: 'Actions', href: links.resume, external: true, keywords: ['cv', 'resume'] },
+  { id: 'theme', label: 'Switch light / dark theme', group: 'Actions', action: 'toggle-theme', keywords: ['theme', 'light', 'dark', 'mode'] },
   { id: 'jinx', label: 'Toggle Jinx mode', group: 'Actions', hint: 'or type “jinx”', action: 'toggle-jinx', keywords: ['theme', 'easter egg', 'pink'] },
 
   { id: 'github', label: 'GitHub', group: 'Elsewhere', href: links.github, external: true },

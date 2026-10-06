@@ -33,6 +33,56 @@
   --radius-cut: 14px;
 }
 
+/* Light theme. app/layout.tsx sets data-theme on <html> before first paint from the saved
+   choice, or the system setting when there is none (components/ui/ThemeToggle.tsx). Without
+   JS the site stays dark. Tailwind utilities read these variables, so most components need
+   nothing else; the few places that assume a dark page check [data-theme="light"] below. */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --color-bg: #F3F2EE;
+  --color-surface: #EAE8E2;
+  --color-raised: #FFFFFF;
+  --color-line: #D6D3CA;
+  --color-text: #0D0D11;
+  --color-muted: #5C5C66;
+  --color-accent: #D81E33;
+  --color-accent-dim: #F6C2C8;
+  --color-detect: #0B858A;
+  --color-success: #13804F;
+}
+:root[data-theme="light"][data-jinx] {
+  --color-accent: #D0157A;
+  --color-accent-dim: #F7C6E0;
+  --color-success: #0B858A;
+}
+:root { color-scheme: dark; }
+
+/* Typography plugin colours follow the theme tokens instead of's fixed greys. */
+.prose {
+  --tw-prose-body: color-mix(in srgb, var(--color-text) 82%, transparent);
+  --tw-prose-headings: var(--color-text);
+  --tw-prose-lead: var(--color-muted);
+  --tw-prose-links: var(--color-accent);
+  --tw-prose-bold: var(--color-text);
+  --tw-prose-counters: var(--color-muted);
+  --tw-prose-bullets: var(--color-line);
+  --tw-prose-hr: var(--color-line);
+  --tw-prose-quotes: var(--color-text);
+  --tw-prose-quote-borders: var(--color-line);
+  --tw-prose-captions: var(--color-muted);
+  --tw-prose-code: var(--color-accent);
+  --tw-prose-pre-code: var(--color-text);
+  --tw-prose-pre-bg: var(--color-surface);
+  --tw-prose-th-borders: var(--color-line);
+  --tw-prose-td-borders: var(--color-line);
+}
+
+/* The particle hero draws white points with additive glow, which vanish on a light page.
+   Inverting the canvas turns them into ink; hue-rotate puts the red accent back. */
+:root[data-theme="light"] [data-particles] canvas {
+  filter: invert(1) hue-rotate(180deg);
+}
+
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
@@ -110,6 +160,10 @@
   mix-blend-mode: screen;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
+:root[data-theme="light"] .film-grain {
+  opacity: 0.08;
+  mix-blend-mode: multiply;
+}
 
 /* Jinx mode: palette swap only; set by components/JinxMode.tsx */
 :root[data-jinx] {
@@ -182,6 +236,19 @@ html.lenis body {
 }
 @keyframes via-blur {
   40% { filter: blur(4px); }
+}
+
+/* Theme switch (components/ui/ThemeToggle.tsx): the new theme opens as a circle from the
+   toggle. Only runs for theme changes, which add .theme-vt for the transition's lifetime. */
+html.theme-vt::view-transition-old(root) {
+  animation: none;
+}
+html.theme-vt::view-transition-new(root) {
+  animation: theme-reveal 760ms var(--vt-ease) both;
+}
+@keyframes theme-reveal {
+  from { clip-path: circle(0 at var(--theme-x) var(--theme-y)); }
+  to { clip-path: circle(var(--theme-r) at var(--theme-x) var(--theme-y)); }
 }
 
 /* Chrome that must not move while pages swap underneath it */
@@ -383,8 +450,8 @@ html.lenis body {
 /* ---------- Work card visuals ---------- */
 .wc-grid {
   background-image:
-    linear-gradient(to right, rgba(237, 237, 240, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(237, 237, 240, 0.04) 1px, transparent 1px);
+    linear-gradient(to right, color-mix(in srgb, var(--color-text) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 5%, transparent) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 .wc-scan { animation: wc-scan 3.2s cubic-bezier(0.65, 0, 0.35, 1) infinite alternate; }
