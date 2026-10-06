@@ -15,7 +15,7 @@ export default function LabPage() {
   const date = new Date(card.trainedOn + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
 
   return (
-    <main className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-16 sm:py-32 text-text">
+    <main className="relative w-full px-5 sm:px-10 lg:px-16 pt-24 pb-16 sm:py-32 text-text">
       <Link href="/" className="inline-block font-mono text-xs uppercase tracking-widest text-muted hover:text-accent transition-colors -mt-2 py-2 mb-8 sm:mb-14">
         ← Back to Home
       </Link>

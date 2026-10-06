@@ -202,7 +202,9 @@ html.lenis body {
   animation-timing-function: var(--vt-ease);
 }
 ::view-transition-old(.page-exit) {
-  animation: page-exit var(--vt-duration) var(--vt-ease) both;
+  /* Gone in the first half: the new page has no backdrop of its own (the lattice is a fixed
+     canvas), so a lingering old page would show through it. */
+  animation: page-exit calc(var(--vt-duration) * 0.3) var(--vt-ease-in) both;
   transform-origin: 50% 0%;
 }
 ::view-transition-new(.page-enter) {
@@ -210,9 +212,9 @@ html.lenis body {
 }
 @keyframes page-exit {
   to {
-    opacity: 0.25;
-    transform: translateY(-6vh) scale(0.96);
-    filter: brightness(0.4);
+    opacity: 0;
+    transform: translateY(-4vh) scale(0.98);
+    filter: blur(6px);
   }
 }
 @keyframes page-enter {
@@ -226,7 +228,7 @@ html.lenis body {
   }
 }
 
-/* Shared title between a work card and its case study */
+/* Shared title morph (.morph): no pairs use it right now; kept for the cinematic work scene */
 ::view-transition-group(.morph) {
   animation-duration: 800ms;
   z-index: 10;
@@ -549,50 +551,35 @@ html:active-view-transition .site-nav {
 }
 
 /* ---------- Background pattern + glass ---------- */
-/* Tumbling-blocks lattice (components/ui/SitePattern.tsx). Three face tones make the cubes
-   read in 3D; the edges are hairlines. It fades out behind the hero name. */
-.site-pattern {
-  -webkit-mask-image: radial-gradient(48vw 30svh at 50% 46svh, transparent 35%, #000 100%);
-  mask-image: radial-gradient(48vw 30svh at 50% 46svh, transparent 35%, #000 100%);
-}
-.site-pattern path {
-  stroke: var(--color-text);
-  stroke-opacity: 0.07;
-  stroke-width: 0.75;
-  stroke-linejoin: round;
-}
-.pat-top { fill: var(--color-text); fill-opacity: 0.045; }
-.pat-left { fill: var(--color-text); fill-opacity: 0.018; }
-.pat-right { fill: transparent; }
-:root[data-theme="light"] .site-pattern path { stroke-opacity: 0.075; }
-:root[data-theme="light"] .pat-top { fill-opacity: 0.04; }
-:root[data-theme="light"] .pat-left { fill-opacity: 0.018; }
-
-/* Glass panel. Everywhere: frosted blur with boosted saturation, a bright top rim, a darker
-   bottom rim and a soft drop shadow. On Chromium (html.glass-lens, set in <head>) the backdrop
-   also runs through an SVG displacement filter, so the lattice behind visibly bends. */
+/* Glass, macOS vibrancy style: 98% clear, so the lattice behind does the work. A heavy blur
+   with boosted saturation, a hairline edge, a 1px top highlight and a soft drop shadow. No
+   rounded corners anywhere (see the radius reset below). On Chromium (html.glass-lens, set in
+   <head>) the backdrop also runs through an SVG displacement filter, so what is behind bends. */
 .glass {
   position: relative;
-  background: color-mix(in srgb, var(--color-bg) 42%, transparent);
-  -webkit-backdrop-filter: blur(12px) saturate(1.7);
-  backdrop-filter: blur(12px) saturate(1.7);
-  border: 1px solid color-mix(in srgb, var(--color-text) 13%, transparent);
+  background: color-mix(in srgb, var(--color-bg) 2%, transparent);
+  -webkit-backdrop-filter: blur(22px) saturate(1.9) brightness(1.04);
+  backdrop-filter: blur(22px) saturate(1.9) brightness(1.04);
+  border: 1px solid color-mix(in srgb, var(--color-text) 14%, transparent);
   box-shadow:
-    inset 0 1px 0 0 color-mix(in srgb, #fff 22%, transparent),
-    inset 0 -1px 0 0 color-mix(in srgb, #000 18%, transparent),
-    0 18px 40px -18px rgb(0 0 0 / 0.55);
+    inset 0 1px 0 0 color-mix(in srgb, #fff 18%, transparent),
+    0 24px 48px -28px rgb(0 0 0 / 0.6);
 }
 :root[data-theme="light"] .glass {
-  background: color-mix(in srgb, #fff 38%, transparent);
-  border-color: color-mix(in srgb, #fff 70%, transparent);
+  background: color-mix(in srgb, #fff 2%, transparent);
+  border-color: color-mix(in srgb, var(--color-text) 10%, transparent);
   box-shadow:
-    inset 0 1px 0 0 #fff,
-    inset 0 -1px 0 0 rgb(0 0 0 / 0.06),
-    0 18px 40px -20px rgb(20 20 30 / 0.28);
+    inset 0 1px 0 0 rgb(255 255 255 / 0.9),
+    0 24px 48px -30px rgb(20 20 30 / 0.3);
 }
+.glass--bar { border-width: 0 0 1px 0; box-shadow: inset 0 -1px 0 0 color-mix(in srgb, #fff 6%, transparent); }
 html.glass-lens .glass {
-  backdrop-filter: url(#glass-lens) blur(2.5px) saturate(1.7);
+  backdrop-filter: url(#glass-lens) blur(10px) saturate(1.9) brightness(1.04);
 }
+/* Square corners everywhere: Raju's call (2026-10-06). The cursor's red point and the
+   particle canvas are the only round things left. */
+*, *::before, *::after { border-radius: 0 !important; }
+.cube-cursor__vertex, .keep-round { border-radius: 50% !important; }
 @media (prefers-reduced-transparency: reduce) {
   .glass,
   html.glass-lens .glass {
@@ -601,3 +588,11 @@ html.glass-lens .glass {
     background: var(--color-surface);
   }
 }
+
+/* Cut-corner shapes for glass panels: each panel loses a different corner, so a grid of them
+   reads as a set of distinct pieces rather than identical boxes. clip-path on the panel itself
+   keeps its backdrop blur. */
+.shape-a { clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 0 100%); }
+.shape-b { clip-path: polygon(0 0, 100% 0, 100% 100%, 22px 100%, 0 calc(100% - 22px)); }
+.shape-c { clip-path: polygon(36px 0, 100% 0, 100% 100%, 0 100%, 0 36px); }
+.shape-d { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%); }

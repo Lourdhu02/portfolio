@@ -1,6 +1,6 @@
 "use client"
 import Link from 'next/link'
-import { ViewTransition, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { SnapRail } from '@/components/ui/SnapRail'
 import { PetArt, type PetKind } from './PetArt'
 
@@ -85,10 +85,7 @@ export function PetPen({ pets }: { pets: Pet[] }) {
           <div className="mt-auto pt-5">
             <div className="border-t border-line pt-4">
               <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent">Looks after</span>
-              {/* Morphs into the case study's h1 on navigation (globals.css, "Shared title") */}
-              <ViewTransition name={`work-title-${pet.project.id}`} share="morph" default="none">
-                <span className="mt-1 block w-fit font-display text-2xl uppercase leading-none">{pet.project.title}</span>
-              </ViewTransition>
+              <span className="mt-1 block w-fit font-display text-2xl uppercase leading-none">{pet.project.title}</span>
               <p className="mt-2 text-[13px] leading-relaxed text-text/60">{pet.project.summary}</p>
               <ul className="mt-3 flex flex-wrap gap-1.5">
                 {pet.project.tags.map((t) => (

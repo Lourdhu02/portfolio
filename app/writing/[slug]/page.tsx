@@ -30,7 +30,7 @@ export default async function WritingSlugPage({ params }: PageProps) {
   }
 
   return (
-    <main className="relative w-full max-w-4xl mx-auto px-4 sm:px-6 pt-24 pb-16 sm:py-32 text-text">
+    <main className="relative w-full max-w-5xl px-5 sm:px-10 lg:ml-[14vw] lg:px-0 pt-24 pb-16 sm:py-32 text-text">
       <Link href="/writing" className="inline-block font-mono text-xs uppercase tracking-widest text-muted hover:text-accent transition-colors -mt-2 py-2 mb-8 sm:mb-14">
         ← Back to Writing
       </Link>

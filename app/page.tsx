@@ -26,7 +26,7 @@ export default function Home() {
       </HeroStage>
 
       {/* SC.02: Proof */}
-      <section className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24 text-text">
+      <section className="relative z-10 w-full px-5 sm:px-10 lg:px-16 py-16 sm:py-24 text-text">
         <Reveal stagger={0.12} className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-6 pt-12 sm:pt-16 pb-8 sm:pb-24 border-t border-line">
           
           <RevealItem className="flex flex-col space-y-4">
@@ -66,7 +66,7 @@ export default function Home() {
       </section>
 
       {/* SC.03: Work Grid */}
-      <section id="work" className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24 text-text scroll-mt-16">
+      <section id="work" className="relative z-10 w-full px-5 sm:px-10 lg:px-16 py-16 sm:py-24 text-text scroll-mt-16">
         <Reveal>
           <SectionHead index="01" title="Selected Work" aside="Four pets, four projects" />
         </Reveal>
@@ -130,7 +130,7 @@ export default function Home() {
       </section>
 
       {/* SC.04: Lab console (same command menu as ⌘K) */}
-      <section className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24 text-text">
+      <section className="relative z-10 w-full px-5 sm:px-10 lg:px-16 py-16 sm:py-24 text-text">
         <Reveal>
           <SectionHead
             index="02"
@@ -144,7 +144,7 @@ export default function Home() {
       </section>
 
       {/* SC.05: Principles */}
-      <section className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 text-text">
+      <section className="relative z-10 w-full px-5 sm:px-10 lg:px-16 text-text">
         <ScrollWords
           label={<SectionHead index="03" title="Engineering Creed" />}
           lines={[
@@ -156,8 +156,8 @@ export default function Home() {
       </section>
 
       {/* SC.06: Credentials, Open Source & Studio */}
-      <section className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24 text-text border-t border-line">
-        <Reveal stagger={0.1} className="grid grid-cols-1 md:grid-cols-2 gap-12">
+      <section className="relative z-10 w-full px-5 sm:px-10 lg:px-16 py-16 sm:py-24 text-text border-t border-line">
+        <Reveal stagger={0.1} className="grid grid-cols-1 gap-12 md:grid-cols-[5fr_7fr] lg:gap-24">
           <RevealItem>
             <div className="font-mono text-xs text-accent uppercase tracking-widest mb-2">04 / Credentials</div>
             <h2 className="font-display text-4xl mb-4">Lourdu Raju</h2>
@@ -188,19 +188,19 @@ export default function Home() {
           </RevealItem>
           
           <RevealItem className="grid grid-cols-2 gap-3 sm:gap-6">
-            <div className="glass rounded-[var(--radius-control)] rounded-br-[var(--radius-cut)] p-4 sm:p-6">
+            <div className="glass shape-a p-4 sm:p-7">
               <div className="text-4xl font-display text-accent mb-2">{achillesTests.value}</div>
               <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">CI tests passing (Achilles)</div>
             </div>
-            <div className="glass rounded-[var(--radius-control)] rounded-br-[var(--radius-cut)] p-4 sm:p-6">
+            <div className="glass shape-b lg:translate-y-10 p-4 sm:p-7">
               <div className="text-4xl font-display text-text mb-2">₹{studio.revenueLakh}L</div>
               <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">spacedrift revenue ({studio.clients} clients)</div>
             </div>
-            <div className="glass rounded-[var(--radius-control)] rounded-br-[var(--radius-cut)] p-4 sm:p-6">
+            <div className="glass shape-c lg:-translate-x-6 p-4 sm:p-7">
               <div className="text-4xl font-display text-detect mb-2">{achillesLabs.value}</div>
               <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">Test-driven AI labs</div>
             </div>
-            <div className="glass rounded-[var(--radius-control)] rounded-br-[var(--radius-cut)] p-4 sm:p-6">
+            <div className="glass shape-d lg:translate-y-4 p-4 sm:p-7">
               <div className="text-4xl font-display text-success mb-2">{Math.round(factor(classifierCompute))}×</div>
               <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">TensorRT speedup ({show(classifierCompute, 'before')} → {show(classifierCompute)})</div>
             </div>
@@ -209,16 +209,16 @@ export default function Home() {
       </section>
 
       {/* SC.07: Footer */}
-      <footer className="relative z-10 w-full border-t border-line pt-20 sm:pt-24 pb-[max(4rem,calc(env(safe-area-inset-bottom)+3rem))] sm:pb-24 px-4 sm:px-6 flex flex-col items-center justify-center overflow-hidden">
-        <Reveal className="flex flex-col items-center">
+      <footer className="relative z-10 w-full border-t border-line pt-20 sm:pt-24 pb-[max(4rem,calc(env(safe-area-inset-bottom)+3rem))] sm:pb-24 px-5 sm:px-10 lg:px-16 flex flex-col items-start overflow-hidden">
+        <Reveal className="flex flex-col items-start">
         <Magnetic strength={20}>
           <a 
             href={`mailto:${TRUTH.identity.email}`} 
             data-cursor="view"
             data-cursor-label="Say hi"
-            className="glass group flex flex-col items-center justify-center text-center px-8 py-9 sm:px-12 sm:py-10 rounded-[2.5rem] sm:rounded-full hover:border-accent transition-colors"
+            className="glass group flex flex-col items-start text-left px-8 py-9 sm:px-14 sm:py-12 hover:border-accent transition-colors"
           >
-            <span className="font-display text-[2.5rem] leading-[0.95] sm:text-4xl md:text-5xl group-hover:text-accent group-active:text-accent transition-colors uppercase">
+            <span className="font-display text-[2.75rem] leading-[0.9] sm:text-6xl md:text-8xl group-hover:text-accent group-active:text-accent transition-colors uppercase">
               Got a model to ship?
             </span>
           </a>
@@ -229,7 +229,7 @@ export default function Home() {
         />
         </Reveal>
 
-        <div className="mt-10 sm:mt-16 flex flex-wrap justify-center gap-x-6 gap-y-1 sm:gap-6 font-mono text-xs uppercase tracking-widest text-muted">
+        <div className="mt-10 sm:mt-16 flex flex-wrap justify-start gap-x-6 gap-y-1 sm:gap-6 font-mono text-xs uppercase tracking-widest text-muted">
           <a href={TRUTH.identity.links.github} target="_blank" rel="noopener noreferrer" className="py-3 sm:py-0 hover:text-accent transition-colors">GitHub</a>
           <span className="hidden sm:inline" aria-hidden="true">·</span>
           <a href={TRUTH.identity.links.linkedin} target="_blank" rel="noopener noreferrer" className="py-3 sm:py-0 hover:text-accent transition-colors">LinkedIn</a>
@@ -241,7 +241,7 @@ export default function Home() {
           <a href={TRUTH.identity.links.preprint} target="_blank" rel="noopener noreferrer" className="py-3 sm:py-0 hover:text-accent transition-colors">PhilArchive</a>
         </div>
 
-        <div className="mt-10 sm:mt-12 font-mono text-[11px] sm:text-xs leading-relaxed text-muted/60 uppercase tracking-widest text-center text-balance">
+        <div className="mt-10 sm:mt-12 font-mono text-[11px] sm:text-xs leading-relaxed text-muted/60 uppercase tracking-widest text-left text-balance">
           © {new Date().getFullYear()} Lourdu Raju · Bengaluru, India · Built with Next.js, Three.js & Motion
         </div>
       </footer>
