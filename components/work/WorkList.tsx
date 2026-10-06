@@ -9,24 +9,24 @@ export interface Project {
 }
 
 // Selected Work: one glass panel per project, each set on a different stretch of a 12-column
-// grid with a different cut corner, so the list steps across the page instead of stacking.
+// grid, so the list steps across the page instead of stacking.
 const PLACEMENT = [
-  'lg:col-start-1 lg:col-end-9 shape-a',
-  'lg:col-start-5 lg:col-end-13 shape-b',
-  'lg:col-start-2 lg:col-end-10 shape-c',
-  'lg:col-start-4 lg:col-end-12 shape-d',
+  'lg:col-start-1 lg:col-end-9',
+  'lg:col-start-5 lg:col-end-13',
+  'lg:col-start-2 lg:col-end-10',
+  'lg:col-start-4 lg:col-end-12',
 ]
 
 export function WorkList({ projects }: { projects: Project[] }) {
   return (
     <ol className="grid grid-cols-1 gap-5 lg:grid-cols-12 lg:gap-y-8">
       {projects.map((p, i) => (
-        <li key={p.href} className={`glass ${PLACEMENT[i % PLACEMENT.length]}`}>
+        <li key={p.href} className={`glass-float ${PLACEMENT[i % PLACEMENT.length]}`}>
           <Link
             href={p.href}
             data-cursor="view"
             data-cursor-label={`Open ${p.title}`}
-            className="group grid gap-4 p-6 outline-none focus-visible:ring-2 focus-visible:ring-accent sm:grid-cols-[auto_1fr_auto] sm:items-end sm:gap-8 sm:p-9"
+            className="glass group grid h-full gap-4 p-6 outline-none focus-visible:ring-2 focus-visible:ring-accent sm:grid-cols-[auto_1fr_auto] sm:items-end sm:gap-8 sm:p-9"
           >
             <span className="font-mono text-xs text-muted">0{i + 1}</span>
             <div className="min-w-0">

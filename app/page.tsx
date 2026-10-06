@@ -164,22 +164,22 @@ export default function Home() {
           </RevealItem>
           
           <RevealItem className="grid grid-cols-2 gap-3 sm:gap-6">
-            <div className="glass shape-a p-4 sm:p-7">
+            <div className="glass-float"><div className="glass h-full p-4 sm:p-7">
               <div className="text-4xl font-display text-accent mb-2">{achillesTests.value}</div>
               <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">CI tests passing (Achilles)</div>
-            </div>
-            <div className="glass shape-b lg:translate-y-10 p-4 sm:p-7">
+            </div></div>
+            <div className="glass-float lg:translate-y-10"><div className="glass h-full p-4 sm:p-7">
               <div className="text-4xl font-display text-text mb-2">₹{studio.revenueLakh}L</div>
               <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">spacedrift revenue ({studio.clients} clients)</div>
-            </div>
-            <div className="glass shape-c lg:-translate-x-6 p-4 sm:p-7">
+            </div></div>
+            <div className="glass-float lg:-translate-x-6"><div className="glass h-full p-4 sm:p-7">
               <div className="text-4xl font-display text-detect mb-2">{achillesLabs.value}</div>
               <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">Test-driven AI labs</div>
-            </div>
-            <div className="glass shape-d lg:translate-y-4 p-4 sm:p-7">
+            </div></div>
+            <div className="glass-float lg:translate-y-4"><div className="glass h-full p-4 sm:p-7">
               <div className="text-4xl font-display text-success mb-2">{Math.round(factor(classifierCompute))}×</div>
               <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">TensorRT speedup ({show(classifierCompute, 'before')} → {show(classifierCompute)})</div>
-            </div>
+            </div></div>
           </RevealItem>
         </Reveal>
       </section>
@@ -188,6 +188,7 @@ export default function Home() {
       <footer className="relative z-10 w-full border-t border-line pt-20 sm:pt-24 pb-[max(4rem,calc(env(safe-area-inset-bottom)+3rem))] sm:pb-24 px-5 sm:px-10 lg:px-16 flex flex-col items-start overflow-hidden">
         <Reveal className="flex flex-col items-start">
         <Magnetic strength={20}>
+          <div className="glass-float">
           <a 
             href={`mailto:${TRUTH.identity.email}`} 
             data-cursor="view"
@@ -198,6 +199,7 @@ export default function Home() {
               Got a model to ship?
             </span>
           </a>
+          </div>
         </Magnetic>
         <CopyEmail
           email={TRUTH.identity.email}
@@ -218,7 +220,7 @@ export default function Home() {
         </div>
 
         <div className="mt-10 sm:mt-12 font-mono text-[11px] sm:text-xs leading-relaxed text-muted/60 uppercase tracking-widest text-left text-balance">
-          © {new Date().getFullYear()} Lourdu Raju · Bengaluru, India · Built with Next.js, Three.js & Motion
+          © {new Date().getFullYear()} Lourdu Raju · Bengaluru, India · Built with Next.js & Motion
         </div>
       </footer>
     </main>
