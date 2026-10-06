@@ -1,5 +1,5 @@
 "use client"
-import { m, useMotionValue, useReducedMotion, useSpring } from 'motion/react'
+import { m, useMotionValue } from 'motion/react'
 import { useEffect, useState } from 'react'
 import { useMediaQuery } from '@/lib/useMediaQuery'
 
@@ -15,18 +15,12 @@ function resolve(el: Element | null): CursorState {
   return { variant: 'default' }
 }
 
-const RING: Record<Variant, { size: number; opacity: number }> = {
-  default: { size: 34, opacity: 1 },
-  link: { size: 56, opacity: 1 },
-  view: { size: 96, opacity: 1 },
-  copy: { size: 80, opacity: 1 },
-  text: { size: 34, opacity: 0 },
-  hidden: { size: 34, opacity: 0 },
-}
+const FACES = ['front', 'back', 'right', 'left', 'top', 'bottom'] as const
 
-// Mouse-only cursor: a precise dot plus a trailing ring that grows over links and
-// turns into a labelled disc over work cards. Touch, pen and keyboard users keep the
-// native behaviour; focus rings are untouched.
+// Mouse-only cursor: a small wireframe cube, white on dark and black on light. Its red
+// vertex is the hotspot: the cube hangs from it and turns around it, so the point you
+// click is always the red one. Touch, pen and keyboard users keep
+// the native behaviour; focus rings are untouched. Styles live in globals.css (.cube-cursor).
 export function Cursor() {
   const finePointer = useMediaQuery('(hover: hover) and (pointer: fine)')
   if (!finePointer) return null
@@ -34,11 +28,8 @@ export function Cursor() {
 }
 
 function CursorInner() {
-  const reduce = useReducedMotion()
   const x = useMotionValue(-100)
   const y = useMotionValue(-100)
-  const ringX = useSpring(x, { stiffness: 520, damping: 42, mass: 0.5 })
-  const ringY = useSpring(y, { stiffness: 520, damping: 42, mass: 0.5 })
   const [state, setState] = useState<CursorState>({ variant: 'default' })
   const [visible, setVisible] = useState(false)
   const [pressed, setPressed] = useState(false)
@@ -77,42 +68,34 @@ function CursorInner() {
     }
   }, [x, y])
 
-  const ring = RING[state.variant]
-  const filled = state.variant === 'view' || state.variant === 'copy'
-  const showDot = visible && !filled && state.variant !== 'text' && state.variant !== 'hidden'
+  const labelled = state.variant === 'view' || state.variant === 'copy'
+  const hidden = !visible || state.variant === 'text' || state.variant === 'hidden'
 
+  // Two layers on the same point: the cube blends with "difference" so it is white
+  // over dark surfaces and black over light ones, pixel by pixel, in either theme;
+  // the red vertex and the label sit on a normal layer so they keep their colours.
+  const layer = { x, y }
   return (
-    <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[100]">
-      <m.div
-        className="absolute left-0 top-0 flex items-center justify-center rounded-full border"
-        style={{ x: reduce ? x : ringX, y: reduce ? y : ringY, translateX: '-50%', translateY: '-50%' }}
-        initial={false}
-        animate={{
-          width: ring.size,
-          height: ring.size,
-          opacity: visible ? ring.opacity : 0,
-          scale: pressed ? 0.82 : 1,
-          backgroundColor: filled ? 'var(--color-accent)' : state.variant === 'link' ? 'rgba(237,237,240,0.08)' : 'rgba(237,237,240,0)',
-          borderColor: filled ? 'rgba(255,70,85,0)' : state.variant === 'link' ? 'var(--color-accent)' : 'rgba(237,237,240,0.35)',
-        }}
-        transition={{ type: 'spring', stiffness: 380, damping: 30, mass: 0.6 }}
-      >
-        <m.span
-          className="whitespace-nowrap font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-bg"
-          initial={false}
-          animate={{ opacity: filled ? 1 : 0, scale: filled ? 1 : 0.6 }}
-          transition={{ duration: 0.18 }}
-        >
-          {state.label ?? (state.variant === 'copy' ? 'Copy' : 'View')}
-        </m.span>
-      </m.div>
-      <m.div
-        className="absolute left-0 top-0 h-1.5 w-1.5 rounded-full bg-accent"
-        style={{ x, y, translateX: '-50%', translateY: '-50%' }}
-        initial={false}
-        animate={{ opacity: showDot ? 1 : 0, scale: pressed ? 1.8 : 1 }}
-        transition={{ duration: 0.12 }}
-      />
-    </div>
+    <>
+      <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[100] mix-blend-difference">
+        <m.div className="cube-cursor" data-variant={state.variant} data-pressed={pressed || undefined} data-hidden={hidden || undefined} style={layer}>
+          <div className="cube-cursor__scale">
+            <div className="cube-cursor__spin">
+              <div className="cube-cursor__cube">
+                {FACES.map((f) => <span key={f} className={`cube-cursor__face cube-cursor__face--${f}`} />)}
+              </div>
+            </div>
+          </div>
+        </m.div>
+      </div>
+      <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[100]">
+        <m.div className="cube-cursor" data-variant={state.variant} data-pressed={pressed || undefined} data-hidden={hidden || undefined} style={layer}>
+          <span className="cube-cursor__vertex" />
+          <span className="cube-cursor__label" data-show={labelled || undefined}>
+            {state.label ?? (state.variant === 'copy' ? 'Copy' : 'View')}
+          </span>
+        </m.div>
+      </div>
+    </>
   )
 }
