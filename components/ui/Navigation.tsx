@@ -65,12 +65,12 @@ export function Navigation() {
   return (
     <>
       <m.nav
-        className="site-nav fixed top-0 left-0 w-full z-50 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6 sm:pt-5 pointer-events-none"
+        className="site-nav fixed top-0 left-0 w-full z-50 pointer-events-none"
         animate={{ y: hidden && !isOpen ? '-110%' : '0%' }}
         transition={{ duration: duration.reveal * 0.6, ease: ease.out }}
       >
-        {/* Floating glass bar over the page's cube lattice */}
-        <div className="glass pointer-events-auto mx-auto flex h-14 w-full max-w-7xl items-center justify-between rounded-full pl-5 pr-4 sm:pl-6 sm:pr-5">
+        {/* Full-width glass bar, macOS menu-bar style, over the page's cube lattice */}
+        <div className="glass glass--bar pointer-events-auto flex h-[calc(3.5rem+env(safe-area-inset-top))] w-full items-center justify-between px-5 pt-[env(safe-area-inset-top)] sm:px-10 lg:px-16">
         <Link href="/" aria-label="Lourdu Raju, home" className="font-display text-2xl text-text hover:text-accent transition-colors min-h-11 min-w-11 flex items-center">
           LR
         </Link>

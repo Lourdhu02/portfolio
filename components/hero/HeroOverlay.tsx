@@ -26,12 +26,12 @@ export function HeroOverlay() {
         <div className="text-right">{location}</div>
       </div>
 
-      {/* Tagline + CTAs sit under the particle name, which the canvas centres in the viewport */}
-      <div className="absolute inset-x-6 top-[61%] mx-auto flex max-w-3xl flex-col items-center text-center">
+      {/* Tagline + CTAs: pinned low and left, off the axis of the centred particle name */}
+      <div className="absolute left-5 right-5 top-[62%] flex max-w-xl flex-col items-start text-left sm:left-10 lg:left-16 lg:top-[66%]">
         <p className="hero-in hero-lcp text-balance text-lg leading-snug text-text/85 md:text-2xl" style={{ '--d': '1.6s' } as React.CSSProperties}>
           {headline}
         </p>
-        <div className="hero-in pointer-events-auto mt-8 flex flex-wrap items-center justify-center gap-3" style={{ '--d': '1.9s' } as React.CSSProperties}>
+        <div className="hero-in pointer-events-auto mt-8 flex flex-wrap items-center justify-start gap-3" style={{ '--d': '1.9s' } as React.CSSProperties}>
           <Link
             href="#work"
             className="group inline-flex items-center gap-3 rounded-full bg-accent px-6 py-3 font-mono text-xs uppercase tracking-widest text-bg transition-colors hover:bg-text"
