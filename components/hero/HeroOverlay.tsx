@@ -27,7 +27,7 @@ export function HeroOverlay() {
       </div>
 
       {/* Tagline + CTAs: pinned low and left, off the axis of the centred particle name */}
-      <div className="absolute left-5 right-5 top-[62%] flex max-w-xl flex-col items-start text-left sm:left-10 lg:left-16 lg:top-[66%]">
+      <div className="absolute left-5 right-5 top-[62%] flex max-w-xl flex-col items-start text-left sm:left-10 lg:left-auto lg:right-16 lg:top-auto lg:bottom-[16%] lg:max-w-sm">
         <p className="hero-in hero-lcp text-balance text-lg leading-snug text-text/85 md:text-2xl" style={{ '--d': '1.6s' } as React.CSSProperties}>
           {headline}
         </p>
