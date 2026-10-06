@@ -9,19 +9,6 @@ interface PageProps {
   params: Promise<{ slug: string }>
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params
-  const post = posts.find(p => p.slug === slug)
-  if (!post) return {}
-  const url = `/work/${slug}`
-  return {
-    title: post.title,
-    description: post.summary,
-    alternates: { canonical: url },
-    openGraph: { type: 'article', title: post.title, description: post.summary, url, publishedTime: post.date },
-  }
-}
-
 // Case-study header for each project. Figures come from content/truth.ts.
 const PROJECTS_META: Record<string, { role: string; timeline: string; stack: string; impact: string; github?: string }> = {
   'svtrv2-ard': {
@@ -47,10 +34,34 @@ const PROJECTS_META: Record<string, { role: string; timeline: string; stack: str
   }
 }
 
+const PROJECT_SLUGS = Object.keys(PROJECTS_META)
+
+function getProject(slug: string) {
+  if (!PROJECT_SLUGS.includes(slug)) return undefined
+  return posts.find((post) => post.slug === slug)
+}
+
+// This route is a curated set of case studies, not an alias for every writing post.
+// In Next 16, dynamic params not produced here would otherwise be rendered on demand.
+export const dynamicParams = false
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params
+  const post = getProject(slug)
+  if (!post) return {}
+  const url = `/work/${slug}`
+  return {
+    title: post.title,
+    description: post.summary,
+    alternates: { canonical: url },
+    openGraph: { type: 'article', title: post.title, description: post.summary, url, publishedTime: post.date },
+  }
+}
+
 export default async function WorkSlugPage({ params }: PageProps) {
   const { slug } = await params
   
-  const post = posts.find(p => p.slug === slug)
+  const post = getProject(slug)
 
   if (!post) {
     notFound()
@@ -123,9 +134,5 @@ export default async function WorkSlugPage({ params }: PageProps) {
 }
 
 export function generateStaticParams() {
-  return [
-    { slug: 'svtrv2-ard' },
-    { slug: 'echome' },
-    { slug: 'finsentinel' }
-  ]
+  return PROJECT_SLUGS.map((slug) => ({ slug }))
 }
