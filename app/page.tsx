@@ -196,19 +196,19 @@ export default function Home() {
           </RevealItem>
           
           <RevealItem className="grid grid-cols-2 gap-3 sm:gap-6">
-            <div className="p-4 sm:p-6 bg-surface border border-line">
+            <div className="glass rounded-[var(--radius-control)] rounded-br-[var(--radius-cut)] p-4 sm:p-6">
               <div className="text-4xl font-display text-accent mb-2">{achillesTests.value}</div>
               <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">CI tests passing (Achilles)</div>
             </div>
-            <div className="p-4 sm:p-6 bg-surface border border-line">
+            <div className="glass rounded-[var(--radius-control)] rounded-br-[var(--radius-cut)] p-4 sm:p-6">
               <div className="text-4xl font-display text-text mb-2">₹{studio.revenueLakh}L</div>
               <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">spacedrift revenue ({studio.clients} clients)</div>
             </div>
-            <div className="p-4 sm:p-6 bg-surface border border-line">
+            <div className="glass rounded-[var(--radius-control)] rounded-br-[var(--radius-cut)] p-4 sm:p-6">
               <div className="text-4xl font-display text-detect mb-2">{achillesLabs.value}</div>
               <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">Test-driven AI labs</div>
             </div>
-            <div className="p-4 sm:p-6 bg-surface border border-line">
+            <div className="glass rounded-[var(--radius-control)] rounded-br-[var(--radius-cut)] p-4 sm:p-6">
               <div className="text-4xl font-display text-success mb-2">{Math.round(factor(classifierCompute))}×</div>
               <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">TensorRT speedup ({show(classifierCompute, 'before')} → {show(classifierCompute)})</div>
             </div>
@@ -217,14 +217,14 @@ export default function Home() {
       </section>
 
       {/* SC.07: Footer */}
-      <footer className="relative z-10 w-full bg-surface border-t border-line pt-20 sm:pt-24 pb-[max(4rem,calc(env(safe-area-inset-bottom)+3rem))] sm:pb-24 px-4 sm:px-6 flex flex-col items-center justify-center overflow-hidden">
+      <footer className="relative z-10 w-full border-t border-line pt-20 sm:pt-24 pb-[max(4rem,calc(env(safe-area-inset-bottom)+3rem))] sm:pb-24 px-4 sm:px-6 flex flex-col items-center justify-center overflow-hidden">
         <Reveal className="flex flex-col items-center">
         <Magnetic strength={20}>
           <a 
             href={`mailto:${TRUTH.identity.email}`} 
             data-cursor="view"
             data-cursor-label="Say hi"
-            className="group flex flex-col items-center justify-center text-center px-8 py-9 sm:px-12 sm:py-10 rounded-[2.5rem] sm:rounded-full border border-line bg-bg hover:border-accent transition-all shadow-2xl"
+            className="glass group flex flex-col items-center justify-center text-center px-8 py-9 sm:px-12 sm:py-10 rounded-[2.5rem] sm:rounded-full hover:border-accent transition-colors"
           >
             <span className="font-display text-[2.5rem] leading-[0.95] sm:text-4xl md:text-5xl group-hover:text-accent group-active:text-accent transition-colors uppercase">
               Got a model to ship?

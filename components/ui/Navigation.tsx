@@ -65,17 +65,16 @@ export function Navigation() {
   return (
     <>
       <m.nav
-        className="fixed top-0 left-0 w-full z-50 px-4 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:p-6 flex justify-between items-center mix-blend-difference pointer-events-none"
-        // The bar uses difference blending, which needs light ink to invert whatever is
-        // underneath: pin the text colour to the dark theme's so it works on both themes.
-        style={{ viewTransitionName: 'site-nav', ['--color-text' as string]: '#EDEDF0' }}
+        className="site-nav fixed top-0 left-0 w-full z-50 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6 sm:pt-5 pointer-events-none"
         animate={{ y: hidden && !isOpen ? '-110%' : '0%' }}
         transition={{ duration: duration.reveal * 0.6, ease: ease.out }}
       >
-        <Link href="/" aria-label="Lourdu Raju, home" className="font-display text-2xl text-text pointer-events-auto hover:text-accent transition-colors min-h-11 min-w-11 flex items-center">
+        {/* Floating glass bar over the page's cube lattice */}
+        <div className="glass pointer-events-auto mx-auto flex h-14 w-full max-w-7xl items-center justify-between rounded-full pl-5 pr-4 sm:pl-6 sm:pr-5">
+        <Link href="/" aria-label="Lourdu Raju, home" className="font-display text-2xl text-text hover:text-accent transition-colors min-h-11 min-w-11 flex items-center">
           LR
         </Link>
-        <div className="flex items-center gap-4 sm:gap-6 pointer-events-auto">
+        <div className="flex items-center gap-4 sm:gap-6">
           <Magnetic strength={8}>
             <button
               type="button"
@@ -103,6 +102,7 @@ export function Navigation() {
               [ Menu ]
             </button>
           </Magnetic>
+        </div>
         </div>
       </m.nav>
 

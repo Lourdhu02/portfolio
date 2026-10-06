@@ -10,6 +10,7 @@ import { CommandPalette } from "@/components/interaction/CommandPalette";
 import { Cursor } from "@/components/interaction/Cursor";
 import { Toaster } from "@/components/interaction/Toaster";
 import { themeScript } from "@/components/ui/ThemeToggle";
+import { SitePattern } from "@/components/ui/SitePattern";
 import { posts } from "#velite";
 import { TRUTH } from "@/content/truth";
 
@@ -91,6 +92,8 @@ export default function RootLayout({
     <html lang="en" className={`${fontDisplay.variable} ${fontSans.variable} ${fontMono.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        {/* Only Chromium can run an SVG filter on a backdrop; elsewhere .glass stays a plain blur */}
+        <script dangerouslySetInnerHTML={{ __html: "if(navigator.userAgentData)document.documentElement.classList.add('glass-lens')" }} />
       </head>
       <body className="antialiased">
         <script
@@ -115,7 +118,8 @@ export default function RootLayout({
             <div className="film-grain absolute inset-0" />
             <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_40%,transparent_55%,color-mix(in_srgb,var(--color-bg)_70%,transparent)_100%)]" />
           </div>
-          <div id="content" tabIndex={-1} className="outline-none">
+          <div id="content" tabIndex={-1} className="relative isolate outline-none">
+            <SitePattern />
             {children}
           </div>
           </SmoothScroll>
