@@ -453,64 +453,34 @@ html:active-view-transition .site-nav {
   100% { transform: translateY(200%); }
 }
 
-/* ---------- Pets (components/pets) ---------- */
-/* SVG transform-origins are in the 200×200 art box unless a rule sets fill-box. Each card
-   offsets its timings by --i so the four pets never move in lockstep. */
-.pet { --delay: calc(var(--i, 0) * -0.9s); }
-.pet-figure { transform-origin: 100px 188px; }
-.pet-breathe { transform-origin: 100px 186px; animation: pet-breathe 3.6s ease-in-out infinite var(--delay); }
-@keyframes pet-breathe { 50% { transform: scale(1.015, 0.985); } }
-
-.pet-eye { transform-box: fill-box; transform-origin: center; animation: pet-blink 5.2s infinite var(--delay); }
-@keyframes pet-blink { 0%, 92%, 100% { transform: none; } 95% { transform: scaleY(0.1); } }
-.pet-pupil {
-  transform: translate(calc(var(--look-x, 0) * 2.6px), calc(var(--look-y, 0) * 2.2px));
-  transition: transform 180ms ease-out;
+/* ---------- Robots, 2.5D stage (components/robots) ---------- */
+/* Phones and low-end devices: pre-rendered robots on a strip that slides with --s, the same
+   camera stop the 3D scene uses. d is each robot's distance from the stop, 0 when in focus. */
+.robot-track { perspective: 1100px; }
+.robot-sprite {
+  --d: calc(var(--i) - var(--s));
+  --ad: min(1, max(var(--d), calc(var(--d) * -1)));
+  position: absolute;
+  left: 50%;
+  top: calc(9rem + env(safe-area-inset-top));
+  width: min(80vw, 44svh);
+  aspect-ratio: 1;
+  transform: translateX(-50%) translateX(calc(var(--d) * 78vw)) rotateY(calc(var(--d) * -28deg)) scale(calc(1 - var(--ad) * 0.3));
+  opacity: calc(1 - var(--ad) * 0.75);
+  will-change: transform;
 }
-
-.pet-tail--sway { animation: pet-sway 3s ease-in-out infinite var(--delay); }
-@keyframes pet-sway { 50% { transform: rotate(-9deg); } }
-.pet-tail--wag { animation: pet-wag 0.9s ease-in-out infinite; }
-@keyframes pet-wag { 50% { transform: rotate(-22deg); } }
-.pet-ear--l { animation: pet-ear-l 6s ease-in-out infinite var(--delay); }
-.pet-ear--r { animation: pet-ear-r 6s ease-in-out infinite calc(var(--delay) - 1.3s); }
-@keyframes pet-ear-l { 0%, 86%, 100% { transform: none; } 90% { transform: rotate(-10deg); } }
-@keyframes pet-ear-r { 0%, 86%, 100% { transform: none; } 90% { transform: rotate(10deg); } }
-.pet-cheek { animation: pet-cheek 2.6s ease-in-out infinite var(--delay); }
-@keyframes pet-cheek { 50% { transform: scale(1.18); } }
-.pet--hamster .pet-prop { animation: pet-nibble 0.5s ease-in-out infinite; }
-@keyframes pet-nibble { 50% { transform: translateY(-2px); } }
-.pet-wing { animation: pet-wing 4s ease-in-out infinite var(--delay); }
-@keyframes pet-wing { 0%, 80%, 100% { transform: none; } 85% { transform: rotate(-14deg); } 90% { transform: rotate(4deg); } }
-.pet-voice path { opacity: 0; animation: pet-voice 2.4s ease-out infinite; }
-.pet-voice path:last-child { animation-delay: 0.25s; }
-@keyframes pet-voice { 0%, 40% { opacity: 0; } 55% { opacity: 1; } 100% { opacity: 0; } }
-
-/* Hover or focus: the pet hops and looks straight at you */
-.pet-card:is(:hover, :focus-visible) .pet-figure { animation: pet-hop 620ms cubic-bezier(0.34, 1.4, 0.64, 1); }
-@keyframes pet-hop {
-  0% { transform: none; }
-  25% { transform: scale(1.06, 0.92); }
-  55% { transform: translateY(-16px) scale(0.97, 1.04); }
-  80% { transform: scale(1.03, 0.97); }
-  100% { transform: none; }
+@media (min-width: 1024px) {
+  .robot-sprite { left: 66%; top: 50%; width: min(42vw, 70svh); transform: translate(-50%, -50%) translateX(calc(var(--d) * 46vw)) rotateY(calc(var(--d) * -28deg)) scale(calc(1 - var(--ad) * 0.3)); }
 }
-.pet-card:is(:hover, :focus-visible) .pet-voice path { animation-duration: 1.2s; }
-
-/* No mouse to watch: glance around now and then instead */
-@media (hover: none) {
-  .pet-pupil { animation: pet-glance 7s ease-in-out infinite var(--delay); transition: none; }
-  @keyframes pet-glance {
-    0%, 30%, 100% { transform: none; }
-    38%, 55% { transform: translate(-2.4px, 0.6px); }
-    63%, 80% { transform: translate(2.4px, -0.6px); }
-  }
+.robot-sprite img { position: relative; width: 100%; height: 100%; animation: robot-float 3.4s ease-in-out infinite; animation-delay: calc(var(--i) * -0.8s); }
+.robot-sprite__halo {
+  position: absolute; inset: 18%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--glow) 38%, transparent), transparent);
+  filter: blur(12px);
+  animation: robot-pulse 2.6s ease-in-out infinite;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .pet *, .pet-card:is(:hover, :focus-visible) .pet-figure { animation: none !important; }
-  .pet-voice path { opacity: 0.8; }
-}
+@keyframes robot-float { 50% { transform: translateY(-4%); } }
+@keyframes robot-pulse { 50% { opacity: 0.55; transform: scale(0.92); } }
 
 @media (prefers-reduced-motion: reduce) {
   .hero-in { animation: none; opacity: 1; }
