@@ -1,5 +1,5 @@
 "use client"
-import { useRef, useMemo, useEffect } from 'react'
+import { useRef, useMemo, useEffect, useState } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import type { MotionValue } from 'motion/react'
@@ -25,7 +25,7 @@ interface ParticleSystemProps {
 export function ParticleSystem({ tier, lines, reducedMotion, scrollProgress, fitHeight = 0.55, offsetY = 0, onReady }: ParticleSystemProps) {
   const groupRef = useRef<THREE.Group>(null)
   const materialRef = useRef<THREE.ShaderMaterial>(null)
-  const { viewport, gl } = useThree()
+  const { viewport, gl, invalidate } = useThree()
 
   const particleCount = PARTICLE_COUNT[tier]
   const linesKey = lines.join('\n')
@@ -38,9 +38,14 @@ export function ParticleSystem({ tier, lines, reducedMotion, scrollProgress, fit
   // Scale the whole block so the name always fits the width and its allotted band of height
   const fit = Math.min(1, (viewport.width * 0.88) / textWidth, (viewport.height * fitHeight) / textHeight)
 
+  // `frameloop="never"` deliberately disables `useFrame` for reduced-motion
+  // visitors. Start settled so the first (and only) draw is the readable name.
+  const [initialProgress] = useState(() => (reducedMotion ? 1 : 0))
+  const progressRef = useRef(initialProgress)
+
   const uniforms = useMemo(() => ({
     uTime: { value: 0 },
-    uProgress: { value: 0 },
+    uProgress: { value: initialProgress },
     uMouse: { value: new THREE.Vector3(1e3, 1e3, 0) },
     uMouseForce: { value: 0 },
     uMouseRadius: { value: 1 },
@@ -50,14 +55,25 @@ export function ParticleSystem({ tier, lines, reducedMotion, scrollProgress, fit
     uPointScale: { value: 1 },
     uColor: { value: new THREE.Color(color.text) },
     uAccent: { value: new THREE.Color(color.accent) },
-  }), [])
+  }), [initialProgress])
 
-  const progressRef = useRef(reducedMotion ? 1 : 0)
   const lastPointer = useRef(new THREE.Vector2())
   const pointerWorld = useRef(new THREE.Vector3())
   const shockStart = useRef(-NO_SHOCK)
 
   useEffect(() => { onReady?.() }, [onReady])
+
+  // Respect a preference change made while the page is open as well. The canvas
+  // stops its frame loop in this mode, so request a single redraw ourselves.
+  useEffect(() => {
+    if (!reducedMotion) return
+    progressRef.current = 1
+    const mat = materialRef.current
+    if (!mat) return
+    mat.uniforms.uProgress.value = 1
+    mat.uniforms.uScatter.value = 0
+    invalidate()
+  }, [invalidate, reducedMotion])
 
   // A click or tap sends a shockwave ring from that point
   useEffect(() => {
