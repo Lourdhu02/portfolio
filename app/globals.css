@@ -419,28 +419,51 @@ html:active-view-transition .site-nav {
    (html.glass-lens, set in <head>) each panel also gets Liquid Glass: its own SVG filter (--lg)
    that bends the backdrop in a squircle rim along the edges and adds a specular rim light, with
    the centre left nearly clear. Square corners everywhere (see the radius reset below). */
+/* Clear glass: no frost, so the background reads straight through; Liquid Glass bends it only at
+   the rim. Depth comes from a lit top edge, a darker bottom edge, inner rim shading, and a
+   three-layer shadow (contact, mid, long ambient) so each card floats off the page. */
 .glass {
   position: relative;
-  background: color-mix(in srgb, var(--color-bg) 2%, transparent);
-  -webkit-backdrop-filter: blur(22px) saturate(1.9) brightness(1.04);
-  backdrop-filter: blur(22px) saturate(1.9) brightness(1.04);
-  border: 1px solid color-mix(in srgb, var(--color-text) 14%, transparent);
+  background: transparent;
+  -webkit-backdrop-filter: saturate(1.15);
+  backdrop-filter: saturate(1.15);
+  border: 1px solid color-mix(in srgb, var(--color-text) 16%, transparent);
+  border-top-color: color-mix(in srgb, var(--color-text) 34%, transparent);
   box-shadow:
-    inset 0 1px 0 0 color-mix(in srgb, #fff 18%, transparent),
-    0 24px 48px -28px rgb(0 0 0 / 0.6);
+    inset 0 1px 0 0 rgb(255 255 255 / 0.22),
+    inset 0 -1px 0 0 rgb(0 0 0 / 0.5),
+    inset 0 0 24px 0 rgb(255 255 255 / 0.04);
+}
+/* The floating shadow lives on a wrapper (.glass-float), never on .glass itself: in Chromium a
+   large outer shadow shifts where a url() backdrop filter is drawn, which knocked the lens rim
+   off the panel edge. An outer box-shadow paints only outside the box, so it never shows
+   through the clear glass. */
+.glass-float {
+  box-shadow:
+    0 2px 4px -1px rgb(0 0 0 / 0.6),
+    0 16px 32px -12px rgb(0 0 0 / 0.75),
+    0 48px 96px -24px rgb(0 0 0 / 0.85);
+}
+:root[data-theme="light"] .glass-float {
+  box-shadow:
+    0 2px 4px -1px rgb(0 0 0 / 0.12),
+    0 16px 32px -12px rgb(0 0 0 / 0.18),
+    0 48px 96px -24px rgb(0 0 0 / 0.22);
 }
 :root[data-theme="light"] .glass {
-  background: color-mix(in srgb, #fff 2%, transparent);
-  border-color: color-mix(in srgb, var(--color-text) 10%, transparent);
+  background: transparent;
+  border-color: color-mix(in srgb, var(--color-text) 12%, transparent);
+  border-top-color: rgb(255 255 255 / 0.95);
   box-shadow:
-    inset 0 1px 0 0 rgb(255 255 255 / 0.9),
-    0 24px 48px -30px rgb(20 20 30 / 0.3);
+    inset 0 1px 0 0 rgb(255 255 255 / 0.95),
+    inset 0 -1px 0 0 rgb(0 0 0 / 0.08),
+    inset 0 0 24px 0 rgb(255 255 255 / 0.35);
 }
 .glass--bar { border-width: 0 0 1px 0; box-shadow: inset 0 -1px 0 0 color-mix(in srgb, #fff 6%, transparent); }
+:root[data-theme="light"] .glass--bar { box-shadow: inset 0 -1px 0 0 rgb(0 0 0 / 0.06); }
 html.glass-lens .glass {
-  backdrop-filter: var(--lg, blur(0px)) blur(1.5px) saturate(1.7) brightness(1.06);
+  backdrop-filter: var(--lg, blur(0px)) saturate(1.15);
 }
-html.glass-lens:root[data-theme="light"] .glass { backdrop-filter: var(--lg, blur(0px)) blur(1.5px) saturate(1.4); }
 .glass { background-image: radial-gradient(420px circle at var(--gx, -999px) var(--gy, -999px), rgb(255 255 255 / 0.05), transparent 60%); }
 .glass::after {
   content: "";

@@ -83,7 +83,7 @@ function el<K extends keyof SVGElementTagNameMap>(name: K, attrs: Record<string,
 
 function buildFilter(defs: SVGDefsElement, id: string, w: number, h: number, bezel: number) {
   const { dispUrl, specUrl } = buildMaps(w, h, bezel)
-  const scale = Math.round(bezel * 1.1)
+  const scale = Math.round(bezel * 1.3)
   const f = el('filter', { id, x: 0, y: 0, width: w, height: h, filterUnits: 'userSpaceOnUse', 'color-interpolation-filters': 'sRGB' }, defs)
   el('feImage', { href: dispUrl, x: 0, y: 0, width: w, height: h, preserveAspectRatio: 'none', result: 'map' }, f)
   // One displacement per colour channel, a touch apart: a faint prism fringe at the rim
@@ -116,7 +116,7 @@ export function LiquidGlass() {
     const flush = () => {
       idle = 0
       for (const [t, [w, h]] of queue) {
-        const bezel = Math.max(8, Math.min(26, Math.floor(Math.min(w, h) / 3)))
+        const bezel = Math.max(8, Math.min(34, Math.floor(Math.min(w, h) / 3)))
         const id = `lg-${w}x${h}`
         if (!built.has(id)) { buildFilter(defs, id, w, h, bezel); built.add(id) }
         t.style.setProperty('--lg', `url(#${id})`)
