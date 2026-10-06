@@ -6,6 +6,7 @@ import { TRUTH } from '@/content/truth'
 import { type CommandDef } from '@/lib/commands'
 import { copyText, toast } from '@/lib/interaction'
 import { toggleJinx } from '@/components/JinxMode'
+import { toggleTheme } from '@/components/ui/ThemeToggle'
 import { Kbd } from './Kbd'
 
 export { Kbd }
@@ -17,6 +18,8 @@ export function useRunCommand() {
       void copyText(TRUTH.identity.email, 'Email copied to clipboard').then((ok) => {
         if (!ok) window.location.href = `mailto:${TRUTH.identity.email}`
       })
+    } else if (cmd.action === 'toggle-theme') {
+      toast(toggleTheme() === 'light' ? 'Light theme' : 'Dark theme')
     } else if (cmd.action === 'toggle-jinx') {
       toast(toggleJinx() ? 'Jinx mode on · Esc to exit' : 'Jinx mode off')
     } else if (cmd.href && cmd.external) {

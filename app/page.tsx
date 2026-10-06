@@ -1,9 +1,7 @@
 import { Counter } from '@/components/motion/Counter'
-import { WorkCard } from '@/components/motion/WorkCard'
 import { LabDock } from '@/components/interaction/LabDock'
 import { CopyEmail } from '@/components/interaction/CopyEmail'
 import { Magnetic } from '@/components/motion/Magnetic'
-import { Parallax } from '@/components/motion/Parallax'
 import { Reveal, RevealItem } from '@/components/motion/Reveal'
 import { ScrollWords } from '@/components/motion/ScrollWords'
 import { TRUTH, METRICS, show, factor } from '@/content/truth'
@@ -12,8 +10,7 @@ import Link from 'next/link'
 import { HeroStage } from '@/components/hero/HeroStage'
 import { HeroOverlay } from '@/components/hero/HeroOverlay'
 import { SectionHead } from '@/components/ui/SectionHead'
-import { SnapRail } from '@/components/ui/SnapRail'
-import { MeterOcrVisual, SvtrVisual, EchomeVisual, FinSentinelVisual } from '@/components/work/CardVisuals'
+import { PetPen } from '@/components/pets/PetPen'
 
 export default function Home() {
   const { busiestDay, p50, invalidDetection, classifierCompute } = METRICS.meterOcr
@@ -71,70 +68,65 @@ export default function Home() {
       {/* SC.03: Work Grid */}
       <section id="work" className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24 text-text scroll-mt-16">
         <Reveal>
-          <SectionHead index="01" title="Selected Work" aside="Production systems & research" />
+          <SectionHead index="01" title="Selected Work" aside="Four pets, four projects" />
         </Reveal>
 
-        <SnapRail label="Selected work" desktopClassName="lg:grid-cols-3 lg:gap-x-8 lg:gap-y-16">
-          <Parallax offset={24} className="lg:col-span-3">
-            <WorkCard
-              id="meter-ocr"
-              index="01"
-              title="Meter OCR"
-              kicker={`Two state utilities · ${busiestDay.value.toLocaleString('en-US')} requests on the busiest day`}
-              href="/work/meter-ocr"
-              summary="Reads electricity meters from field photos on Triton and TensorRT, and answers NA instead of guessing when a photo can't be read."
-              tags={['TensorRT', 'Triton', 'NVIDIA L4']}
-              aspect="aspect-[4/3] lg:aspect-[21/9]"
-            >
-              <MeterOcrVisual />
-            </WorkCard>
-          </Parallax>
-
-          <Parallax offset={72}>
-            <WorkCard
-              id="svtrv2-ard"
-              index="02"
-              title="SVTRv2-ARD"
-              kicker="Research · SVTRv2 (ICCV 2025) + a new method"
-              href="/work/svtrv2-ard"
-              summary="Learned routing into SVTRv2's resize bins plus SGM-to-CTC distillation, leaving the served model byte-identical."
-              tags={['PyTorch', 'CTC', 'OCR']}
-              aspect="aspect-[4/3]"
-            >
-              <SvtrVisual />
-            </WorkCard>
-          </Parallax>
-
-          <Parallax offset={24}>
-            <WorkCard
-              id="echome"
-              index="03"
-              title="ECHOME"
-              kicker="Local-first agent · LangGraph"
-              href="/work/echome"
-              summary={`An offline agent with three-tier memory and a ${show(METRICS.echome.assessmentCut)} shorter adaptive assessment.`}
-              tags={['LangGraph', 'Qdrant', 'Offline']}
-              aspect="aspect-[4/3]"
-            >
-              <EchomeVisual />
-            </WorkCard>
-          </Parallax>
-
-          <Parallax offset={72}>
-            <WorkCard
-              id="finsentinel"
-              index="04"
-              title="FinSentinelAI"
-              kicker="Private finance RAG · runs on your machine"
-              href="/work/finsentinel"
-              summary="Question answering over invoices and bank statements with local embeddings, a cross-encoder reranker and Ollama. Zero external API calls."
-              tags={['ChromaDB', 'Cross-encoder', 'Ollama']}
-              aspect="aspect-[4/3]"
-            >
-              <FinSentinelVisual />
-            </WorkCard>
-          </Parallax>
-        </SnapRail>
+        <PetPen
+          pets={[
+            {
+              name: 'Jinx',
+              kind: 'cat',
+              species: 'Cat',
+              job: 'Reads electricity meters by night, and would rather say nothing than guess.',
+              project: {
+                id: 'meter-ocr',
+                title: 'Meter OCR',
+                href: '/work/meter-ocr',
+                summary: "Reads meters from field photos on Triton and TensorRT, and answers NA when a photo can't be read.",
+                tags: ['TensorRT', 'Triton', 'NVIDIA L4'],
+              },
+            },
+            {
+              name: 'Tobi',
+              kind: 'dog',
+              species: 'Retriever',
+              job: 'Fetches the exact invoice line you asked for, and never leaves the house to do it.',
+              project: {
+                id: 'finsentinel',
+                title: 'FinSentinelAI',
+                href: '/work/finsentinel',
+                summary: 'Question answering over invoices and bank statements with local embeddings, a reranker and Ollama. Zero external API calls.',
+                tags: ['ChromaDB', 'Cross-encoder', 'Ollama'],
+              },
+            },
+            {
+              name: 'Mikey',
+              kind: 'hamster',
+              species: 'Hamster',
+              job: 'Sorts every word image into the right bin before he takes a bite.',
+              project: {
+                id: 'svtrv2-ard',
+                title: 'SVTRv2-ARD',
+                href: '/work/svtrv2-ard',
+                summary: "Learned routing into SVTRv2's resize bins plus SGM-to-CTC distillation, leaving the served model byte-identical.",
+                tags: ['PyTorch', 'CTC', 'OCR'],
+              },
+            },
+            {
+              name: 'Luffy',
+              kind: 'parrot',
+              species: 'Parrot',
+              job: 'Remembers what you said last week and says it back in your voice.',
+              project: {
+                id: 'echome',
+                title: 'ECHOME',
+                href: '/work/echome',
+                summary: `An offline agent with three-tier memory and a ${show(METRICS.echome.assessmentCut)} shorter adaptive assessment.`,
+                tags: ['LangGraph', 'Qdrant', 'Offline'],
+              },
+            },
+          ]}
+        />
       </section>
 
       {/* SC.04: Lab console (same command menu as ⌘K) */}
@@ -196,19 +188,19 @@ export default function Home() {
           </RevealItem>
           
           <RevealItem className="grid grid-cols-2 gap-3 sm:gap-6">
-            <div className="p-4 sm:p-6 bg-surface border border-line">
+            <div className="glass rounded-[var(--radius-control)] rounded-br-[var(--radius-cut)] p-4 sm:p-6">
               <div className="text-4xl font-display text-accent mb-2">{achillesTests.value}</div>
               <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">CI tests passing (Achilles)</div>
             </div>
-            <div className="p-4 sm:p-6 bg-surface border border-line">
+            <div className="glass rounded-[var(--radius-control)] rounded-br-[var(--radius-cut)] p-4 sm:p-6">
               <div className="text-4xl font-display text-text mb-2">₹{studio.revenueLakh}L</div>
               <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">spacedrift revenue ({studio.clients} clients)</div>
             </div>
-            <div className="p-4 sm:p-6 bg-surface border border-line">
+            <div className="glass rounded-[var(--radius-control)] rounded-br-[var(--radius-cut)] p-4 sm:p-6">
               <div className="text-4xl font-display text-detect mb-2">{achillesLabs.value}</div>
               <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">Test-driven AI labs</div>
             </div>
-            <div className="p-4 sm:p-6 bg-surface border border-line">
+            <div className="glass rounded-[var(--radius-control)] rounded-br-[var(--radius-cut)] p-4 sm:p-6">
               <div className="text-4xl font-display text-success mb-2">{Math.round(factor(classifierCompute))}×</div>
               <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">TensorRT speedup ({show(classifierCompute, 'before')} → {show(classifierCompute)})</div>
             </div>
@@ -217,14 +209,14 @@ export default function Home() {
       </section>
 
       {/* SC.07: Footer */}
-      <footer className="relative z-10 w-full bg-surface border-t border-line pt-20 sm:pt-24 pb-[max(4rem,calc(env(safe-area-inset-bottom)+3rem))] sm:pb-24 px-4 sm:px-6 flex flex-col items-center justify-center overflow-hidden">
+      <footer className="relative z-10 w-full border-t border-line pt-20 sm:pt-24 pb-[max(4rem,calc(env(safe-area-inset-bottom)+3rem))] sm:pb-24 px-4 sm:px-6 flex flex-col items-center justify-center overflow-hidden">
         <Reveal className="flex flex-col items-center">
         <Magnetic strength={20}>
           <a 
             href={`mailto:${TRUTH.identity.email}`} 
             data-cursor="view"
             data-cursor-label="Say hi"
-            className="group flex flex-col items-center justify-center text-center px-8 py-9 sm:px-12 sm:py-10 rounded-[2.5rem] sm:rounded-full border border-line bg-bg hover:border-accent transition-all shadow-2xl"
+            className="glass group flex flex-col items-center justify-center text-center px-8 py-9 sm:px-12 sm:py-10 rounded-[2.5rem] sm:rounded-full hover:border-accent transition-colors"
           >
             <span className="font-display text-[2.5rem] leading-[0.95] sm:text-4xl md:text-5xl group-hover:text-accent group-active:text-accent transition-colors uppercase">
               Got a model to ship?

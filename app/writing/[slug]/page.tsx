@@ -47,7 +47,7 @@ export default async function WritingSlugPage({ params }: PageProps) {
         <p className="font-mono text-muted text-sm uppercase tracking-wider">{post.summary}</p>
       </header>
       
-      <article className="prose prose-invert prose-p:text-text/80 prose-headings:font-display prose-headings:font-normal prose-a:text-accent prose-code:font-mono prose-code:text-accent max-w-none">
+      <article className="prose prose-p:text-text/80 prose-headings:font-display prose-headings:font-normal prose-a:text-accent prose-code:font-mono prose-code:text-accent max-w-none">
         <div dangerouslySetInnerHTML={{ __html: post.content }} />
       </article>
 

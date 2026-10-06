@@ -36,9 +36,9 @@ export function StressSlider({
       </div>
       <div className="relative h-8">
         <svg viewBox="0 0 100 30" preserveAspectRatio="none" className="absolute inset-0 w-full h-full" aria-hidden="true">
-          <polygon points={area} fill="rgba(45,226,230,0.08)" />
-          <polyline points={pts.join(' ')} fill="none" stroke="rgba(45,226,230,0.55)" strokeWidth={1} vectorEffect="non-scaling-stroke" />
-          <line x1={value * 100} x2={value * 100} y1={0} y2={30} stroke="#FF4655" strokeWidth={1} vectorEffect="non-scaling-stroke" />
+          <polygon points={area} className="fill-detect/10" />
+          <polyline points={pts.join(' ')} fill="none" className="stroke-detect/55" strokeWidth={1} vectorEffect="non-scaling-stroke" />
+          <line x1={value * 100} x2={value * 100} y1={0} y2={30} className="stroke-accent" strokeWidth={1} vectorEffect="non-scaling-stroke" />
         </svg>
         <input
           type="range"

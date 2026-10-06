@@ -55,7 +55,7 @@ export default function MeterOCRCaseStudy() {
       </section>
 
       {/* 3. Context */}
-      <section className="mb-16 sm:mb-24 prose prose-invert prose-p:text-text/80 max-w-none">
+      <section className="mb-16 sm:mb-24 prose prose-p:text-text/80 max-w-none">
         <h2 className="font-display text-[2.5rem] leading-none sm:text-4xl mb-6">Context & Constraints</h2>
         <p>
           Meter readers photograph electricity meters on their phones, and the utility&apos;s billing backend needs the number. The service gets one photo and must return one reading with a confidence score, in the same response shape whatever happens, because the backend never branches on errors.
@@ -75,7 +75,7 @@ export default function MeterOCRCaseStudy() {
       </section>
 
       {/* 5. Decisions */}
-      <section className="mb-16 sm:mb-24 prose prose-invert prose-p:text-text/80 max-w-none">
+      <section className="mb-16 sm:mb-24 prose prose-p:text-text/80 max-w-none">
         <h2 className="font-display text-[2.5rem] leading-none sm:text-4xl mb-6">Trade-offs</h2>
         <p>
           Moving the last classifier from ONNX Runtime to TensorRT FP16 was the hardest cut. TensorRT refuses a Transpose on a UINT8 input, so the exported graph gets a patch that casts first, numerically identical, before conversion. Classifier compute went from <strong>{show(m.classifierCompute, 'before')}</strong> to <strong>{show(m.classifierCompute)}</strong>, and throughput stopped falling as load rose.

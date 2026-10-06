@@ -9,6 +9,8 @@ import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import { CommandPalette } from "@/components/interaction/CommandPalette";
 import { Cursor } from "@/components/interaction/Cursor";
 import { Toaster } from "@/components/interaction/Toaster";
+import { themeScript } from "@/components/ui/ThemeToggle";
+import { SitePattern } from "@/components/ui/SitePattern";
 import { posts } from "#velite";
 import { TRUTH } from "@/content/truth";
 
@@ -62,14 +64,17 @@ const personJsonLd = {
   sameAs: [links.github, links.linkedin, links.kaggle, links.studio],
 };
 
-// viewport-fit=cover lets the dark background run under the notch and home indicator;
+// viewport-fit=cover lets the background run under the notch and home indicator;
 // components pad themselves with env(safe-area-inset-*).
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#050507",
-  colorScheme: "dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F3F2EE" },
+    { media: "(prefers-color-scheme: dark)", color: "#050507" },
+  ],
+  colorScheme: "dark light",
 };
 
 export default function RootLayout({
@@ -83,7 +88,13 @@ export default function RootLayout({
     .map(({ slug, title }) => ({ slug, title }));
 
   return (
-    <html lang="en" className={`${fontDisplay.variable} ${fontSans.variable} ${fontMono.variable}`}>
+    // The head script sets data-theme before hydration, so React must not flag the mismatch.
+    <html lang="en" className={`${fontDisplay.variable} ${fontSans.variable} ${fontMono.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        {/* Only Chromium can run an SVG filter on a backdrop; elsewhere .glass stays a plain blur */}
+        <script dangerouslySetInnerHTML={{ __html: "if(navigator.userAgentData)document.documentElement.classList.add('glass-lens')" }} />
+      </head>
       <body className="antialiased">
         <script
           type="application/ld+json"
@@ -105,9 +116,10 @@ export default function RootLayout({
           <Navigation />
           <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-50 overflow-hidden" style={{ viewTransitionName: "site-grain" }}>
             <div className="film-grain absolute inset-0" />
-            <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_40%,transparent_55%,rgba(5,5,7,0.7)_100%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_40%,transparent_55%,color-mix(in_srgb,var(--color-bg)_70%,transparent)_100%)]" />
           </div>
-          <div id="content" tabIndex={-1} className="outline-none">
+          <div id="content" tabIndex={-1} className="relative isolate outline-none">
+            <SitePattern />
             {children}
           </div>
           </SmoothScroll>

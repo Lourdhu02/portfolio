@@ -109,7 +109,7 @@ export default async function WorkSlugPage({ params }: PageProps) {
         </div>
       </section>
       
-      <article className="prose prose-invert prose-p:text-text/80 prose-headings:font-display prose-headings:font-normal prose-a:text-accent prose-code:font-mono prose-code:text-accent max-w-none mb-16">
+      <article className="prose prose-p:text-text/80 prose-headings:font-display prose-headings:font-normal prose-a:text-accent prose-code:font-mono prose-code:text-accent max-w-none mb-16">
         <div dangerouslySetInnerHTML={{ __html: post.content }} />
       </article>
 

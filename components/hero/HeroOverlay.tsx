@@ -43,7 +43,7 @@ export function HeroOverlay() {
             href={links.resume}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 rounded-full border border-line bg-bg/40 px-6 py-3 font-mono text-xs uppercase tracking-widest text-text backdrop-blur-sm transition-colors hover:border-text"
+            className="glass inline-flex items-center gap-3 rounded-full px-6 py-3 font-mono text-xs uppercase tracking-widest text-text transition-colors hover:border-text"
           >
             Résumé
           </a>
