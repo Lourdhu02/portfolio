@@ -451,30 +451,68 @@ html:active-view-transition .site-nav {
   100% { transform: translateY(200%); }
 }
 
-/* ---------- Work card visuals ---------- */
-.wc-grid {
-  background-image:
-    linear-gradient(to right, color-mix(in srgb, var(--color-text) 5%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 5%, transparent) 1px, transparent 1px);
-  background-size: 24px 24px;
+/* ---------- Pets (components/pets) ---------- */
+/* SVG transform-origins are in the 200×200 art box unless a rule sets fill-box. Each card
+   offsets its timings by --i so the four pets never move in lockstep. */
+.pet { --delay: calc(var(--i, 0) * -0.9s); }
+.pet-figure { transform-origin: 100px 188px; }
+.pet-breathe { transform-origin: 100px 186px; animation: pet-breathe 3.6s ease-in-out infinite var(--delay); }
+@keyframes pet-breathe { 50% { transform: scale(1.015, 0.985); } }
+
+.pet-eye { transform-box: fill-box; transform-origin: center; animation: pet-blink 5.2s infinite var(--delay); }
+@keyframes pet-blink { 0%, 92%, 100% { transform: none; } 95% { transform: scaleY(0.1); } }
+.pet-pupil {
+  transform: translate(calc(var(--look-x, 0) * 2.6px), calc(var(--look-y, 0) * 2.2px));
+  transition: transform 180ms ease-out;
 }
-.wc-scan { animation: wc-scan 3.2s cubic-bezier(0.65, 0, 0.35, 1) infinite alternate; }
-@keyframes wc-scan { from { transform: translateY(0); } to { transform: translateY(90px); } }
-.wc-node { animation: wc-node 2s ease-in-out infinite; }
-@keyframes wc-node {
-  0%, 60%, 100% { border-color: var(--color-line); color: var(--color-muted); }
-  20% { border-color: var(--color-accent); color: var(--color-text); }
+
+.pet-tail--sway { animation: pet-sway 3s ease-in-out infinite var(--delay); }
+@keyframes pet-sway { 50% { transform: rotate(-9deg); } }
+.pet-tail--wag { animation: pet-wag 0.9s ease-in-out infinite; }
+@keyframes pet-wag { 50% { transform: rotate(-22deg); } }
+.pet-ear--l { animation: pet-ear-l 6s ease-in-out infinite var(--delay); }
+.pet-ear--r { animation: pet-ear-r 6s ease-in-out infinite calc(var(--delay) - 1.3s); }
+@keyframes pet-ear-l { 0%, 86%, 100% { transform: none; } 90% { transform: rotate(-10deg); } }
+@keyframes pet-ear-r { 0%, 86%, 100% { transform: none; } 90% { transform: rotate(10deg); } }
+.pet-cheek { animation: pet-cheek 2.6s ease-in-out infinite var(--delay); }
+@keyframes pet-cheek { 50% { transform: scale(1.18); } }
+.pet--hamster .pet-prop { animation: pet-nibble 0.5s ease-in-out infinite; }
+@keyframes pet-nibble { 50% { transform: translateY(-2px); } }
+.pet-wing { animation: pet-wing 4s ease-in-out infinite var(--delay); }
+@keyframes pet-wing { 0%, 80%, 100% { transform: none; } 85% { transform: rotate(-14deg); } 90% { transform: rotate(4deg); } }
+.pet-voice path { opacity: 0; animation: pet-voice 2.4s ease-out infinite; }
+.pet-voice path:last-child { animation-delay: 0.25s; }
+@keyframes pet-voice { 0%, 40% { opacity: 0; } 55% { opacity: 1; } 100% { opacity: 0; } }
+
+/* Hover or focus: the pet hops and looks straight at you */
+.pet-card:is(:hover, :focus-visible) .pet-figure { animation: pet-hop 620ms cubic-bezier(0.34, 1.4, 0.64, 1); }
+@keyframes pet-hop {
+  0% { transform: none; }
+  25% { transform: scale(1.06, 0.92); }
+  55% { transform: translateY(-16px) scale(0.97, 1.04); }
+  80% { transform: scale(1.03, 0.97); }
+  100% { transform: none; }
 }
-.wc-ping { animation: wc-ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite; }
-@keyframes wc-ping { 0% { r: 9px; opacity: 1; } 100% { r: 24px; opacity: 0; } }
-.wc-grow { transform-origin: left; animation: wc-grow 1.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
-@keyframes wc-grow { from { transform: scaleX(3.4); } to { transform: scaleX(1); } }
-.wc-grow-r { transform-origin: left; animation: wc-grow-r 1.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
-@keyframes wc-grow-r { from { transform: scaleX(9); } to { transform: scaleX(1); } }
+.pet-card:is(:hover, :focus-visible) .pet-voice path { animation-duration: 1.2s; }
+
+/* No mouse to watch: glance around now and then instead */
+@media (hover: none) {
+  .pet-pupil { animation: pet-glance 7s ease-in-out infinite var(--delay); transition: none; }
+  @keyframes pet-glance {
+    0%, 30%, 100% { transform: none; }
+    38%, 55% { transform: translate(-2.4px, 0.6px); }
+    63%, 80% { transform: translate(2.4px, -0.6px); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pet *, .pet-card:is(:hover, :focus-visible) .pet-figure { animation: none !important; }
+  .pet-voice path { opacity: 0.8; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .hero-in { animation: none; opacity: 1; }
-  .hero-blink, .hero-scroll, .wc-scan, .wc-node, .wc-ping, .wc-grow, .wc-grow-r { animation: none; }
+  .hero-blink, .hero-scroll { animation: none; }
 }
 
 /* /lab stress sliders: an invisible native range over a drawn accuracy curve */

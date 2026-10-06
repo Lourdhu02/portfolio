@@ -1,9 +1,7 @@
 import { Counter } from '@/components/motion/Counter'
-import { WorkCard } from '@/components/motion/WorkCard'
 import { LabDock } from '@/components/interaction/LabDock'
 import { CopyEmail } from '@/components/interaction/CopyEmail'
 import { Magnetic } from '@/components/motion/Magnetic'
-import { Parallax } from '@/components/motion/Parallax'
 import { Reveal, RevealItem } from '@/components/motion/Reveal'
 import { ScrollWords } from '@/components/motion/ScrollWords'
 import { TRUTH, METRICS, show, factor } from '@/content/truth'
@@ -12,8 +10,7 @@ import Link from 'next/link'
 import { HeroStage } from '@/components/hero/HeroStage'
 import { HeroOverlay } from '@/components/hero/HeroOverlay'
 import { SectionHead } from '@/components/ui/SectionHead'
-import { SnapRail } from '@/components/ui/SnapRail'
-import { MeterOcrVisual, SvtrVisual, EchomeVisual, FinSentinelVisual } from '@/components/work/CardVisuals'
+import { PetPen } from '@/components/pets/PetPen'
 
 export default function Home() {
   const { busiestDay, p50, invalidDetection, classifierCompute } = METRICS.meterOcr
@@ -71,70 +68,65 @@ export default function Home() {
       {/* SC.03: Work Grid */}
       <section id="work" className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24 text-text scroll-mt-16">
         <Reveal>
-          <SectionHead index="01" title="Selected Work" aside="Production systems & research" />
+          <SectionHead index="01" title="Selected Work" aside="Four pets, four projects" />
         </Reveal>
 
-        <SnapRail label="Selected work" desktopClassName="lg:grid-cols-3 lg:gap-x-8 lg:gap-y-16">
-          <Parallax offset={24} className="lg:col-span-3">
-            <WorkCard
-              id="meter-ocr"
-              index="01"
-              title="Meter OCR"
-              kicker={`Two state utilities · ${busiestDay.value.toLocaleString('en-US')} requests on the busiest day`}
-              href="/work/meter-ocr"
-              summary="Reads electricity meters from field photos on Triton and TensorRT, and answers NA instead of guessing when a photo can't be read."
-              tags={['TensorRT', 'Triton', 'NVIDIA L4']}
-              aspect="aspect-[4/3] lg:aspect-[21/9]"
-            >
-              <MeterOcrVisual />
-            </WorkCard>
-          </Parallax>
-
-          <Parallax offset={72}>
-            <WorkCard
-              id="svtrv2-ard"
-              index="02"
-              title="SVTRv2-ARD"
-              kicker="Research · SVTRv2 (ICCV 2025) + a new method"
-              href="/work/svtrv2-ard"
-              summary="Learned routing into SVTRv2's resize bins plus SGM-to-CTC distillation, leaving the served model byte-identical."
-              tags={['PyTorch', 'CTC', 'OCR']}
-              aspect="aspect-[4/3]"
-            >
-              <SvtrVisual />
-            </WorkCard>
-          </Parallax>
-
-          <Parallax offset={24}>
-            <WorkCard
-              id="echome"
-              index="03"
-              title="ECHOME"
-              kicker="Local-first agent · LangGraph"
-              href="/work/echome"
-              summary={`An offline agent with three-tier memory and a ${show(METRICS.echome.assessmentCut)} shorter adaptive assessment.`}
-              tags={['LangGraph', 'Qdrant', 'Offline']}
-              aspect="aspect-[4/3]"
-            >
-              <EchomeVisual />
-            </WorkCard>
-          </Parallax>
-
-          <Parallax offset={72}>
-            <WorkCard
-              id="finsentinel"
-              index="04"
-              title="FinSentinelAI"
-              kicker="Private finance RAG · runs on your machine"
-              href="/work/finsentinel"
-              summary="Question answering over invoices and bank statements with local embeddings, a cross-encoder reranker and Ollama. Zero external API calls."
-              tags={['ChromaDB', 'Cross-encoder', 'Ollama']}
-              aspect="aspect-[4/3]"
-            >
-              <FinSentinelVisual />
-            </WorkCard>
-          </Parallax>
-        </SnapRail>
+        <PetPen
+          pets={[
+            {
+              name: 'Jinx',
+              kind: 'cat',
+              species: 'Cat',
+              job: 'Reads electricity meters by night, and would rather say nothing than guess.',
+              project: {
+                id: 'meter-ocr',
+                title: 'Meter OCR',
+                href: '/work/meter-ocr',
+                summary: "Reads meters from field photos on Triton and TensorRT, and answers NA when a photo can't be read.",
+                tags: ['TensorRT', 'Triton', 'NVIDIA L4'],
+              },
+            },
+            {
+              name: 'Tobi',
+              kind: 'dog',
+              species: 'Retriever',
+              job: 'Fetches the exact invoice line you asked for, and never leaves the house to do it.',
+              project: {
+                id: 'finsentinel',
+                title: 'FinSentinelAI',
+                href: '/work/finsentinel',
+                summary: 'Question answering over invoices and bank statements with local embeddings, a reranker and Ollama. Zero external API calls.',
+                tags: ['ChromaDB', 'Cross-encoder', 'Ollama'],
+              },
+            },
+            {
+              name: 'Mikey',
+              kind: 'hamster',
+              species: 'Hamster',
+              job: 'Sorts every word image into the right bin before he takes a bite.',
+              project: {
+                id: 'svtrv2-ard',
+                title: 'SVTRv2-ARD',
+                href: '/work/svtrv2-ard',
+                summary: "Learned routing into SVTRv2's resize bins plus SGM-to-CTC distillation, leaving the served model byte-identical.",
+                tags: ['PyTorch', 'CTC', 'OCR'],
+              },
+            },
+            {
+              name: 'Luffy',
+              kind: 'parrot',
+              species: 'Parrot',
+              job: 'Remembers what you said last week and says it back in your voice.',
+              project: {
+                id: 'echome',
+                title: 'ECHOME',
+                href: '/work/echome',
+                summary: `An offline agent with three-tier memory and a ${show(METRICS.echome.assessmentCut)} shorter adaptive assessment.`,
+                tags: ['LangGraph', 'Qdrant', 'Offline'],
+              },
+            },
+          ]}
+        />
       </section>
 
       {/* SC.04: Lab console (same command menu as ⌘K) */}
