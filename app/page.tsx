@@ -10,7 +10,7 @@ import Link from 'next/link'
 import { HeroStage } from '@/components/hero/HeroStage'
 import { HeroOverlay } from '@/components/hero/HeroOverlay'
 import { SectionHead } from '@/components/ui/SectionHead'
-import { RobotStage } from '@/components/robots/RobotStage'
+import { WorkList } from '@/components/work/WorkList'
 
 export default function Home() {
   const { busiestDay, p50, invalidDetection, classifierCompute } = METRICS.meterOcr
@@ -66,68 +66,40 @@ export default function Home() {
       </section>
 
       {/* SC.03: Work Grid */}
-      <section id="work" className="relative z-10 w-full pt-16 sm:pt-24 text-text scroll-mt-16">
-        <Reveal className="px-5 sm:px-10 lg:px-16">
-          <SectionHead index="01" title="Selected Work" aside="Four robots, four projects" />
+      <section id="work" className="relative z-10 w-full px-5 sm:px-10 lg:px-16 py-16 sm:py-24 text-text scroll-mt-16">
+        <Reveal>
+          <SectionHead index="01" title="Selected Work" aside="Four projects" />
         </Reveal>
 
-        <RobotStage
-          bots={[
+        <WorkList
+          projects={[
             {
-              name: 'Jinx',
-              kind: 'cat',
-              model: 'Scanner unit',
-              glow: '#2DE2E6',
-              job: 'Reads electricity meters all night, and would rather say nothing than guess.',
-              project: {
-                id: 'meter-ocr',
-                title: 'Meter OCR',
-                href: '/work/meter-ocr',
-                summary: "Reads meters from field photos on Triton and TensorRT, and answers NA when a photo can't be read.",
-                tags: ['TensorRT', 'Triton', 'NVIDIA L4'],
-              },
+              title: 'Meter OCR',
+              href: '/work/meter-ocr',
+              role: 'Production · two state utilities',
+              summary: "Reads meters from field photos on Triton and TensorRT, and answers NA when a photo can't be read.",
+              tags: ['TensorRT', 'Triton', 'NVIDIA L4'],
             },
             {
-              name: 'Tobi',
-              kind: 'dog',
-              model: 'Retriever unit',
-              glow: '#FFB547',
-              job: 'Fetches the exact invoice line you asked for, and never leaves the house to do it.',
-              project: {
-                id: 'finsentinel',
-                title: 'FinSentinelAI',
-                href: '/work/finsentinel',
-                summary: 'Question answering over invoices and bank statements with local embeddings, a reranker and Ollama. Zero external API calls.',
-                tags: ['ChromaDB', 'Cross-encoder', 'Ollama'],
-              },
+              title: 'FinSentinelAI',
+              href: '/work/finsentinel',
+              role: 'Local RAG',
+              summary: 'Question answering over invoices and bank statements with local embeddings, a reranker and Ollama. Zero external API calls.',
+              tags: ['ChromaDB', 'Cross-encoder', 'Ollama'],
             },
             {
-              name: 'Mikey',
-              kind: 'hamster',
-              model: 'Router unit',
-              glow: '#3DDC97',
-              job: 'Runs every word image to the right bin before the reader takes a look.',
-              project: {
-                id: 'svtrv2-ard',
-                title: 'SVTRv2-ARD',
-                href: '/work/svtrv2-ard',
-                summary: "Learned routing into SVTRv2's resize bins plus SGM-to-CTC distillation, leaving the served model byte-identical.",
-                tags: ['PyTorch', 'CTC', 'OCR'],
-              },
+              title: 'SVTRv2-ARD',
+              href: '/work/svtrv2-ard',
+              role: 'OCR research',
+              summary: "Learned routing into SVTRv2's resize bins plus SGM-to-CTC distillation, leaving the served model byte-identical.",
+              tags: ['PyTorch', 'CTC', 'OCR'],
             },
             {
-              name: 'Luffy',
-              kind: 'parrot',
-              model: 'Voice unit',
-              glow: '#FF4655',
-              job: 'Remembers what you said last week and says it back in your voice.',
-              project: {
-                id: 'echome',
-                title: 'ECHOME',
-                href: '/work/echome',
-                summary: `An offline agent with three-tier memory and a ${show(METRICS.echome.assessmentCut)} shorter adaptive assessment.`,
-                tags: ['LangGraph', 'Qdrant', 'Offline'],
-              },
+              title: 'ECHOME',
+              href: '/work/echome',
+              role: 'Offline agent',
+              summary: `An offline agent with three-tier memory and a ${show(METRICS.echome.assessmentCut)} shorter adaptive assessment.`,
+              tags: ['LangGraph', 'Qdrant', 'Offline'],
             },
           ]}
         />

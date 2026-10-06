@@ -15,12 +15,9 @@ function resolve(el: Element | null): CursorState {
   return { variant: 'default' }
 }
 
-const FACES = ['front', 'back', 'right', 'left', 'top', 'bottom'] as const
-
-// Mouse-only cursor: a small wireframe cube, white on dark and black on light. Its red
-// vertex is the hotspot: the cube hangs from it and turns around it, so the point you
-// click is always the red one. Touch, pen and keyboard users keep
-// the native behaviour; focus rings are untouched. Styles live in globals.css (.cube-cursor).
+// Mouse-only cursor: a Valorant-style "+" crosshair, white on dark and black on light, whose
+// centre is the hotspot. Touch, pen and keyboard users keep the native behaviour; focus rings
+// are untouched. Styles live in globals.css (.xhair).
 export function Cursor() {
   const finePointer = useMediaQuery('(hover: hover) and (pointer: fine)')
   if (!finePointer) return null
@@ -71,27 +68,20 @@ function CursorInner() {
   const labelled = state.variant === 'view' || state.variant === 'copy'
   const hidden = !visible || state.variant === 'text' || state.variant === 'hidden'
 
-  // Two layers on the same point: the cube blends with "difference" so it is white
-  // over dark surfaces and black over light ones, pixel by pixel, in either theme;
-  // the red vertex and the label sit on a normal layer so they keep their colours.
+  // The crosshair blends with "difference" so it inverts whatever is under it; the label sits
+  // on a normal layer so it keeps the accent colour.
   const layer = { x, y }
   return (
     <>
       <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[100] mix-blend-difference">
-        <m.div className="cube-cursor" data-variant={state.variant} data-pressed={pressed || undefined} data-hidden={hidden || undefined} style={layer}>
-          <div className="cube-cursor__scale">
-            <div className="cube-cursor__spin">
-              <div className="cube-cursor__cube">
-                {FACES.map((f) => <span key={f} className={`cube-cursor__face cube-cursor__face--${f}`} />)}
-              </div>
-            </div>
-          </div>
+        <m.div className="xhair" data-variant={state.variant} data-pressed={pressed || undefined} data-hidden={hidden || undefined} style={layer}>
+          {(['t', 'r', 'b', 'l'] as const).map((d) => <span key={d} className={`xhair__arm xhair__arm--${d}`} />)}
+          <span className="xhair__dot" />
         </m.div>
       </div>
       <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[100]">
-        <m.div className="cube-cursor" data-variant={state.variant} data-pressed={pressed || undefined} data-hidden={hidden || undefined} style={layer}>
-          <span className="cube-cursor__vertex" />
-          <span className="cube-cursor__label" data-show={labelled || undefined}>
+        <m.div className="xhair" data-hidden={hidden || undefined} style={layer}>
+          <span className="xhair__label" data-show={labelled || undefined}>
             {state.label ?? (state.variant === 'copy' ? 'Copy' : 'View')}
           </span>
         </m.div>

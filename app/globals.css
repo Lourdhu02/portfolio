@@ -13,16 +13,17 @@
 }
 
 @theme {
-  --color-bg: #050507;
-  --color-surface: #0B0B0F;
-  --color-raised: #111117;
-  --color-line: #1C1C22;
-  --color-text: #EDEDF0;
-  --color-muted: #8A8A96;
-  --color-accent: #FF4655;
-  --color-accent-dim: #8C1D27;
-  --color-detect: #2DE2E6;
-  --color-success: #3DDC97;
+  /* Black and white, with purple as the one accent (Raju, 2026-10-06) */
+  --color-bg: #000000;
+  --color-surface: #0A0A0A;
+  --color-raised: #121212;
+  --color-line: #222222;
+  --color-text: #FFFFFF;
+  --color-muted: #8C8C8C;
+  --color-accent: #8B5CF6;
+  --color-accent-dim: #3B2470;
+  --color-detect: #FFFFFF;
+  --color-success: #8B5CF6;
 
   --font-display: "Rupee Display", var(--font-big-shoulders), "Arial Narrow", sans-serif;
   --font-sans: var(--font-geist), "Helvetica Neue", Arial, sans-serif;
@@ -39,16 +40,16 @@
    nothing else; the few places that assume a dark page check [data-theme="light"] below. */
 :root[data-theme="light"] {
   color-scheme: light;
-  --color-bg: #F3F2EE;
-  --color-surface: #EAE8E2;
+  --color-bg: #FFFFFF;
+  --color-surface: #F5F5F5;
   --color-raised: #FFFFFF;
-  --color-line: #D6D3CA;
-  --color-text: #0D0D11;
-  --color-muted: #5C5C66;
-  --color-accent: #D81E33;
-  --color-accent-dim: #F6C2C8;
-  --color-detect: #0B858A;
-  --color-success: #13804F;
+  --color-line: #E2E2E2;
+  --color-text: #000000;
+  --color-muted: #5E5E5E;
+  --color-accent: #6D28D9;
+  --color-accent-dim: #DDD0FB;
+  --color-detect: #000000;
+  --color-success: #6D28D9;
 }
 :root[data-theme="light"][data-jinx] {
   --color-accent: #D0157A;
@@ -75,12 +76,6 @@
   --tw-prose-pre-bg: var(--color-surface);
   --tw-prose-th-borders: var(--color-line);
   --tw-prose-td-borders: var(--color-line);
-}
-
-/* The particle hero draws white points with additive glow, which vanish on a light page.
-   Inverting the canvas turns them into ink; hue-rotate puts the red accent back. */
-:root[data-theme="light"] [data-particles] canvas {
-  filter: invert(1) hue-rotate(180deg);
 }
 
 @layer base {
@@ -301,104 +296,31 @@ html:active-view-transition .site-nav {
   }
 }
 
-/* Cube cursor. The wrapper sits exactly on the pointer and has no size, so its origin
-   is the hotspot. The cube is shifted until one corner sits on that origin, and every
-   rotation and scale happens around it, so the red vertex never leaves the pointer.
-   Hovering a link turns the cube 120° about its long diagonal, which maps it onto
-   itself: it reads as a tick of a dial and the body stays where it was. */
-@property --cube-turn {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 0deg;
-}
-
-.cube-cursor {
-  --s: 14px;
-  --k: 1;
+/* Crosshair cursor, Valorant style: four short arms around a gap and a centre dot. The wrapper
+   has no size and sits on the pointer, so the centre is the hotspot. It is drawn white on a
+   mix-blend-difference layer, so it reads white on dark and black on light. The gap opens on
+   links and closes on press. */
+@property --gap { syntax: "<length>"; inherits: true; initial-value: 4px; }
+.xhair { --gap: 4px; --len: 7px; --w: 2px; position: absolute; left: 0; top: 0; width: 0; height: 0; transition: --gap 160ms cubic-bezier(0.22, 1, 0.36, 1), opacity 150ms ease; }
+.xhair[data-hidden] { opacity: 0; }
+.xhair[data-variant="link"] { --gap: 7px; }
+.xhair:is([data-variant="view"], [data-variant="copy"]) { --gap: 10px; }
+.xhair[data-pressed] { --gap: 2px; transition-duration: 80ms; }
+.xhair__arm, .xhair__dot { position: absolute; background: #fff; }
+.xhair__arm--t, .xhair__arm--b { left: calc(var(--w) / -2); width: var(--w); height: var(--len); }
+.xhair__arm--l, .xhair__arm--r { top: calc(var(--w) / -2); height: var(--w); width: var(--len); }
+.xhair__arm--t { top: calc(-1 * (var(--gap) + var(--len))); }
+.xhair__arm--b { top: var(--gap); }
+.xhair__arm--l { left: calc(-1 * (var(--gap) + var(--len))); }
+.xhair__arm--r { left: var(--gap); }
+.xhair__dot { left: -1px; top: -1px; width: 2px; height: 2px; }
+.xhair__label {
   position: absolute;
-  left: 0;
-  top: 0;
-  width: 0;
-  height: 0;
-  color: #fff;
-  transition: opacity 160ms ease;
-}
-.cube-cursor[data-hidden] { opacity: 0; }
-.cube-cursor[data-variant="link"] { --k: 1.3; }
-.cube-cursor:is([data-variant="view"], [data-variant="copy"]) { --k: 1.75; }
-
-.cube-cursor__scale,
-.cube-cursor__spin,
-.cube-cursor__cube {
-  position: absolute;
-  left: 0;
-  top: 0;
-  transform-style: preserve-3d;
-  transform-origin: 0 0 0;
-}
-.cube-cursor__scale {
-  transform: scale(var(--k));
-  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-.cube-cursor[data-pressed] .cube-cursor__scale { transform: scale(calc(var(--k) * 0.8)); transition-duration: 90ms; }
-
-/* Fixed viewing angle: isometric, leaned 25° so the cube hangs down and to the right of
-   its top corner, the way an arrow cursor points. */
-.cube-cursor__spin { transform: rotateZ(-25deg) rotateX(-35.26deg) rotateY(45deg); }
-
-.cube-cursor__cube {
-  width: var(--s);
-  height: var(--s);
-  /* Move the top-back-right corner, (s, 0, -s/2) in face space, onto the origin. */
-  transform: rotate3d(-1, 1, 1, var(--cube-turn)) translate3d(calc(var(--s) * -1), 0, calc(var(--s) / 2));
-  transition: --cube-turn 520ms cubic-bezier(0.34, 1.4, 0.64, 1);
-}
-.cube-cursor[data-variant="link"] .cube-cursor__cube { --cube-turn: 120deg; }
-.cube-cursor:is([data-variant="view"], [data-variant="copy"]) .cube-cursor__cube { --cube-turn: 240deg; }
-
-.cube-cursor__face {
-  position: absolute;
-  inset: 0;
-  border: 1px solid currentColor;
-  background: color-mix(in srgb, currentColor var(--shade), transparent);
-  backface-visibility: hidden;
-}
-/* Three visible faces, three tones: reads as a solid lit cube in either colour. */
-.cube-cursor__face--top,
-.cube-cursor__face--bottom { --shade: 92%; }
-.cube-cursor__face--front,
-.cube-cursor__face--back { --shade: 48%; }
-.cube-cursor__face--left,
-.cube-cursor__face--right { --shade: 18%; }
-.cube-cursor__face--front  { transform: translateZ(calc(var(--s) / 2)); }
-.cube-cursor__face--back   { transform: rotateY(180deg) translateZ(calc(var(--s) / 2)); }
-.cube-cursor__face--right  { transform: rotateY(90deg) translateZ(calc(var(--s) / 2)); }
-.cube-cursor__face--left   { transform: rotateY(-90deg) translateZ(calc(var(--s) / 2)); }
-.cube-cursor__face--top    { transform: rotateX(90deg) translateZ(calc(var(--s) / 2)); }
-.cube-cursor__face--bottom { transform: rotateX(-90deg) translateZ(calc(var(--s) / 2)); }
-
-/* The red point is drawn flat on top, outside the 3D stack, so it is never hidden by a face. */
-.cube-cursor__vertex {
-  position: absolute;
-  left: -3px;
-  top: -3px;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #ff2e3f;
-  box-shadow: 0 0 0 1.5px var(--color-bg), 0 0 10px 1px rgb(255 46 63 / 0.55);
-  transition: transform 120ms ease;
-}
-.cube-cursor[data-pressed] .cube-cursor__vertex { transform: scale(1.5); }
-
-.cube-cursor__label {
-  position: absolute;
-  left: 22px;
-  top: 32px;
+  left: 18px;
+  top: 18px;
   padding: 4px 9px;
-  border-radius: 999px;
-  background: var(--color-text);
-  color: var(--color-bg);
+  background: var(--color-accent);
+  color: #fff;
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 500;
@@ -406,16 +328,11 @@ html:active-view-transition .site-nav {
   text-transform: uppercase;
   white-space: nowrap;
   opacity: 0;
-  transform: translateY(4px) scale(0.9);
-  transform-origin: 0 0;
+  transform: translateY(4px);
   transition: opacity 160ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-.cube-cursor__label[data-show] { opacity: 1; transform: none; }
-
-@media (prefers-reduced-motion: reduce) {
-  .cube-cursor__cube,
-  .cube-cursor__scale { transition: none; }
-}
+.xhair__label[data-show] { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .xhair { transition: opacity 150ms ease; } }
 
 /* Command palette enter/exit (Radix keeps it mounted until the exit animation ends) */
 .cmdk-overlay[data-state="open"] { animation: cmdk-fade-in 180ms ease-out; }
@@ -452,35 +369,6 @@ html:active-view-transition .site-nav {
   0% { transform: translateY(-100%); }
   100% { transform: translateY(200%); }
 }
-
-/* ---------- Robots, 2.5D stage (components/robots) ---------- */
-/* Phones and low-end devices: pre-rendered robots on a strip that slides with --s, the same
-   camera stop the 3D scene uses. d is each robot's distance from the stop, 0 when in focus. */
-.robot-track { perspective: 1100px; }
-.robot-sprite {
-  --d: calc(var(--i) - var(--s));
-  --ad: min(1, max(var(--d), calc(var(--d) * -1)));
-  position: absolute;
-  left: 50%;
-  top: calc(9rem + env(safe-area-inset-top));
-  width: min(80vw, 44svh);
-  aspect-ratio: 1;
-  transform: translateX(-50%) translateX(calc(var(--d) * 78vw)) rotateY(calc(var(--d) * -28deg)) scale(calc(1 - var(--ad) * 0.3));
-  opacity: calc(1 - var(--ad) * 0.75);
-  will-change: transform;
-}
-@media (min-width: 1024px) {
-  .robot-sprite { left: 66%; top: 50%; width: min(42vw, 70svh); transform: translate(-50%, -50%) translateX(calc(var(--d) * 46vw)) rotateY(calc(var(--d) * -28deg)) scale(calc(1 - var(--ad) * 0.3)); }
-}
-.robot-sprite img { position: relative; width: 100%; height: 100%; animation: robot-float 3.4s ease-in-out infinite; animation-delay: calc(var(--i) * -0.8s); }
-.robot-sprite__halo {
-  position: absolute; inset: 18%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--glow) 38%, transparent), transparent);
-  filter: blur(12px);
-  animation: robot-pulse 2.6s ease-in-out infinite;
-}
-@keyframes robot-float { 50% { transform: translateY(-4%); } }
-@keyframes robot-pulse { 50% { opacity: 0.55; transform: scale(0.92); } }
 
 @media (prefers-reduced-motion: reduce) {
   .hero-in { animation: none; opacity: 1; }
@@ -521,6 +409,11 @@ html:active-view-transition .site-nav {
 }
 
 /* ---------- Background pattern + glass ---------- */
+/* Static isometric cube lattice behind everything (components/ui/SitePattern.tsx): quiet, but
+   enough detail for the glass to bend. One SVG tile per theme. */
+.site-pattern { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='38.105' height='66' viewBox='0 0 38.105 66'%3E%3Cpath d='M-19.05 -55.00 L0.00 -44.00 L-19.05 -33.00 L-38.11 -44.00Z M19.05 -55.00 L38.11 -44.00 L19.05 -33.00 L0.00 -44.00Z M57.16 -55.00 L76.21 -44.00 L57.16 -33.00 L38.11 -44.00Z M-38.11 -22.00 L-19.05 -11.00 L-38.11 0.00 L-57.16 -11.00Z M0.00 -22.00 L19.05 -11.00 L0.00 0.00 L-19.05 -11.00Z M38.11 -22.00 L57.16 -11.00 L38.11 0.00 L19.05 -11.00Z M76.21 -22.00 L95.26 -11.00 L76.21 0.00 L57.16 -11.00Z M-19.05 11.00 L0.00 22.00 L-19.05 33.00 L-38.11 22.00Z M19.05 11.00 L38.11 22.00 L19.05 33.00 L0.00 22.00Z M57.16 11.00 L76.21 22.00 L57.16 33.00 L38.11 22.00Z M-38.11 44.00 L-19.05 55.00 L-38.11 66.00 L-57.16 55.00Z M0.00 44.00 L19.05 55.00 L0.00 66.00 L-19.05 55.00Z M38.11 44.00 L57.16 55.00 L38.11 66.00 L19.05 55.00Z M76.21 44.00 L95.26 55.00 L76.21 66.00 L57.16 55.00Z M-19.05 77.00 L0.00 88.00 L-19.05 99.00 L-38.11 88.00Z M19.05 77.00 L38.11 88.00 L19.05 99.00 L0.00 88.00Z M57.16 77.00 L76.21 88.00 L57.16 99.00 L38.11 88.00Z' fill='rgba(255,255,255,0.025)'/%3E%3Cpath d='M-19.05 -55.00 L0.00 -44.00 L0.00 -22.00 L-19.05 -11.00 L-38.11 -22.00 L-38.11 -44.00Z M-19.05 -33.00 L-38.11 -44.00 M-19.05 -33.00 L0.00 -44.00 M-19.05 -33.00 L-19.05 -11.00 M19.05 -55.00 L38.11 -44.00 L38.11 -22.00 L19.05 -11.00 L0.00 -22.00 L0.00 -44.00Z M19.05 -33.00 L0.00 -44.00 M19.05 -33.00 L38.11 -44.00 M19.05 -33.00 L19.05 -11.00 M57.16 -55.00 L76.21 -44.00 L76.21 -22.00 L57.16 -11.00 L38.11 -22.00 L38.11 -44.00Z M57.16 -33.00 L38.11 -44.00 M57.16 -33.00 L76.21 -44.00 M57.16 -33.00 L57.16 -11.00 M-38.11 -22.00 L-19.05 -11.00 L-19.05 11.00 L-38.11 22.00 L-57.16 11.00 L-57.16 -11.00Z M-38.11 0.00 L-57.16 -11.00 M-38.11 0.00 L-19.05 -11.00 M-38.11 0.00 L-38.11 22.00 M0.00 -22.00 L19.05 -11.00 L19.05 11.00 L0.00 22.00 L-19.05 11.00 L-19.05 -11.00Z M0.00 0.00 L-19.05 -11.00 M0.00 0.00 L19.05 -11.00 M0.00 0.00 L0.00 22.00 M38.11 -22.00 L57.16 -11.00 L57.16 11.00 L38.11 22.00 L19.05 11.00 L19.05 -11.00Z M38.11 0.00 L19.05 -11.00 M38.11 0.00 L57.16 -11.00 M38.11 0.00 L38.11 22.00 M76.21 -22.00 L95.26 -11.00 L95.26 11.00 L76.21 22.00 L57.16 11.00 L57.16 -11.00Z M76.21 0.00 L57.16 -11.00 M76.21 0.00 L95.26 -11.00 M76.21 0.00 L76.21 22.00 M-19.05 11.00 L0.00 22.00 L0.00 44.00 L-19.05 55.00 L-38.11 44.00 L-38.11 22.00Z M-19.05 33.00 L-38.11 22.00 M-19.05 33.00 L0.00 22.00 M-19.05 33.00 L-19.05 55.00 M19.05 11.00 L38.11 22.00 L38.11 44.00 L19.05 55.00 L0.00 44.00 L0.00 22.00Z M19.05 33.00 L0.00 22.00 M19.05 33.00 L38.11 22.00 M19.05 33.00 L19.05 55.00 M57.16 11.00 L76.21 22.00 L76.21 44.00 L57.16 55.00 L38.11 44.00 L38.11 22.00Z M57.16 33.00 L38.11 22.00 M57.16 33.00 L76.21 22.00 M57.16 33.00 L57.16 55.00 M-38.11 44.00 L-19.05 55.00 L-19.05 77.00 L-38.11 88.00 L-57.16 77.00 L-57.16 55.00Z M-38.11 66.00 L-57.16 55.00 M-38.11 66.00 L-19.05 55.00 M-38.11 66.00 L-38.11 88.00 M0.00 44.00 L19.05 55.00 L19.05 77.00 L0.00 88.00 L-19.05 77.00 L-19.05 55.00Z M0.00 66.00 L-19.05 55.00 M0.00 66.00 L19.05 55.00 M0.00 66.00 L0.00 88.00 M38.11 44.00 L57.16 55.00 L57.16 77.00 L38.11 88.00 L19.05 77.00 L19.05 55.00Z M38.11 66.00 L19.05 55.00 M38.11 66.00 L57.16 55.00 M38.11 66.00 L38.11 88.00 M76.21 44.00 L95.26 55.00 L95.26 77.00 L76.21 88.00 L57.16 77.00 L57.16 55.00Z M76.21 66.00 L57.16 55.00 M76.21 66.00 L95.26 55.00 M76.21 66.00 L76.21 88.00 M-19.05 77.00 L0.00 88.00 L0.00 110.00 L-19.05 121.00 L-38.11 110.00 L-38.11 88.00Z M-19.05 99.00 L-38.11 88.00 M-19.05 99.00 L0.00 88.00 M-19.05 99.00 L-19.05 121.00 M19.05 77.00 L38.11 88.00 L38.11 110.00 L19.05 121.00 L0.00 110.00 L0.00 88.00Z M19.05 99.00 L0.00 88.00 M19.05 99.00 L38.11 88.00 M19.05 99.00 L19.05 121.00 M57.16 77.00 L76.21 88.00 L76.21 110.00 L57.16 121.00 L38.11 110.00 L38.11 88.00Z M57.16 99.00 L38.11 88.00 M57.16 99.00 L76.21 88.00 M57.16 99.00 L57.16 121.00' fill='none' stroke='rgba(255,255,255,0.07)' stroke-width='0.75'/%3E%3C/svg%3E"); background-size: 38.105px 66px; }
+:root[data-theme="light"] .site-pattern { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='38.105' height='66' viewBox='0 0 38.105 66'%3E%3Cpath d='M-19.05 -55.00 L0.00 -44.00 L-19.05 -33.00 L-38.11 -44.00Z M19.05 -55.00 L38.11 -44.00 L19.05 -33.00 L0.00 -44.00Z M57.16 -55.00 L76.21 -44.00 L57.16 -33.00 L38.11 -44.00Z M-38.11 -22.00 L-19.05 -11.00 L-38.11 0.00 L-57.16 -11.00Z M0.00 -22.00 L19.05 -11.00 L0.00 0.00 L-19.05 -11.00Z M38.11 -22.00 L57.16 -11.00 L38.11 0.00 L19.05 -11.00Z M76.21 -22.00 L95.26 -11.00 L76.21 0.00 L57.16 -11.00Z M-19.05 11.00 L0.00 22.00 L-19.05 33.00 L-38.11 22.00Z M19.05 11.00 L38.11 22.00 L19.05 33.00 L0.00 22.00Z M57.16 11.00 L76.21 22.00 L57.16 33.00 L38.11 22.00Z M-38.11 44.00 L-19.05 55.00 L-38.11 66.00 L-57.16 55.00Z M0.00 44.00 L19.05 55.00 L0.00 66.00 L-19.05 55.00Z M38.11 44.00 L57.16 55.00 L38.11 66.00 L19.05 55.00Z M76.21 44.00 L95.26 55.00 L76.21 66.00 L57.16 55.00Z M-19.05 77.00 L0.00 88.00 L-19.05 99.00 L-38.11 88.00Z M19.05 77.00 L38.11 88.00 L19.05 99.00 L0.00 88.00Z M57.16 77.00 L76.21 88.00 L57.16 99.00 L38.11 88.00Z' fill='rgba(0,0,0,0.025)'/%3E%3Cpath d='M-19.05 -55.00 L0.00 -44.00 L0.00 -22.00 L-19.05 -11.00 L-38.11 -22.00 L-38.11 -44.00Z M-19.05 -33.00 L-38.11 -44.00 M-19.05 -33.00 L0.00 -44.00 M-19.05 -33.00 L-19.05 -11.00 M19.05 -55.00 L38.11 -44.00 L38.11 -22.00 L19.05 -11.00 L0.00 -22.00 L0.00 -44.00Z M19.05 -33.00 L0.00 -44.00 M19.05 -33.00 L38.11 -44.00 M19.05 -33.00 L19.05 -11.00 M57.16 -55.00 L76.21 -44.00 L76.21 -22.00 L57.16 -11.00 L38.11 -22.00 L38.11 -44.00Z M57.16 -33.00 L38.11 -44.00 M57.16 -33.00 L76.21 -44.00 M57.16 -33.00 L57.16 -11.00 M-38.11 -22.00 L-19.05 -11.00 L-19.05 11.00 L-38.11 22.00 L-57.16 11.00 L-57.16 -11.00Z M-38.11 0.00 L-57.16 -11.00 M-38.11 0.00 L-19.05 -11.00 M-38.11 0.00 L-38.11 22.00 M0.00 -22.00 L19.05 -11.00 L19.05 11.00 L0.00 22.00 L-19.05 11.00 L-19.05 -11.00Z M0.00 0.00 L-19.05 -11.00 M0.00 0.00 L19.05 -11.00 M0.00 0.00 L0.00 22.00 M38.11 -22.00 L57.16 -11.00 L57.16 11.00 L38.11 22.00 L19.05 11.00 L19.05 -11.00Z M38.11 0.00 L19.05 -11.00 M38.11 0.00 L57.16 -11.00 M38.11 0.00 L38.11 22.00 M76.21 -22.00 L95.26 -11.00 L95.26 11.00 L76.21 22.00 L57.16 11.00 L57.16 -11.00Z M76.21 0.00 L57.16 -11.00 M76.21 0.00 L95.26 -11.00 M76.21 0.00 L76.21 22.00 M-19.05 11.00 L0.00 22.00 L0.00 44.00 L-19.05 55.00 L-38.11 44.00 L-38.11 22.00Z M-19.05 33.00 L-38.11 22.00 M-19.05 33.00 L0.00 22.00 M-19.05 33.00 L-19.05 55.00 M19.05 11.00 L38.11 22.00 L38.11 44.00 L19.05 55.00 L0.00 44.00 L0.00 22.00Z M19.05 33.00 L0.00 22.00 M19.05 33.00 L38.11 22.00 M19.05 33.00 L19.05 55.00 M57.16 11.00 L76.21 22.00 L76.21 44.00 L57.16 55.00 L38.11 44.00 L38.11 22.00Z M57.16 33.00 L38.11 22.00 M57.16 33.00 L76.21 22.00 M57.16 33.00 L57.16 55.00 M-38.11 44.00 L-19.05 55.00 L-19.05 77.00 L-38.11 88.00 L-57.16 77.00 L-57.16 55.00Z M-38.11 66.00 L-57.16 55.00 M-38.11 66.00 L-19.05 55.00 M-38.11 66.00 L-38.11 88.00 M0.00 44.00 L19.05 55.00 L19.05 77.00 L0.00 88.00 L-19.05 77.00 L-19.05 55.00Z M0.00 66.00 L-19.05 55.00 M0.00 66.00 L19.05 55.00 M0.00 66.00 L0.00 88.00 M38.11 44.00 L57.16 55.00 L57.16 77.00 L38.11 88.00 L19.05 77.00 L19.05 55.00Z M38.11 66.00 L19.05 55.00 M38.11 66.00 L57.16 55.00 M38.11 66.00 L38.11 88.00 M76.21 44.00 L95.26 55.00 L95.26 77.00 L76.21 88.00 L57.16 77.00 L57.16 55.00Z M76.21 66.00 L57.16 55.00 M76.21 66.00 L95.26 55.00 M76.21 66.00 L76.21 88.00 M-19.05 77.00 L0.00 88.00 L0.00 110.00 L-19.05 121.00 L-38.11 110.00 L-38.11 88.00Z M-19.05 99.00 L-38.11 88.00 M-19.05 99.00 L0.00 88.00 M-19.05 99.00 L-19.05 121.00 M19.05 77.00 L38.11 88.00 L38.11 110.00 L19.05 121.00 L0.00 110.00 L0.00 88.00Z M19.05 99.00 L0.00 88.00 M19.05 99.00 L38.11 88.00 M19.05 99.00 L19.05 121.00 M57.16 77.00 L76.21 88.00 L76.21 110.00 L57.16 121.00 L38.11 110.00 L38.11 88.00Z M57.16 99.00 L38.11 88.00 M57.16 99.00 L76.21 88.00 M57.16 99.00 L57.16 121.00' fill='none' stroke='rgba(0,0,0,0.08)' stroke-width='0.75'/%3E%3C/svg%3E"); }
+
 /* Glass. Everywhere: 98% clear, a light frost, a hairline edge, a soft drop shadow and an edge
    glint that follows the cursor (--gx/--gy, set by components/ui/LiquidGlass.tsx). On Chromium
    (html.glass-lens, set in <head>) each panel also gets Liquid Glass: its own SVG filter (--lg)
@@ -561,10 +454,9 @@ html.glass-lens:root[data-theme="light"] .glass { backdrop-filter: var(--lg, blu
   mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
 }
 :root[data-theme="light"] .glass::after { background: radial-gradient(180px circle at var(--gx, -999px) var(--gy, -999px), rgb(20 20 30 / 0.5), transparent 70%); }
-/* Square corners everywhere: Raju's call (2026-10-06). The cursor's red point and the
-   particle canvas are the only round things left. */
+/* Square corners everywhere: Raju's call (2026-10-06). */
 *, *::before, *::after { border-radius: 0 !important; }
-.cube-cursor__vertex, .keep-round { border-radius: 50% !important; }
+.keep-round { border-radius: 50% !important; }
 @media (prefers-reduced-transparency: reduce) {
   .glass,
   html.glass-lens .glass {

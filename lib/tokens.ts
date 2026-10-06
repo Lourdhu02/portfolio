@@ -1,17 +1,17 @@
-// Design tokens shared by Motion and three.js. CSS colours live in app/globals.css @theme;
+// Design tokens for Motion and canvas code. CSS colours live in app/globals.css @theme;
 // keep the two in sync.
 
 export const color = {
-  bg: '#050507',
-  surface: '#0B0B0F',
-  raised: '#111117',
-  line: '#1C1C22',
-  text: '#EDEDF0',
-  muted: '#8A8A96',
-  accent: '#FF4655',
-  accentDim: '#8C1D27',
-  detect: '#2DE2E6',
-  success: '#3DDC97',
+  bg: '#000000',
+  surface: '#0A0A0A',
+  raised: '#121212',
+  line: '#222222',
+  text: '#FFFFFF',
+  muted: '#8C8C8C',
+  accent: '#8B5CF6',
+  accentDim: '#3B2470',
+  detect: '#FFFFFF',
+  success: '#8B5CF6',
   jinx: '#FF4FA3',
 } as const
 
