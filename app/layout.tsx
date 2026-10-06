@@ -11,6 +11,7 @@ import { Cursor } from "@/components/interaction/Cursor";
 import { Toaster } from "@/components/interaction/Toaster";
 import { themeScript } from "@/components/ui/ThemeToggle";
 import { SitePattern } from "@/components/ui/SitePattern";
+import { LiquidGlass } from "@/components/ui/LiquidGlass";
 import { posts } from "#velite";
 import { TRUTH } from "@/content/truth";
 
@@ -92,7 +93,7 @@ export default function RootLayout({
     <html lang="en" className={`${fontDisplay.variable} ${fontSans.variable} ${fontMono.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        {/* Only Chromium can run an SVG filter on a backdrop; elsewhere .glass stays a plain blur */}
+        {/* Only Chromium can run an SVG filter on a backdrop, so only it gets Liquid Glass refraction */}
         <script dangerouslySetInnerHTML={{ __html: "if(navigator.userAgentData)document.documentElement.classList.add('glass-lens')" }} />
       </head>
       <body className="antialiased">
@@ -120,6 +121,7 @@ export default function RootLayout({
           </div>
           <div id="content" tabIndex={-1} className="relative isolate outline-none">
             <SitePattern />
+            <LiquidGlass />
             {children}
           </div>
           </SmoothScroll>
