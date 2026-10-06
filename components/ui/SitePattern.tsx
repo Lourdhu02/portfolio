@@ -6,8 +6,6 @@ import { useEffect, useRef } from 'react'
 // sends a ripple through the field, and a few cubes breathe on their own when nothing moves.
 // The lattice scrolls with the page and fades out behind the hero name. It exists so the
 // glass panels have real detail to blur and bend.
-//
-// Also defines the refraction filter that .glass uses on Chromium (see globals.css).
 
 const A = 22 // cube edge in px
 const W = 38 // horizontal pitch: 2 · A · cos 30°, rounded to whole pixels
@@ -209,16 +207,5 @@ export function SitePattern() {
     }
   }, [])
 
-  return (
-    <>
-      <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 h-full w-full" />
-      <svg aria-hidden="true" width="0" height="0" className="absolute">
-        <filter id="glass-lens" x="0" y="0" width="100%" height="100%" colorInterpolationFilters="sRGB">
-          <feTurbulence type="fractalNoise" baseFrequency="0.006 0.009" numOctaves="2" seed="11" result="noise" />
-          <feGaussianBlur in="noise" stdDeviation="3" result="soft" />
-          <feDisplacementMap in="SourceGraphic" in2="soft" scale="42" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-      </svg>
-    </>
-  )
+  return <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 h-full w-full" />
 }
