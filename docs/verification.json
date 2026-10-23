@@ -8,17 +8,17 @@
       "overflow": false,
       "scripts": [
         "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/0i0yykrvpjw82.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/1604s033m0v71.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-17mxx23_sm8oh.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/0gem2mlt0kbfr.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/1cx_r0jokiamz.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/30e_lgd62uy9d.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0mce016oztcmi.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-1u1qnatmqrnzv.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/12r8lve8aqhi-.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/00o339uvp1mee.js",
         "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
         "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
         "http://localhost:3021/portfolio/preferences.js",
         "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
       ],
-      "javascriptBytes": 177518
+      "javascriptBytes": 183199
     },
     {
       "path": "/",
@@ -28,17 +28,37 @@
       "overflow": false,
       "scripts": [
         "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/0i0yykrvpjw82.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/1604s033m0v71.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-17mxx23_sm8oh.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/0gem2mlt0kbfr.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/1cx_r0jokiamz.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/30e_lgd62uy9d.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0mce016oztcmi.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-1u1qnatmqrnzv.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/12r8lve8aqhi-.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/00o339uvp1mee.js",
         "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
         "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
         "http://localhost:3021/portfolio/preferences.js",
         "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
       ],
-      "javascriptBytes": 177518
+      "javascriptBytes": 183199
+    },
+    {
+      "path": "/",
+      "theme": "light",
+      "width": 1024,
+      "accessibility": "passed",
+      "overflow": false,
+      "scripts": [
+        "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/30e_lgd62uy9d.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0mce016oztcmi.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-1u1qnatmqrnzv.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/12r8lve8aqhi-.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/00o339uvp1mee.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
+        "http://localhost:3021/portfolio/preferences.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
+      ],
+      "javascriptBytes": 183199
     },
     {
       "path": "/",
@@ -48,17 +68,17 @@
       "overflow": false,
       "scripts": [
         "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/0i0yykrvpjw82.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/1604s033m0v71.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-17mxx23_sm8oh.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/0gem2mlt0kbfr.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/1cx_r0jokiamz.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/30e_lgd62uy9d.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0mce016oztcmi.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-1u1qnatmqrnzv.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/12r8lve8aqhi-.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/00o339uvp1mee.js",
         "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
         "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
         "http://localhost:3021/portfolio/preferences.js",
         "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
       ],
-      "javascriptBytes": 177518
+      "javascriptBytes": 183199
     },
     {
       "path": "/",
@@ -68,17 +88,17 @@
       "overflow": false,
       "scripts": [
         "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/0i0yykrvpjw82.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/1604s033m0v71.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-17mxx23_sm8oh.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/0gem2mlt0kbfr.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/1cx_r0jokiamz.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/30e_lgd62uy9d.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0mce016oztcmi.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-1u1qnatmqrnzv.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/12r8lve8aqhi-.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/00o339uvp1mee.js",
         "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
         "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
         "http://localhost:3021/portfolio/preferences.js",
         "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
       ],
-      "javascriptBytes": 177518
+      "javascriptBytes": 183199
     },
     {
       "path": "/",
@@ -88,17 +108,37 @@
       "overflow": false,
       "scripts": [
         "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/0i0yykrvpjw82.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/1604s033m0v71.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-17mxx23_sm8oh.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/0gem2mlt0kbfr.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/1cx_r0jokiamz.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/30e_lgd62uy9d.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0mce016oztcmi.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-1u1qnatmqrnzv.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/12r8lve8aqhi-.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/00o339uvp1mee.js",
         "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
         "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
         "http://localhost:3021/portfolio/preferences.js",
         "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
       ],
-      "javascriptBytes": 177518
+      "javascriptBytes": 183199
+    },
+    {
+      "path": "/",
+      "theme": "light",
+      "width": 320,
+      "accessibility": "passed",
+      "overflow": false,
+      "scripts": [
+        "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/30e_lgd62uy9d.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0mce016oztcmi.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-1u1qnatmqrnzv.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/12r8lve8aqhi-.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/00o339uvp1mee.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
+        "http://localhost:3021/portfolio/preferences.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
+      ],
+      "javascriptBytes": 183199
     },
     {
       "path": "/",
@@ -108,17 +148,17 @@
       "overflow": false,
       "scripts": [
         "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/0i0yykrvpjw82.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/1604s033m0v71.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-17mxx23_sm8oh.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/0gem2mlt0kbfr.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/1cx_r0jokiamz.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/30e_lgd62uy9d.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0mce016oztcmi.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-1u1qnatmqrnzv.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/12r8lve8aqhi-.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/00o339uvp1mee.js",
         "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
         "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
         "http://localhost:3021/portfolio/preferences.js",
         "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
       ],
-      "javascriptBytes": 177518
+      "javascriptBytes": 183199
     },
     {
       "path": "/",
@@ -128,17 +168,37 @@
       "overflow": false,
       "scripts": [
         "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/0i0yykrvpjw82.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/1604s033m0v71.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-17mxx23_sm8oh.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/0gem2mlt0kbfr.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/1cx_r0jokiamz.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/30e_lgd62uy9d.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0mce016oztcmi.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-1u1qnatmqrnzv.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/12r8lve8aqhi-.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/00o339uvp1mee.js",
         "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
         "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
         "http://localhost:3021/portfolio/preferences.js",
         "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
       ],
-      "javascriptBytes": 177518
+      "javascriptBytes": 183199
+    },
+    {
+      "path": "/",
+      "theme": "dark",
+      "width": 1024,
+      "accessibility": "passed",
+      "overflow": false,
+      "scripts": [
+        "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/30e_lgd62uy9d.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0mce016oztcmi.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-1u1qnatmqrnzv.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/12r8lve8aqhi-.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/00o339uvp1mee.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
+        "http://localhost:3021/portfolio/preferences.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
+      ],
+      "javascriptBytes": 183199
     },
     {
       "path": "/",
@@ -148,17 +208,17 @@
       "overflow": false,
       "scripts": [
         "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/0i0yykrvpjw82.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/1604s033m0v71.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-17mxx23_sm8oh.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/0gem2mlt0kbfr.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/1cx_r0jokiamz.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/30e_lgd62uy9d.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0mce016oztcmi.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-1u1qnatmqrnzv.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/12r8lve8aqhi-.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/00o339uvp1mee.js",
         "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
         "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
         "http://localhost:3021/portfolio/preferences.js",
         "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
       ],
-      "javascriptBytes": 177518
+      "javascriptBytes": 183199
     },
     {
       "path": "/",
@@ -168,17 +228,17 @@
       "overflow": false,
       "scripts": [
         "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/0i0yykrvpjw82.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/1604s033m0v71.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-17mxx23_sm8oh.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/0gem2mlt0kbfr.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/1cx_r0jokiamz.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/30e_lgd62uy9d.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0mce016oztcmi.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-1u1qnatmqrnzv.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/12r8lve8aqhi-.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/00o339uvp1mee.js",
         "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
         "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
         "http://localhost:3021/portfolio/preferences.js",
         "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
       ],
-      "javascriptBytes": 177518
+      "javascriptBytes": 183199
     },
     {
       "path": "/",
@@ -188,17 +248,37 @@
       "overflow": false,
       "scripts": [
         "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/0i0yykrvpjw82.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/1604s033m0v71.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-17mxx23_sm8oh.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/0gem2mlt0kbfr.js",
-        "http://localhost:3021/portfolio/_next/static/chunks/1cx_r0jokiamz.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/30e_lgd62uy9d.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0mce016oztcmi.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-1u1qnatmqrnzv.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/12r8lve8aqhi-.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/00o339uvp1mee.js",
         "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
         "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
         "http://localhost:3021/portfolio/preferences.js",
         "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
       ],
-      "javascriptBytes": 177518
+      "javascriptBytes": 183199
+    },
+    {
+      "path": "/",
+      "theme": "dark",
+      "width": 320,
+      "accessibility": "passed",
+      "overflow": false,
+      "scripts": [
+        "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/30e_lgd62uy9d.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0mce016oztcmi.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-1u1qnatmqrnzv.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/12r8lve8aqhi-.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/00o339uvp1mee.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
+        "http://localhost:3021/portfolio/preferences.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
+      ],
+      "javascriptBytes": 183199
     },
     {
       "path": "/portfolio/",
@@ -218,17 +298,6 @@
     },
     {
       "path": "/portfolio/about/",
-      "width": 360,
-      "theme": "dark",
-      "accessibility": "passed"
-    },
-    {
-      "path": "/portfolio/lab/",
-      "width": 360,
-      "accessibility": "passed"
-    },
-    {
-      "path": "/portfolio/lab/",
       "width": 360,
       "theme": "dark",
       "accessibility": "passed"
@@ -378,22 +447,24 @@
     }
   ],
   "screenshots": [
-    "docs/screenshots/iteration-2-light-1920.png",
-    "docs/screenshots/iteration-2-light-1440.png",
-    "docs/screenshots/iteration-2-light-390.png",
-    "docs/screenshots/iteration-2-dark-1920.png",
-    "docs/screenshots/iteration-2-dark-1440.png",
-    "docs/screenshots/iteration-2-dark-390.png"
+    "docs/screenshots/iteration-3-light-1920.png",
+    "docs/screenshots/iteration-3-light-1440.png",
+    "docs/screenshots/iteration-3-light-390.png",
+    "docs/screenshots/iteration-3-dark-1920.png",
+    "docs/screenshots/iteration-3-dark-1440.png",
+    "docs/screenshots/iteration-3-dark-390.png"
   ],
   "consoleErrors": [],
   "networkFailures": [],
-  "lab": {
-    "model": "loaded",
-    "reading": "editable",
-    "newMeter": "passed",
-    "sweepStartCancel": "passed",
-    "fullSweep": "264 reads completed, 11 live points",
-    "keyboardStressControl": "passed"
+  "menu": {
+    "keyboardTrap": "passed",
+    "escape": "passed",
+    "focusRestore": "passed",
+    "scrollLock": "passed",
+    "routeAndHashNavigation": "passed",
+    "themeAfterNavigation": "passed",
+    "themeAfterReload": "passed",
+    "mobileAndDesktopAxe": "passed"
   },
   "motionRuntimeEnabled": true,
   "withoutJavaScript": "content and navigation passed",
