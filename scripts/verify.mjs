@@ -6,10 +6,16 @@ const base = process.env.NEXT_PUBLIC_BASE_PATH || ''
 const origin = 'http://localhost:3021'
 mkdirSync('docs/screenshots', { recursive: true })
 const browser = await chromium.launch({ channel: 'chrome', headless: true })
-const report = { pages: [], screenshots: [], consoleErrors: [], networkFailures: [], lab: {} }
+const report = {
+  pages: [],
+  screenshots: [],
+  consoleErrors: [],
+  networkFailures: [],
+  menu: {},
+}
 try {
   for (const theme of ['light', 'dark'])
-    for (const width of [1920, 1440, 768, 390, 360]) {
+    for (const width of [1920, 1440, 1024, 768, 390, 360, 320]) {
       const context = await browser.newContext({
         viewport: { width, height: 1000 },
         colorScheme: 'light',
@@ -22,7 +28,9 @@ try {
       page.on('response', (response) => {
         if (response.status() >= 400) report.networkFailures.push(response.url())
       })
-      const response = await page.goto(`${origin}${base}/`, { waitUntil: 'networkidle' })
+      const response = await page.goto(`${origin}${base}/`, {
+        waitUntil: 'networkidle',
+      })
       assert.equal(response.status(), 200)
       assert.equal(await page.locator('html').getAttribute('data-theme'), theme)
       assert.equal((await page.locator('h1').innerText()).replace(/\.$/, ''), 'Lourdhu Raju')
@@ -36,7 +44,12 @@ try {
       assert.equal(
         violations.length,
         0,
-        JSON.stringify(violations.map((v) => ({ id: v.id, nodes: v.nodes.map((n) => n.target) }))),
+        JSON.stringify(
+          violations.map((v) => ({
+            id: v.id,
+            nodes: v.nodes.map((n) => n.target),
+          })),
+        ),
       )
       const scripts = await page
         .locator('script[src]')
@@ -52,20 +65,70 @@ try {
           .reduce((sum, e) => sum + e.encodedBodySize, 0),
       )
       if (width === 1440 || width === 390 || width === 1920) {
-        const file = `docs/screenshots/iteration-2-${theme}-${width}.png`
+        const file = `docs/screenshots/iteration-3-${theme}-${width}.png`
         await page.screenshot({ path: file, fullPage: true })
         await page.screenshot({
-          path: `docs/screenshots/iteration-2-preview-${theme}-${width}.png`,
+          path: `docs/screenshots/iteration-3-preview-${theme}-${width}.png`,
         })
         report.screenshots.push(file)
       }
-      await page.locator('#theme').selectOption(theme === 'dark' ? 'light' : 'dark')
+      await page.getByRole('button', { name: 'Dark mode', exact: true }).click()
       assert.equal(
         await page.locator('html').getAttribute('data-theme'),
         theme === 'dark' ? 'light' : 'dark',
       )
-      await page.locator('#theme').selectOption('system')
-      assert.equal(await page.locator('html').getAttribute('data-theme'), null)
+      assert.equal(
+        await page.locator('#theme').getAttribute('aria-pressed'),
+        String(theme === 'light'),
+      )
+      // Repeated toggles exercise the direct button rather than a hidden select.
+      await page.locator('#theme').click()
+      assert.equal(await page.locator('html').getAttribute('data-theme'), theme)
+      assert.equal(await page.evaluate(() => localStorage.getItem('portfolio-theme')), theme)
+      assert.equal(await page.locator('a[href*="reddit"],a[href$="/lab/"]').count(), 0)
+      await page.getByRole('button', { name: 'Open navigation' }).click()
+      await page.waitForFunction(() => document.querySelector('#site-menu').open)
+      assert.equal(await page.evaluate(() => document.body.style.overflow), 'hidden')
+      const menuViolations = (
+        await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()
+      ).violations
+      assert.equal(
+        menuViolations.length,
+        0,
+        JSON.stringify(
+          menuViolations.map((v) => ({
+            id: v.id,
+            nodes: v.nodes.map((n) => n.target),
+          })),
+        ),
+      )
+      assert(
+        await page.locator('#site-menu').evaluate((el) => el.scrollWidth <= el.clientWidth),
+        `Menu overflow at ${width}`,
+      )
+      if (width === 1440 || width === 390) {
+        await page.screenshot({
+          path: `docs/screenshots/iteration-3-menu-${theme}-${width}.png`,
+        })
+      }
+      await page.getByRole('button', { name: 'Close navigation' }).focus()
+      await page.keyboard.press('Shift+Tab')
+      assert.equal(
+        await page.evaluate(() => document.activeElement?.textContent?.includes('Get in touch')),
+        true,
+      )
+      await page.keyboard.press('Tab')
+      assert.equal(
+        await page.evaluate(() => document.activeElement?.getAttribute('aria-label')),
+        'Close navigation',
+      )
+      await page.keyboard.press('Escape')
+      await page.waitForFunction(() => !document.querySelector('#site-menu').open)
+      assert.equal(
+        await page.evaluate(() => document.activeElement?.getAttribute('aria-label')),
+        'Open navigation',
+      )
+      assert.equal(await page.evaluate(() => document.body.style.overflow), '')
       if (width === 1440 && theme === 'light') {
         await page.getByRole('button', { name: 'Copy email' }).click()
         assert.equal(
@@ -98,8 +161,12 @@ try {
     (m) => new URL(m[1]).pathname,
   )
   for (const path of paths) {
-    const response = await page.goto(origin + path, { waitUntil: 'networkidle' })
+    const response = await page.goto(origin + path, {
+      waitUntil: 'networkidle',
+    })
     assert.equal(response.status(), 200, path)
+    if ((await page.locator('html').getAttribute('data-theme')) !== 'light')
+      await page.locator('#theme').click()
     assert(
       await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
       `Overflow: ${path}`,
@@ -113,7 +180,8 @@ try {
       `${path}: ${JSON.stringify(violations.map((v) => ({ id: v.id, nodes: v.nodes.map((n) => n.target) })))}`,
     )
     report.pages.push({ path, width: 360, accessibility: 'passed' })
-    await page.locator('#theme').selectOption('dark')
+    if ((await page.locator('html').getAttribute('data-theme')) !== 'dark')
+      await page.locator('#theme').click()
     const darkViolations = (
       await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()
     ).violations
@@ -122,39 +190,19 @@ try {
       0,
       `${path} dark: ${JSON.stringify(darkViolations.map((v) => v.id))}`,
     )
-    report.pages.push({ path, width: 360, theme: 'dark', accessibility: 'passed' })
+    report.pages.push({
+      path,
+      width: 360,
+      theme: 'dark',
+      accessibility: 'passed',
+    })
   }
-  await page.goto(`${origin}${base}/lab/`, { waitUntil: 'networkidle' })
-  await page.getByText('Model live on your device', { exact: true }).waitFor({ timeout: 30000 })
-  await page.getByLabel('Reading on the meter').fill('4777.1')
-  await page.waitForFunction(() =>
-    document.querySelector('canvas[role="img"]')?.getAttribute('aria-label')?.includes('4777.1'),
-  )
-  await page.getByRole('button', { name: 'New meter', exact: true }).click()
-  await page.getByRole('button', { name: 'Run 264 reads on this device' }).click()
-  await page.getByRole('button', { name: /Stop/ }).waitFor()
-  await page.getByRole('button', { name: /Stop/ }).click()
-  await page.getByRole('button', { name: 'Run 264 reads on this device' }).waitFor()
-  await page.getByRole('button', { name: 'Run 264 reads on this device' }).click()
-  await page
-    .getByRole('button', { name: 'Run 264 reads on this device' })
-    .waitFor({ timeout: 120000 })
-  assert.equal(await page.locator('.lab figure svg circle').count(), 22)
-  await page.locator('input[type="range"]').first().focus()
-  await page.locator('input[type="range"]').first().press('End')
-  assert.equal(await page.locator('input[type="range"]').first().inputValue(), '1')
-  report.lab = {
-    model: 'loaded',
-    reading: 'editable',
-    newMeter: 'passed',
-    sweepStartCancel: 'passed',
-    fullSweep: '264 reads completed, 11 live points',
-    keyboardStressControl: 'passed',
+  assert(!paths.some((path) => path.includes('/lab/')))
+  for (const removed of ['/lab/', '/lab/meter-ctc.bin', '/lab/worker.js']) {
+    assert.equal((await page.request.get(origin + base + removed)).status(), 404)
   }
   for (const asset of [
     '/LourdhuRaju_Resume.pdf',
-    '/lab/meter-ctc.bin',
-    '/lab/worker.js',
     '/og.png',
     '/icon.svg',
     '/robots.txt',
@@ -162,7 +210,6 @@ try {
   ])
     assert.equal((await page.request.get(origin + base + asset)).status(), 200, asset)
   report.motionRuntimeEnabled = true
-  await page.screenshot({ path: 'docs/screenshots/lab-360.png', fullPage: true })
   const noJs = await browser.newContext({
     javaScriptEnabled: false,
     viewport: { width: 390, height: 900 },
@@ -177,7 +224,7 @@ try {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   assert.equal(
     await page
-      .locator('.site-nav a')
+      .locator('.menu-glyph i')
       .first()
       .evaluate((el) => getComputedStyle(el).transitionDuration),
     '0s',
@@ -192,6 +239,36 @@ try {
     if (response.status() >= 400) report.networkFailures.push(response.url())
   })
   await animatedPage.goto(`${origin}${base}/`, { waitUntil: 'networkidle' })
+  await animatedPage.locator('#theme').click()
+  await animatedPage.reload({ waitUntil: 'networkidle' })
+  assert.equal(await animatedPage.locator('html').getAttribute('data-theme'), 'dark')
+  assert.equal(await animatedPage.locator('#theme').getAttribute('aria-pressed'), 'true')
+  await animatedPage.getByRole('button', { name: 'Open navigation' }).click()
+  await animatedPage.getByRole('link', { name: /03 About/ }).click()
+  await animatedPage.waitForURL('**/about/')
+  await animatedPage.waitForFunction(() => !document.querySelector('#site-menu').open)
+  assert.equal(await animatedPage.locator('html').getAttribute('data-theme'), 'dark')
+  await animatedPage.locator('#theme').click()
+  assert.equal(await animatedPage.locator('html').getAttribute('data-theme'), 'light')
+  await animatedPage.getByRole('button', { name: 'Open navigation' }).click()
+  await animatedPage.getByRole('link', { name: /01 Selected work/ }).click()
+  await animatedPage.waitForURL('**/#work')
+  await animatedPage.waitForFunction(() => !document.querySelector('#site-menu').open)
+  await animatedPage.getByRole('button', { name: 'Open navigation' }).click()
+  await animatedPage.getByRole('link', { name: /05 Get in touch/ }).click()
+  await animatedPage.waitForURL('**/#contact')
+  await animatedPage.waitForFunction(() => !document.querySelector('#site-menu').open)
+  await animatedPage.goto(`${origin}${base}/`, { waitUntil: 'networkidle' })
+  report.menu = {
+    keyboardTrap: 'passed',
+    escape: 'passed',
+    focusRestore: 'passed',
+    scrollLock: 'passed',
+    routeAndHashNavigation: 'passed',
+    themeAfterNavigation: 'passed',
+    themeAfterReload: 'passed',
+    mobileAndDesktopAxe: 'passed',
+  }
   await animatedPage.waitForFunction(
     () => getComputedStyle(document.querySelector('[data-page-stage]')).opacity === '1',
   )
@@ -226,7 +303,7 @@ try {
   }
   assert.equal(report.consoleErrors.length, 0, report.consoleErrors.join('\n'))
   assert.equal(report.networkFailures.length, 0, report.networkFailures.join('\n'))
-  console.log(JSON.stringify(report, null, 2))
+  console.log(JSON.stringify({ pagesChecked: report.pages.length, consoleErrors: report.consoleErrors, networkFailures: report.networkFailures, menu: report.menu, motion: report.motion }, null, 2))
 } finally {
   writeFileSync('docs/verification.json', JSON.stringify(report, null, 2))
   await browser.close()

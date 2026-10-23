@@ -38,7 +38,7 @@ export function ProjectVisual({
           <span>Build from first principles</span>
           <span>↗</span>
         </div>
-        <div className="lab-matrix">
+        <div className="achilles-matrix">
           {[
             '∂',
             'W',

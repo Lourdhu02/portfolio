@@ -1,7 +1,9 @@
 import { TRUTH } from '@/content/truth'
 import { withBase } from '@/lib/path'
 import { buildDate } from '@/lib/site'
-import { ThemeToggle, IstClock } from './Preferences'
+import { IstClock } from './Preferences'
+import { ThemeToggle } from './ThemeToggle'
+import { Navigation } from './Navigation'
 export function Header() {
   const initial = new Date().toLocaleTimeString('en-GB', {
     timeZone: 'Asia/Kolkata',
@@ -13,16 +15,11 @@ export function Header() {
       <a href={withBase('/')} className="brand">
         {TRUTH.identity.name}
       </a>
-      <nav aria-label="Main navigation" className="site-nav">
-        <a href={withBase('/#work')}>Work</a>
-        <a href={withBase('/writing/')}>Writing</a>
-        <a href={withBase('/lab/')}>Lab</a>
-        <a href={withBase('/about/')}>About</a>
-        <a href={withBase('/#elsewhere')}>Elsewhere</a>
-      </nav>
+      <span className="header-caption mono muted">ML engineer & independent builder</span>
       <div className="header-tools">
         <IstClock initial={initial} />
         <ThemeToggle />
+        <Navigation />
       </div>
     </header>
   )
@@ -37,7 +34,6 @@ export function Footer() {
     ['LinkedIn', links.linkedin],
     ['spacedrift', links.studio],
     ['PhilArchive', links.preprint],
-    ['Reddit', links.reddit],
     ['Instagram', links.instagram],
   ]
   return (

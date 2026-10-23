@@ -261,32 +261,6 @@ export default function Home() {
               <ProjectVisual kind="paper" />
             </CardMotion>
           </Reveal>
-          <Reveal delay={0.06}>
-            <CardMotion className="lab-invitation">
-              <a
-                className="card-cover"
-                href={withBase('/lab/')}
-                aria-label="Try the live OCR lab"
-              />
-              <span className="mono">A small model. A real experiment.</span>
-              <h3>
-                Don&apos;t take my word.
-                <br />
-                <span>Try the model.</span>
-              </h3>
-              <div className="lab-invitation-bottom">
-                <span className="mono">In your browser. On your device.</span>
-                <span className="large-arrow" aria-hidden="true">
-                  ↗
-                </span>
-              </div>
-              <div className="lab-pattern" aria-hidden="true">
-                {Array.from({ length: 24 }, (_, i) => (
-                  <i key={i} style={{ opacity: 0.1 + (i % 6) * 0.12 }} />
-                ))}
-              </div>
-            </CardMotion>
-          </Reveal>
         </div>
       </Section>
 

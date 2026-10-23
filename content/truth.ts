@@ -260,7 +260,6 @@ export const TRUTH = {
       kaggle: 'https://kaggle.com/blourdhuraju',
       huggingface: 'https://huggingface.co/lourdhu02',
       x: 'https://x.com/_lourdhu',
-      reddit: 'https://www.reddit.com/user/lourdhu_/',
       instagram: 'https://www.instagram.com/lourdu_02/',
       studio: 'https://spacedrift.in',
       preprint: 'https://philarchive.org/rec/BANNFS',
@@ -324,7 +323,11 @@ export const TRUTH = {
     },
   ],
   certifications: [
-    { title: 'Kaggle Notebooks Expert', issuer: 'Kaggle', date: 'Notebooks tier' },
+    {
+      title: 'Kaggle Notebooks Expert',
+      issuer: 'Kaggle',
+      date: 'Notebooks tier',
+    },
     {
       title: 'Machine Learning Specialization',
       issuer: 'DeepLearning.AI & Stanford University',
@@ -389,13 +392,9 @@ export const PREPRINT_PAGES: Metric = {
   unit: 'pp',
   label: 'Preprint length',
   context: 'No Final Save, published on PhilArchive.',
-  source: { name: 'PhilArchive', path: 'BANNFS', url: TRUTH.identity.links.preprint },
-}
-
-// The lab has its own public model; these figures are unrelated to production OCR.
-export { default as LAB_MODEL } from '../lib/lab/model-card.json' with { type: 'json' }
-export const LAB_SOURCE: Source = {
-  name: 'portfolio',
-  path: 'lib/lab/model-card.json',
-  url: 'https://github.com/Lourdhu02/portfolio/blob/main/lib/lab/model-card.json',
+  source: {
+    name: 'PhilArchive',
+    path: 'BANNFS',
+    url: TRUTH.identity.links.preprint,
+  },
 }

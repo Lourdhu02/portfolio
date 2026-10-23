@@ -7,6 +7,7 @@ import {
   m,
   useReducedMotion,
   useAnimationControls,
+  useScroll,
 } from 'motion/react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, type ReactNode } from 'react'
@@ -20,6 +21,7 @@ export function MotionSystem({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const reduced = useReducedMotion()
   const controls = useAnimationControls()
+  const { scrollYProgress } = useScroll()
   const navigating = useRef(false)
   const previousPath = useRef(pathname)
   const recovery = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -28,7 +30,11 @@ export function MotionSystem({ children }: { children: ReactNode }) {
     navigating.current = false
     if (recovery.current) clearTimeout(recovery.current)
     controls.set({ opacity: reduced ? 1 : 0, y: reduced ? 0 : 16 })
-    void controls.start({ opacity: 1, y: 0, transition: { duration: reduced ? 0 : 0.5, ease } })
+    void controls.start({
+      opacity: 1,
+      y: 0,
+      transition: { duration: reduced ? 0 : 0.5, ease },
+    })
   }, [controls, reduced])
 
   useEffect(() => {
@@ -93,6 +99,7 @@ export function MotionSystem({ children }: { children: ReactNode }) {
   return (
     <LazyMotion features={domAnimation} strict>
       <MotionConfig reducedMotion="user">
+        <m.div className="scroll-progress" style={{ scaleX: scrollYProgress }} aria-hidden="true" />
         <m.div data-page-stage initial={false} animate={controls}>
           {children}
         </m.div>
@@ -120,7 +127,11 @@ export function Reveal({
       initial={{ opacity: priority ? 1 : 0, y: priority ? 12 : 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.08 }}
-      transition={{ duration: reduced ? 0 : 0.65, delay: reduced ? 0 : delay, ease }}
+      transition={{
+        duration: reduced ? 0 : 0.65,
+        delay: reduced ? 0 : delay,
+        ease,
+      }}
     >
       {children}
     </m.div>
@@ -139,7 +150,7 @@ export function CardMotion({
     <m.article
       className={className}
       whileHover={reduced ? undefined : { y: -4 }}
-      transition={{ duration: 0.3, ease }}
+      transition={{ type: 'spring', stiffness: 280, damping: 26 }}
     >
       {children}
     </m.article>

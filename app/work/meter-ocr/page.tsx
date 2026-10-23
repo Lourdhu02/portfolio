@@ -28,11 +28,8 @@ export default function MeterOcr() {
           <dd>2026 — Present</dd>
           <dt>Stack</dt>
           <dd>Triton, TensorRT FP16, SVTRv2, YOLO26-OBB, MobileViTv2, AWS</dd>
-          <dt>Links</dt>
-          <dd>
-            <a href={withBase('/lab/')}>Try the public recognition demo ↗</a> · Production code is
-            private
-          </dd>
+          <dt>Code</dt>
+          <dd>Private production system. Measurements and methodology are documented below.</dd>
         </dl>
         <h2>Problem & constraints</h2>
         <p>

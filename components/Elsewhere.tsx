@@ -62,13 +62,6 @@ export async function Elsewhere() {
       source: PREPRINT_PAGES.source,
     },
     {
-      name: 'Reddit',
-      handle: 'u/lourdhu_',
-      description: 'Where I ask and answer ML questions',
-      stat: 'Profile',
-      href: links.reddit,
-    },
-    {
       name: 'Instagram',
       handle: '@lourdu_02',
       description: 'Life outside the terminal',
