@@ -3,12 +3,62 @@
     {
       "path": "/",
       "theme": "light",
+      "width": 1920,
+      "accessibility": "passed",
+      "overflow": false,
+      "scripts": [
+        "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0i0yykrvpjw82.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/1604s033m0v71.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-17mxx23_sm8oh.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0gem2mlt0kbfr.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/1cx_r0jokiamz.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
+        "http://localhost:3021/portfolio/preferences.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
+      ],
+      "javascriptBytes": 177518
+    },
+    {
+      "path": "/",
+      "theme": "light",
       "width": 1440,
       "accessibility": "passed",
       "overflow": false,
       "scripts": [
-        "http://localhost:3021/portfolio/preferences.js"
-      ]
+        "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0i0yykrvpjw82.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/1604s033m0v71.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-17mxx23_sm8oh.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0gem2mlt0kbfr.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/1cx_r0jokiamz.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
+        "http://localhost:3021/portfolio/preferences.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
+      ],
+      "javascriptBytes": 177518
+    },
+    {
+      "path": "/",
+      "theme": "light",
+      "width": 768,
+      "accessibility": "passed",
+      "overflow": false,
+      "scripts": [
+        "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0i0yykrvpjw82.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/1604s033m0v71.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-17mxx23_sm8oh.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0gem2mlt0kbfr.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/1cx_r0jokiamz.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
+        "http://localhost:3021/portfolio/preferences.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
+      ],
+      "javascriptBytes": 177518
     },
     {
       "path": "/",
@@ -17,8 +67,18 @@
       "accessibility": "passed",
       "overflow": false,
       "scripts": [
-        "http://localhost:3021/portfolio/preferences.js"
-      ]
+        "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0i0yykrvpjw82.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/1604s033m0v71.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-17mxx23_sm8oh.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0gem2mlt0kbfr.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/1cx_r0jokiamz.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
+        "http://localhost:3021/portfolio/preferences.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
+      ],
+      "javascriptBytes": 177518
     },
     {
       "path": "/",
@@ -27,8 +87,38 @@
       "accessibility": "passed",
       "overflow": false,
       "scripts": [
-        "http://localhost:3021/portfolio/preferences.js"
-      ]
+        "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0i0yykrvpjw82.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/1604s033m0v71.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-17mxx23_sm8oh.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0gem2mlt0kbfr.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/1cx_r0jokiamz.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
+        "http://localhost:3021/portfolio/preferences.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
+      ],
+      "javascriptBytes": 177518
+    },
+    {
+      "path": "/",
+      "theme": "dark",
+      "width": 1920,
+      "accessibility": "passed",
+      "overflow": false,
+      "scripts": [
+        "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0i0yykrvpjw82.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/1604s033m0v71.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-17mxx23_sm8oh.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0gem2mlt0kbfr.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/1cx_r0jokiamz.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
+        "http://localhost:3021/portfolio/preferences.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
+      ],
+      "javascriptBytes": 177518
     },
     {
       "path": "/",
@@ -37,8 +127,38 @@
       "accessibility": "passed",
       "overflow": false,
       "scripts": [
-        "http://localhost:3021/portfolio/preferences.js"
-      ]
+        "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0i0yykrvpjw82.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/1604s033m0v71.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-17mxx23_sm8oh.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0gem2mlt0kbfr.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/1cx_r0jokiamz.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
+        "http://localhost:3021/portfolio/preferences.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
+      ],
+      "javascriptBytes": 177518
+    },
+    {
+      "path": "/",
+      "theme": "dark",
+      "width": 768,
+      "accessibility": "passed",
+      "overflow": false,
+      "scripts": [
+        "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0i0yykrvpjw82.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/1604s033m0v71.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-17mxx23_sm8oh.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0gem2mlt0kbfr.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/1cx_r0jokiamz.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
+        "http://localhost:3021/portfolio/preferences.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
+      ],
+      "javascriptBytes": 177518
     },
     {
       "path": "/",
@@ -47,8 +167,18 @@
       "accessibility": "passed",
       "overflow": false,
       "scripts": [
-        "http://localhost:3021/portfolio/preferences.js"
-      ]
+        "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0i0yykrvpjw82.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/1604s033m0v71.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-17mxx23_sm8oh.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0gem2mlt0kbfr.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/1cx_r0jokiamz.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
+        "http://localhost:3021/portfolio/preferences.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
+      ],
+      "javascriptBytes": 177518
     },
     {
       "path": "/",
@@ -57,8 +187,18 @@
       "accessibility": "passed",
       "overflow": false,
       "scripts": [
-        "http://localhost:3021/portfolio/preferences.js"
-      ]
+        "http://localhost:3021/portfolio/_next/static/chunks/2qio8atqx5dyu.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0i0yykrvpjw82.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/1604s033m0v71.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/turbopack-17mxx23_sm8oh.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0gem2mlt0kbfr.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/1cx_r0jokiamz.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/3krrs4g1u906j.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/0cz1d0mv5g_q7.js",
+        "http://localhost:3021/portfolio/preferences.js",
+        "http://localhost:3021/portfolio/_next/static/chunks/355q1x68w-s1k.js"
+      ],
+      "javascriptBytes": 177518
     },
     {
       "path": "/portfolio/",
@@ -238,10 +378,12 @@
     }
   ],
   "screenshots": [
-    "docs/screenshots/after-light-1440.png",
-    "docs/screenshots/after-light-390.png",
-    "docs/screenshots/after-dark-1440.png",
-    "docs/screenshots/after-dark-390.png"
+    "docs/screenshots/iteration-2-light-1920.png",
+    "docs/screenshots/iteration-2-light-1440.png",
+    "docs/screenshots/iteration-2-light-390.png",
+    "docs/screenshots/iteration-2-dark-1920.png",
+    "docs/screenshots/iteration-2-dark-1440.png",
+    "docs/screenshots/iteration-2-dark-390.png"
   ],
   "consoleErrors": [],
   "networkFailures": [],
@@ -253,9 +395,13 @@
     "fullSweep": "264 reads completed, 11 live points",
     "keyboardStressControl": "passed"
   },
-  "nonLabJavaScript": {
-    "externalBytes": 1363,
-    "budgetBytes": 50000
-  },
-  "withoutJavaScript": "content and navigation passed"
+  "motionRuntimeEnabled": true,
+  "withoutJavaScript": "content and navigation passed",
+  "motion": {
+    "cardHover": "passed",
+    "routeExitEnter": "passed",
+    "clientNavigation": "passed",
+    "browserBack": "passed",
+    "reducedMotion": "passed"
+  }
 }

@@ -1,4 +1,6 @@
-# Portfolio redesign review
+# First iteration design review (historical)
+
+The current design and audit results are documented in [the second iteration review](iteration-2.md). The measurements and screenshots below describe the earlier static index layout.
 
 White is the default on a new visit. The header also offers dark and system themes. The layout uses paper, ink, rules and Geist typography throughout the home, writing, case studies, About, Now and OCR lab pages.
 
