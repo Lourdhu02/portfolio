@@ -1,0 +1,261 @@
+{
+  "pages": [
+    {
+      "path": "/",
+      "theme": "light",
+      "width": 1440,
+      "accessibility": "passed",
+      "overflow": false,
+      "scripts": [
+        "http://localhost:3021/portfolio/preferences.js"
+      ]
+    },
+    {
+      "path": "/",
+      "theme": "light",
+      "width": 390,
+      "accessibility": "passed",
+      "overflow": false,
+      "scripts": [
+        "http://localhost:3021/portfolio/preferences.js"
+      ]
+    },
+    {
+      "path": "/",
+      "theme": "light",
+      "width": 360,
+      "accessibility": "passed",
+      "overflow": false,
+      "scripts": [
+        "http://localhost:3021/portfolio/preferences.js"
+      ]
+    },
+    {
+      "path": "/",
+      "theme": "dark",
+      "width": 1440,
+      "accessibility": "passed",
+      "overflow": false,
+      "scripts": [
+        "http://localhost:3021/portfolio/preferences.js"
+      ]
+    },
+    {
+      "path": "/",
+      "theme": "dark",
+      "width": 390,
+      "accessibility": "passed",
+      "overflow": false,
+      "scripts": [
+        "http://localhost:3021/portfolio/preferences.js"
+      ]
+    },
+    {
+      "path": "/",
+      "theme": "dark",
+      "width": 360,
+      "accessibility": "passed",
+      "overflow": false,
+      "scripts": [
+        "http://localhost:3021/portfolio/preferences.js"
+      ]
+    },
+    {
+      "path": "/portfolio/",
+      "width": 360,
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/",
+      "width": 360,
+      "theme": "dark",
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/about/",
+      "width": 360,
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/about/",
+      "width": 360,
+      "theme": "dark",
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/lab/",
+      "width": 360,
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/lab/",
+      "width": 360,
+      "theme": "dark",
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/now/",
+      "width": 360,
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/now/",
+      "width": 360,
+      "theme": "dark",
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/writing/",
+      "width": 360,
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/writing/",
+      "width": 360,
+      "theme": "dark",
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/work/meter-ocr/",
+      "width": 360,
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/work/meter-ocr/",
+      "width": 360,
+      "theme": "dark",
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/work/svtrv2-ard/",
+      "width": 360,
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/work/svtrv2-ard/",
+      "width": 360,
+      "theme": "dark",
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/work/echome/",
+      "width": 360,
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/work/echome/",
+      "width": 360,
+      "theme": "dark",
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/work/finsentinel/",
+      "width": 360,
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/work/finsentinel/",
+      "width": 360,
+      "theme": "dark",
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/writing/achilles-first-principles/",
+      "width": 360,
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/writing/achilles-first-principles/",
+      "width": 360,
+      "theme": "dark",
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/writing/ctc-blank-frame-bug/",
+      "width": 360,
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/writing/ctc-blank-frame-bug/",
+      "width": 360,
+      "theme": "dark",
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/writing/echome/",
+      "width": 360,
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/writing/echome/",
+      "width": 360,
+      "theme": "dark",
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/writing/finsentinel/",
+      "width": 360,
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/writing/finsentinel/",
+      "width": 360,
+      "theme": "dark",
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/writing/no-final-save/",
+      "width": 360,
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/writing/no-final-save/",
+      "width": 360,
+      "theme": "dark",
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/writing/svtrv2-ard/",
+      "width": 360,
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/writing/svtrv2-ard/",
+      "width": 360,
+      "theme": "dark",
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/writing/tensorrt-uint8-transpose/",
+      "width": 360,
+      "accessibility": "passed"
+    },
+    {
+      "path": "/portfolio/writing/tensorrt-uint8-transpose/",
+      "width": 360,
+      "theme": "dark",
+      "accessibility": "passed"
+    }
+  ],
+  "screenshots": [
+    "docs/screenshots/after-light-1440.png",
+    "docs/screenshots/after-light-390.png",
+    "docs/screenshots/after-dark-1440.png",
+    "docs/screenshots/after-dark-390.png"
+  ],
+  "consoleErrors": [],
+  "networkFailures": [],
+  "lab": {
+    "model": "loaded",
+    "reading": "editable",
+    "newMeter": "passed",
+    "sweepStartCancel": "passed",
+    "fullSweep": "264 reads completed, 11 live points",
+    "keyboardStressControl": "passed"
+  },
+  "nonLabJavaScript": {
+    "externalBytes": 1363,
+    "budgetBytes": 50000
+  },
+  "withoutJavaScript": "content and navigation passed"
+}
