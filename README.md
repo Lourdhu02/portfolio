@@ -1,146 +1,52 @@
-# Lourdu Raju · Cinematic Machine Learning Portfolio
+# Lourdhu Raju — portfolio
 
-> *"I make vision models fast, honest, and boring to run."*  
-> Production Computer Vision · Low-Latency GPU Inference · Applied GenAI
+A white-first portfolio with a restrained cobalt accent, built with Next.js 16 App Router, React 19, Tailwind v4, Motion for React and Velite. Full-width asymmetric grids, square project cards, custom SVG diagrams and an animated full-screen index. The header button switches directly between light and dark, and remembers the preference.
 
-[![Next.js](https://img.shields.io/badge/Next.js-16.3.8-000000?style=flat&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-19.2.8-20232A?style=flat&logo=react&logoColor=61DAFB)](https://react.dev/)
-[![Three.js](https://img.shields.io/badge/Three.js-0.186-050507?style=flat&logo=threedotjs&logoColor=white)](https://threejs.org/)
-[![Motion](https://img.shields.io/badge/Motion-React-FF4655?style=flat)](https://motion.dev/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38B2AC?style=flat&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+## Run locally
 
----
+Use Node.js 22 and the pnpm version declared in package.json.
 
-## ✦ Overview
-
-This is the personal engineering portfolio of **Lourdu Raju**—ML Engineer at **Sujanix**, Founder of **spacedrift**, and author of **Achilles** and the **PhilArchive** preprint *No Final Save*.
-
-Designed with a dark cinematic 3D aesthetic inspired by film titles and engineering control planes. Every number on the site lives in [`content/truth.ts`](content/truth.ts) with how it was measured and the repository file that records it; pages read from there and print that source next to the figure.
-
----
-
-## ⚡ Key Highlights & Systems
-
-### 1. [Flagship: Meter OCR](/app/work/meter-ocr/page.tsx)
-- **Scope**: production meter-reading OCR for two state electricity utilities; 330,707 requests on the busiest day.
-- **Serving**: 11 TensorRT FP16 engines behind Triton, with a hash-bucketed router, serverless fallback and a circuit breaker.
-- **Latency**: end-to-end p50 **1,386 ms → 60 ms** against the serverless path on the same 1,000 photos (23×).
-- **Throughput**: a UINT8 Transpose patch moved the last classifier to TensorRT: compute **309.5 → 3.3 ms** (94×), throughput **19 → 321 img/s** on the dev box; **181 img/s** sustained on one NVIDIA L4.
-- **Quality**: **83.4%** reading accuracy on 2,950 labelled photos and **99.8%** of 1,015 unreadable photos refused (West Bengal); **90.5%** in Bihar.
-
-### 2. [SVTRv2-ARD](content/writing/svtrv2-ard.mdx)
-- Paper-first SVTRv2 (ICCV 2025) reimplementation, verified against the official OpenOCR code.
-- ARD: adaptive routing and SGM→CTC distillation, both inference-preserving; 49/49 tests pass. No benchmark checkpoint trained yet.
-
-### 3. [ECHOME](content/writing/echome.mdx)
-- Fully local digital twin: adaptive IRT personality assessment, voice clone, and a LangGraph agent with CoALA-style memory.
-- Recalls the needed fact in 11 of 12 multi-session scenarios (92%) vs 0% with memory off; assessment 70% shorter at SE < 0.32.
-
-### 4. [FinSentinelAI](content/writing/finsentinel.mdx)
-- Fully local RAG over invoices, receipts and bank statements: ChromaDB, cross-encoder reranking, Ollama, per-user isolation inside the vector store.
-- 1,000-document synthetic finance test corpus across 10 layouts; zero external API calls.
-
-### 5. [Achilles — Core AI from First Principles](https://github.com/Lourdhu02/achilles)
-- 18 test-driven labs from autograd to FlashAttention in Triton, DPO, GRPO, quantization and MoE.
-- 229 reference tests passing in CI on Linux, macOS and Windows.
-
-### 6. [No Final Save](https://philarchive.org/rec/BANNFS)
-- 23-page preprint on persistent AI agents: a causal-continuity criterion for identity, a proof that terminal and instrumental self-preservation cannot be told apart from behaviour, and a developmental safety model.
-
----
-
-## 🎨 Visual & Motion Architecture
-
-- **Color Palette**: Void Black (`#050507`), Deep Surface (`#0B0B0F`), Signal Red (`#FF4655`), ML Detection Cyan (`#2DE2E6`).
-- **3D Hero**: React Three Fiber particle canvas sampling SVG vector glyphs into dynamic point clouds with physics restitution, pointer repulsion, and dynamic performance tiers (auto-downgrading from 24k to 12k/6k particles based on frame rate).
-- **Interactive ML Lab (`/lab`)**: Scripted walkthrough of the OCR pipeline on synthetic samples featuring live OBB bounding box locks, laser sweep animations, character confidence matrices, and exportable JSON telemetry.
-- **Micro-Interactions**: Magnetic hover pull buttons, split-line title reveal masks, velocity-linked scrolling, and smooth cmdk palette navigation.
-
----
-
-## 🛠 Tech Stack
-
-- **Framework**: Next.js 16 (Turbopack, App Router)
-- **UI Library**: React 19, Motion for React (formerly Framer Motion)
-- **3D Engine**: Three.js, `@react-three/fiber`, `@react-three/drei`, `@react-three/postprocessing`
-- **Content Engine**: Velite (Type-safe MDX compiler with Zod schemas)
-- **Styling**: Tailwind CSS v4, Vanilla CSS Design System Tokens
-- **Icons & Controls**: cmdk, Lucide
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js 18+
-- pnpm (recommended), npm, or yarn
-
-### Installation
-```bash
-# Clone the repository
-git clone https://github.com/Lourdhu02/portfolio.git
-cd portfolio
-
-# Install dependencies
-pnpm install
-```
-
-### Development
-```bash
-# Start development server with live Velite watching
+```sh
+pnpm install --frozen-lockfile
 pnpm dev
 ```
-Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Production Build
-```bash
-# Compile Velite content and run Next.js production build
+## Content
+
+- `content/truth.ts`: identity, public links, career, metrics, measurement context and source records. Update numbers here; preserve their provenance.
+- `content/writing/*.mdx`: articles compiled to HTML by Velite. Drafts are excluded from public routes.
+- `content/now.ts`: dated notes about current work.
+- `public/me.jpg`: optional portrait. Without it, the server renders a typographic LR block.
+- `public/LourdhuRaju_Resume.pdf`: résumé.
+- `lib/stats.ts`: build-time GitHub and Hugging Face requests, each with a five-second timeout. Verified fallbacks and sources live in truth.ts.
+
+## GitHub Pages
+
+Select **GitHub Actions** as the repository's Pages source. `.github/workflows/deploy.yml` validates, builds, uploads `out/`, and deploys when main changes. It chooses an empty base path for an owner.github.io repository, and `/<repo>` otherwise. This repository publishes at `https://lourdhu02.github.io/portfolio/`.
+
+```sh
+# Match the project-site deployment locally (PowerShell)
+$env:NEXT_PUBLIC_BASE_PATH='/portfolio'
 pnpm build
-
-# Serve production build locally
-pnpm start
 ```
 
----
+`lib/path.ts` prefixes native links and public assets. Canonical URLs, sitemap and robots use the same base. `.nojekyll` preserves Next's `_next` directory. Serve the exported folder with a static file server; `next start` is not used for static exports.
 
-## 📁 Repository Structure
+## Checks
 
-```text
-portfolio/
-├── app/
-│   ├── layout.tsx             # Root layout with custom navigation and typography
-│   ├── page.tsx               # Home: Hero, Counters, Work, Lab, Creed, Resume
-│   ├── about/page.tsx         # Full profile, Spacedrift venture, papers, credentials
-│   ├── lab/page.tsx           # Interactive in-browser ML inference simulator
-│   ├── work/
-│   │   ├── meter-ocr/page.tsx # Flagship utility-scale OCR case study
-│   │   └── [slug]/page.tsx    # Dynamic project case study template
-│   └── writing/
-│       ├── page.tsx           # Writing index (post-mortems, papers, engineering logs)
-│       └── [slug]/page.tsx    # Dedicated MDX reading experience
-├── components/
-│   ├── motion/                # Magnetic buttons, counters, SVG pipeline diagram
-│   ├── three/                 # R3F ParticleName, canvas sampling, performance tiers
-│   └── ui/                    # Navigation drawer, cmdk LabCommand, Easter eggs
-├── content/
-│   ├── truth.ts               # Single source of truth for metrics, bio, links
-│   └── writing/               # MDX field notes, research summaries, post-mortems
-├── public/
-│   └── LourduRaju_Resume.pdf  # Downloadable verified resume PDF
-└── velite.config.ts           # Type-safe content schema configuration
+```sh
+pnpm lint
+pnpm check:claims
+pnpm build
+pnpm exec tsc --noEmit
 ```
 
----
+The claims check validates bold numeric claims in MDX against the metric registry. Source receipts explain private measurements without fabricating public links. Build output and browser audits are the evidence for performance; a Lighthouse target is not a guaranteed score on every machine.
 
-## 📬 Contact & Profiles
+`components/MotionSystem.tsx` provides shared route exit/entry, viewport reveals, spring card interactions and reading progress. Internal links retain native anchor fallbacks and use Next client navigation after an exit animation. Content is pre-rendered to static HTML. `prefers-reduced-motion` disables movement, and noscript fallbacks retain content and navigation. `components/Navigation.tsx` uses a native modal dialog for focus containment, Escape dismissal and an inert background. Its cobalt shutters and numbered links animate with Motion. `components/ThemeToggle.tsx` owns theme interaction, observes the prepaint theme and synchronizes across tabs; `public/preferences.js` only handles the clock and email copying.
 
-- **Email**: [b.lourdhuraju1234@gmail.com](mailto:b.lourdhuraju1234@gmail.com)
-- **GitHub**: [github.com/Lourdhu02](https://github.com/Lourdhu02)
-- **LinkedIn**: [linkedin.com/in/lourdhu](https://linkedin.com/in/lourdhu)
-- **Kaggle**: [kaggle.com/blourdhuraju](https://kaggle.com/blourdhuraju)
-- **Studio**: [spacedrift.in](https://spacedrift.in)
+`scripts/fix-export-paths.mjs` creates flat RSC segment filename aliases on Windows for the URLs expected by Next 16.3's client router; Linux exports are unchanged. This is covered by browser navigation and failed-request checks.
 
----
+To review the production export locally, run `pnpm start` with the same `NEXT_PUBLIC_BASE_PATH` used to build, then run `pnpm verify` in another terminal. The browser checks require Chrome and cover 320–1920px layouts, both themes, reduced motion, routing, menu focus/scroll behavior, theme persistence and accessibility. The Lab route, inference model, training code and public assets have been removed; the verification suite asserts their former URLs return 404.
 
-© 2026 Lourdu Raju. All rights reserved.
+Current screenshots are in `docs/screenshots/iteration-3-*`; current browser results are in `docs/verification.json`. Earlier iteration reviews are historical records.

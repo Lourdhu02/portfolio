@@ -1,166 +1,154 @@
-import { PipelineDiagram } from '@/components/motion/PipelineDiagram'
-import { Receipt } from '@/components/ui/Receipt'
-import { METRICS, show, factor, fmt, headroom } from '@/content/truth'
-import Link from 'next/link'
 import type { Metadata } from 'next'
-
-const ocr = METRICS.meterOcr
-
+import { METRICS, fmt, show, factor, headroom } from '@/content/truth'
+import { Receipt } from '@/components/ui/Receipt'
+import { withBase } from '@/lib/path'
+import { siteAddress } from '@/lib/site'
 export const metadata: Metadata = {
   title: 'Meter OCR',
-  description: `Production meter-reading OCR for two state utilities: ${ocr.engines.value} TensorRT engines behind Triton, ${Math.round(factor(ocr.p50))}× faster end to end than serverless, ${show(ocr.invalidDetection)} of unreadable photos refused.`,
-  alternates: { canonical: '/work/meter-ocr' },
+  description:
+    'Production meter-reading OCR for two state electricity utilities, served on Triton and TensorRT.',
+  alternates: { canonical: siteAddress('/work/meter-ocr/') },
 }
-
-export default function MeterOCRCaseStudy() {
+export default function MeterOcr() {
   const m = METRICS.meterOcr
-  const results = [m.p50, m.p50AtLoad, m.throughput, m.classifierCompute]
-
   return (
-    <main className="relative w-full max-w-5xl px-5 sm:px-10 lg:ml-[14vw] lg:px-0 pt-24 pb-16 sm:py-32 text-text">
-
-      <Link href="/#work" className="inline-block font-mono text-xs uppercase tracking-widest text-muted hover:text-text transition-colors -mt-2 py-2 mb-8 sm:mb-14">
-        ← Back to Work
-      </Link>
-
-      {/* 1. Title Card */}
-      <header className="mb-10 sm:mb-24">
-          <h1 className="font-display text-[clamp(3.25rem,16vw,3.75rem)] sm:text-6xl md:text-8xl leading-[0.85] uppercase mb-6 w-fit">
-            Meter OCR
-          </h1>
-        <p className="font-mono text-xs sm:text-base text-muted uppercase tracking-wider sm:tracking-widest">One photo in, one reading out · two state electricity utilities</p>
+    <main id="content" tabIndex={-1}>
+      <header className="page-header">
+        <a className="mono muted" href={withBase('/#work')}>
+          ← Selected work
+        </a>
+        <h1>Meter OCR</h1>
+        <p className="muted">One photo in, one reading out. Two state electricity utilities.</p>
       </header>
-
-      {/* 2. TL;DR */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-6 sm:gap-8 py-8 border-y border-line mb-12 sm:mb-24">
-        <div>
-          <div className="text-xs font-mono text-muted mb-2">ROLE</div>
-          <div className="text-sm">Machine Learning Engineer, owner end to end</div>
-        </div>
-        <div>
-          <div className="text-xs font-mono text-muted mb-2">TIMELINE</div>
-          <div className="text-sm">2026 – Present</div>
-        </div>
-        <div>
-          <div className="text-xs font-mono text-muted mb-2">STACK</div>
-          <div className="text-sm">Triton, TensorRT FP16, SVTRv2, YOLO26-OBB, MobileViTv2, AWS</div>
-        </div>
-        <div>
-          <div className="text-xs font-mono text-muted mb-2">IMPACT</div>
-          <div className="text-sm text-success">{Math.round(factor(m.p50))}× faster p50, {show(m.invalidDetection)} bad photos refused</div>
-        </div>
-      </section>
-
-      {/* 3. Context */}
-      <section className="mb-16 sm:mb-24 prose prose-p:text-text/80 max-w-none">
-        <h2 className="font-display text-[2.5rem] leading-none sm:text-4xl mb-6">Context & Constraints</h2>
+      <article className="case-study">
+        <dl className="meta-table">
+          <dt>Role</dt>
+          <dd>Machine learning engineer, owner end to end</dd>
+          <dt>Period</dt>
+          <dd>2026 — Present</dd>
+          <dt>Stack</dt>
+          <dd>Triton, TensorRT FP16, SVTRv2, YOLO26-OBB, MobileViTv2, AWS</dd>
+          <dt>Code</dt>
+          <dd>Private production system. Measurements and methodology are documented below.</dd>
+        </dl>
+        <h2>Problem & constraints</h2>
         <p>
-          Meter readers photograph electricity meters on their phones, and the utility&apos;s billing backend needs the number. The service gets one photo and must return one reading with a confidence score, in the same response shape whatever happens, because the backend never branches on errors.
+          Meter readers photograph electricity meters on their phones, and the utility&apos;s
+          billing backend needs the number. The service gets one photo and must return one reading
+          with a confidence score, in the same response shape whatever happens, because the backend
+          never branches on errors.
         </p>
         <p>
-          The original path was a serverless function: {fmt(m.busiestDay.value)} requests on its busiest day, a production peak of {show(m.productionPeak)}, and zero 4xx or 5xx across {fmt(m.weeklyRequests.value)} requests in a measured week. It worked, but at {show(m.p50, 'before')} p50 from the client. The job was to make it fast without ever making a caller worse off.
+          The original serverless path handled {fmt(m.busiestDay.value)} requests on its busiest
+          day, a production peak of {show(m.productionPeak)}, and zero 4xx or 5xx across{' '}
+          {fmt(m.weeklyRequests.value)} requests in a measured week. It worked, but at{' '}
+          {show(m.p50, 'before')} p50 from the client. My job was to make it fast while preserving
+          the caller&apos;s contract.
         </p>
-      </section>
-
-      {/* 4. Architecture */}
-      <section className="mb-16 sm:mb-24">
-        <h2 className="font-display text-[2.5rem] leading-none sm:text-4xl mb-6">Architecture</h2>
-        <PipelineDiagram />
-        <p className="mt-6 text-sm text-text/80 leading-relaxed">
-          A router function picks the GPU path or the serverless path per request by deterministic sha256 bucketing, falls back on any error or a 4-second timeout, and opens a circuit breaker after 5 straight failures. Behind it, nginx and a Flask gateway feed {m.engines.value} TensorRT FP16 engines in Triton: meter presence, dial detection, digital-vs-analog, and short, medium and long readers for each dial type.
-        </p>
-      </section>
-
-      {/* 5. Decisions */}
-      <section className="mb-16 sm:mb-24 prose prose-p:text-text/80 max-w-none">
-        <h2 className="font-display text-[2.5rem] leading-none sm:text-4xl mb-6">Trade-offs</h2>
+        {[m.busiestDay, m.productionPeak, m.weeklyRequests].map((metric) => (
+          <Receipt key={metric.label} metric={metric} />
+        ))}
+        <h2>Approach</h2>
         <p>
-          Moving the last classifier from ONNX Runtime to TensorRT FP16 was the hardest cut. TensorRT refuses a Transpose on a UINT8 input, so the exported graph gets a patch that casts first, numerically identical, before conversion. Classifier compute went from <strong>{show(m.classifierCompute, 'before')}</strong> to <strong>{show(m.classifierCompute)}</strong>, and throughput stopped falling as load rose.
+          A router function picks the GPU path or the serverless path per request by deterministic
+          sha256 bucketing. It falls back on any error or timeout and opens a circuit breaker after
+          consecutive failures. Behind it, nginx and a Flask gateway feed {m.engines.value} TensorRT
+          FP16 engines in Triton: meter presence, dial detection, digital-vs-analog, and short,
+          medium and long readers for each dial type.
         </p>
+        <Receipt metric={m.engines} />
+        <dl className="meta-table">
+          <dt>Input</dt>
+          <dd>Field photo → hash-bucketed router</dd>
+          <dt>GPU path</dt>
+          <dd>nginx → Flask → Triton → TensorRT engines</dd>
+          <dt>Fallback</dt>
+          <dd>Serverless path on timeout, error, or open circuit</dd>
+          <dt>Output</dt>
+          <dd>Reading and confidence, or NA</dd>
+        </dl>
+        <h2>Trade-offs</h2>
         <p>
-          On one NVIDIA L4 the box sustains <strong>{show(m.sustainedL4)}</strong>, {fmt(headroom, 1)}× the production peak, and the ceiling is the host CPU, not the GPU. Engines are built once per GPU architecture and fetched with a sha256 check, so a deploy takes about a minute instead of a rebuild.
+          Moving the last classifier from ONNX Runtime to TensorRT FP16 was the hardest cut.
+          TensorRT refuses a Transpose on a UINT8 input, so the exported graph gets a patch that
+          casts first, numerically identical, before conversion. Classifier compute went from{' '}
+          {show(m.classifierCompute, 'before')} to {show(m.classifierCompute)}, and throughput
+          stopped falling as load rose.
         </p>
-      </section>
-
-      {/* 6. Battle Log Cards */}
-      <section className="mb-16 sm:mb-24">
-        <h2 className="font-display text-[2.5rem] leading-none sm:text-4xl mb-6">Battle Log</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-          <div className="p-6 bg-surface border border-line" style={{ borderBottomRightRadius: '14px' }}>
-            <h4 className="font-mono text-sm text-accent mb-2">01 / The Decoder Bug</h4>
-            <p className="text-sm text-text/80">
-              A CTC decoder that skipped blank frames when checking repeats turned 4777.1 into 47.1. The fix is one line; the lesson was a fixed test set every release must reproduce.
-            </p>
-          </div>
-
-          <div className="p-6 bg-surface border border-line" style={{ borderBottomRightRadius: '14px' }}>
-            <h4 className="font-mono text-sm text-accent mb-2">02 / The Cliff</h4>
-            <p className="text-sm text-text/80">
-              Throughput fell as load rose, because one classifier was still on ONNX Runtime. Moving it to TensorRT took it from {show(m.throughput, 'before')} to {show(m.throughput)}.
-            </p>
-          </div>
-
-          <div className="p-6 bg-surface border border-line" style={{ borderBottomRightRadius: '14px' }}>
-            <h4 className="font-mono text-sm text-accent mb-2">03 / The Missing {m.archiveDrops.value}</h4>
-            <p className="text-sm text-text/80">
-              Fire-and-forget archiving lost {m.archiveDrops.value} images to S3 in a burst test. Version 2 spools failures to disk and replays them.
-            </p>
-          </div>
-
-          <div className="p-6 bg-surface border border-line" style={{ borderBottomRightRadius: '14px' }}>
-            <h4 className="font-mono text-sm text-accent mb-2">04 / The Gap the Canary Caught</h4>
-            <p className="text-sm text-text/80">
-              The shadow-then-canary ladder ran {fmt(m.rolloutRequests.value)} requests with zero errors, and it also showed the GPU path reading {show(m.canaryGap)} against serverless&apos;s {show(m.canaryGap, 'before')}, mostly on analog dials. Rollout waited on that number, not on a feeling.
-            </p>
-          </div>
-
-        </div>
-      </section>
-
-      {/* 7. Results */}
-      <section className="mb-16 sm:mb-24">
-        <h2 className="font-display text-[2.5rem] leading-none sm:text-4xl mb-6">Results</h2>
-        <div className="w-full overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
-          <table className="w-full min-w-[320px] text-left text-xs sm:text-sm">
+        <Receipt metric={m.classifierCompute} />
+        <p>
+          On one NVIDIA L4 the box sustains {show(m.sustainedL4)}, {fmt(headroom, 1)}× the
+          production peak. The ceiling is the host CPU, not the GPU. Engines are built once per GPU
+          architecture and fetched with a sha256 check.
+        </p>
+        <Receipt metric={m.sustainedL4} />
+        <h2>Battle log</h2>
+        <h3>The decoder bug</h3>
+        <p>
+          A CTC decoder that skipped blank frames when checking repeats turned 4777.1 into 47.1. The
+          fix is one line; the lesson was a fixed test set every release must reproduce.
+        </p>
+        <h3>The throughput cliff</h3>
+        <p>
+          Throughput fell as load rose because a classifier was still on ONNX Runtime. Moving it to
+          TensorRT took throughput from {show(m.throughput, 'before')} to {show(m.throughput)}.
+        </p>
+        <Receipt metric={m.throughput} />
+        <h3>The missing archive</h3>
+        <p>
+          Fire-and-forget archiving lost {m.archiveDrops.value} images to S3 in a burst test.
+          Version two spools failures to disk and replays them.
+        </p>
+        <Receipt metric={m.archiveDrops} />
+        <h3>The gap the canary caught</h3>
+        <p>
+          The shadow-then-canary ladder ran {fmt(m.rolloutRequests.value)} requests with zero
+          errors. It also showed the GPU path reading {show(m.canaryGap)} against serverless&apos;s{' '}
+          {show(m.canaryGap, 'before')}, mostly on analog dials. Rollout waited on that measurement.
+        </p>
+        <Receipt metric={m.rolloutRequests} />
+        <Receipt metric={m.canaryGap} />
+        <h2>Results</h2>
+        <div className="overflow-x-auto">
+          <table>
             <thead>
-              <tr className="border-b border-line font-mono text-muted uppercase">
-                <th className="py-4 pr-4">Metric</th>
-                <th className="py-4 px-4">Before</th>
-                <th className="py-4 px-4">After</th>
-                <th className="py-4 px-4">Delta</th>
+              <tr>
+                <th scope="col">Metric</th>
+                <th scope="col">Before</th>
+                <th scope="col">After</th>
+                <th scope="col">Factor</th>
               </tr>
             </thead>
             <tbody>
-              {results.map((r) => (
-                <tr key={r.label} className="border-b border-line/50 align-top">
-                  <td className="py-4 pr-4">
-                    <div className="font-medium">{r.label}</div>
-                    <Receipt metric={r} className="mt-1 max-w-sm" />
-                  </td>
-                  <td className="py-4 px-4 font-mono text-muted whitespace-nowrap">{show(r, 'before')}</td>
-                  <td className="py-4 px-4 font-mono text-accent whitespace-nowrap">{show(r)}</td>
-                  <td className="py-4 px-4 font-mono text-success whitespace-nowrap">{Math.round(factor(r))}×</td>
+              {[m.p50, m.p50AtLoad, m.throughput, m.classifierCompute].map((r) => (
+                <tr key={r.label}>
+                  <th scope="row">
+                    {r.label}
+                    <Receipt metric={r} compact />
+                  </th>
+                  <td>{show(r, 'before')}</td>
+                  <td>{show(r)}</td>
+                  <td>{Math.round(factor(r))}×</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[m.readingAccuracy, m.invalidDetection, m.biharAccuracy].map((r) => (
-            <div key={r.label} className="p-6 bg-surface border border-line">
-              <div className="text-3xl font-display text-text mb-1">{show(r)}</div>
-              <div className="text-xs font-mono uppercase tracking-widest text-muted mb-3">{r.label}</div>
-              <Receipt metric={r} />
-            </div>
-          ))}
-        </div>
-        <p className="mt-8 text-sm text-text/70 leading-relaxed max-w-2xl">
-          Analog dials are the open problem in both states. Both run the same analog readers, so the next gain is model and data work, not infrastructure.
+        {[m.readingAccuracy, m.invalidDetection, m.biharAccuracy].map((r) => (
+          <div key={r.label}>
+            <h3>
+              {show(r)} · {r.label}
+            </h3>
+            <Receipt metric={r} />
+          </div>
+        ))}
+        <h2>What I&apos;d do differently</h2>
+        <p>
+          I would put the repeated-digit decoder cases and a durable archive queue in place before
+          the first rollout. Analog dials remain the open problem in both states. Both use the same
+          analog readers, so the next gain is model and data work, not infrastructure.
         </p>
-      </section>
-
+      </article>
     </main>
   )
 }

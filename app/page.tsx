@@ -1,228 +1,374 @@
-import { Counter } from '@/components/motion/Counter'
-import { LabDock } from '@/components/interaction/LabDock'
-import { CopyEmail } from '@/components/interaction/CopyEmail'
-import { Magnetic } from '@/components/motion/Magnetic'
-import { Reveal, RevealItem } from '@/components/motion/Reveal'
-import { ScrollWords } from '@/components/motion/ScrollWords'
-import { TRUTH, METRICS, show, factor } from '@/content/truth'
+import Image from 'next/image'
+import { existsSync } from 'node:fs'
+import { join } from 'node:path'
+import { posts } from '#velite'
+import { TRUTH, METRICS, PREPRINT_PAGES, factor, fmt, show } from '@/content/truth'
+import { NOW } from '@/content/now'
+import { withBase } from '@/lib/path'
+import { displayDate } from '@/lib/site'
+import { Section } from '@/components/Section'
 import { Receipt } from '@/components/ui/Receipt'
-import Link from 'next/link'
-import { HeroStage } from '@/components/hero/HeroStage'
-import { HeroOverlay } from '@/components/hero/HeroOverlay'
-import { SectionHead } from '@/components/ui/SectionHead'
-import { WorkList } from '@/components/work/WorkList'
+import { WritingList } from '@/components/WritingList'
+import { Elsewhere } from '@/components/Elsewhere'
+import { Experience } from '@/components/Experience'
+import { ProjectVisual } from '@/components/ProjectVisual'
+import { CardMotion, Reveal } from '@/components/MotionSystem'
 
 export default function Home() {
-  const { busiestDay, p50, invalidDetection, classifierCompute } = METRICS.meterOcr
-  const { tests: achillesTests, labs: achillesLabs } = METRICS.achilles
-  const studio = TRUTH.studio
-
+  const { identity, studio } = TRUTH
+  const m = METRICS.meterOcr
+  const latest = [...posts]
+    .filter((p) => !p.draft)
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, 5)
+  const work = [
+    {
+      title: 'Meter OCR',
+      context: 'Sujanix / Production vision',
+      year: '2026',
+      result: `${Math.round(factor(m.p50))}×`,
+      unit: 'faster end-to-end p50',
+      description:
+        'From a field photograph to a reliable meter reading. Built for two state electricity utilities.',
+      href: '/work/meter-ocr/',
+      metric: m.p50,
+      kind: 'meter' as const,
+      span: 'project-featured',
+    },
+    {
+      title: 'Achilles',
+      context: 'Open source / First principles',
+      year: '2025–26',
+      result: String(METRICS.achilles.tests.value),
+      unit: 'reference tests in CI',
+      description:
+        'The modern AI stack, rebuilt from autograd to FlashAttention. Learn it by making it work.',
+      href: identity.links.achilles,
+      metric: METRICS.achilles.tests,
+      kind: 'achilles' as const,
+      span: 'project-secondary',
+    },
+    {
+      title: 'SVTRv2-ARD',
+      context: 'Research / Text recognition',
+      year: '2026',
+      result: String(METRICS.svtrv2.tests.value),
+      unit: 'tests passing',
+      description:
+        'Adaptive routing and distillation. A different training strategy, an unchanged served model.',
+      href: '/work/svtrv2-ard/',
+      metric: METRICS.svtrv2.tests,
+      kind: 'svtr' as const,
+      span: 'project-third',
+    },
+    {
+      title: 'ECHOME',
+      context: 'Local AI / Memory',
+      year: '2026',
+      result: show(METRICS.echome.memoryRecall),
+      unit: 'multi-session memory recall',
+      description: 'An offline agent that remembers across conversations and learns how you think.',
+      href: '/work/echome/',
+      metric: METRICS.echome.memoryRecall,
+      kind: 'echome' as const,
+      span: 'project-third',
+    },
+    {
+      title: 'FinSentinelAI',
+      context: 'Document AI / Private RAG',
+      year: '2026',
+      result: fmt(METRICS.finSentinel.corpus.value),
+      unit: 'documents in the test corpus',
+      description:
+        'Ask questions of your financial documents. Retrieval and inference stay on your machine.',
+      href: '/work/finsentinel/',
+      metric: METRICS.finSentinel.corpus,
+      kind: 'finance' as const,
+      span: 'project-third',
+    },
+  ]
   return (
-    <main className="relative w-full">
-      
-      {/* SC.01: Hero */}
-      <HeroStage>
-        <HeroOverlay />
-      </HeroStage>
-
-      {/* SC.02: Proof */}
-      <section className="relative z-10 w-full px-5 sm:px-10 lg:px-16 py-16 sm:py-24 text-text">
-        <Reveal stagger={0.12} className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-6 pt-12 sm:pt-16 pb-8 sm:pb-24 border-t border-line">
-          
-          <RevealItem className="flex flex-col space-y-4">
-            <h2 className="font-display text-6xl md:text-8xl leading-none">
-              <Counter value={Math.round(busiestDay.value / 1000)} suffix="K" />
-            </h2>
-            <div className="flex flex-col">
-              <span className="font-mono text-sm tracking-wider uppercase text-muted">Meter photos read in one day</span>
-              <span className="text-muted/80 text-sm mt-1">{busiestDay.value.toLocaleString('en-US')} requests on production&apos;s busiest day, for a state electricity utility.</span>
-              <Receipt metric={busiestDay} className="mt-3" />
-            </div>
-          </RevealItem>
-
-          <RevealItem className="flex flex-col space-y-4">
-            <h2 className="font-display text-6xl md:text-8xl leading-none text-accent">
-              <Counter value={Math.round(factor(p50))} suffix="×" />
-            </h2>
-            <div className="flex flex-col">
-              <span className="font-mono text-sm tracking-wider uppercase text-muted">Faster, end to end</span>
-              <span className="text-muted/80 text-sm mt-1">p50 from {show(p50, 'before')} on serverless to {show(p50)} on Triton and TensorRT.</span>
-              <Receipt metric={p50} className="mt-3" />
-            </div>
-          </RevealItem>
-
-          <RevealItem className="flex flex-col space-y-4">
-            <h2 className="font-display text-6xl md:text-8xl leading-none text-success">
-              <Counter value={invalidDetection.value} decimals={invalidDetection.decimals} suffix="%" />
-            </h2>
-            <div className="flex flex-col">
-              <span className="font-mono text-sm tracking-wider uppercase text-muted">Bad photos refused</span>
-              <span className="text-muted/80 text-sm mt-1">Blurred, blank and non-meter photos get &ldquo;NA&rdquo;, never a confident wrong number.</span>
-              <Receipt metric={invalidDetection} className="mt-3" />
-            </div>
-          </RevealItem>
-
-        </Reveal>
-      </section>
-
-      {/* SC.03: Work Grid */}
-      <section id="work" className="relative z-10 w-full px-5 sm:px-10 lg:px-16 py-16 sm:py-24 text-text scroll-mt-16">
-        <Reveal>
-          <SectionHead index="01" title="Selected Work" aside="Four projects" />
-        </Reveal>
-
-        <WorkList
-          projects={[
-            {
-              title: 'Meter OCR',
-              href: '/work/meter-ocr',
-              role: 'Production · two state utilities',
-              summary: "Reads meters from field photos on Triton and TensorRT, and answers NA when a photo can't be read.",
-              tags: ['TensorRT', 'Triton', 'NVIDIA L4'],
-            },
-            {
-              title: 'FinSentinelAI',
-              href: '/work/finsentinel',
-              role: 'Local RAG',
-              summary: 'Question answering over invoices and bank statements with local embeddings, a reranker and Ollama. Zero external API calls.',
-              tags: ['ChromaDB', 'Cross-encoder', 'Ollama'],
-            },
-            {
-              title: 'SVTRv2-ARD',
-              href: '/work/svtrv2-ard',
-              role: 'OCR research',
-              summary: "Learned routing into SVTRv2's resize bins plus SGM-to-CTC distillation, leaving the served model byte-identical.",
-              tags: ['PyTorch', 'CTC', 'OCR'],
-            },
-            {
-              title: 'ECHOME',
-              href: '/work/echome',
-              role: 'Offline agent',
-              summary: `An offline agent with three-tier memory and a ${show(METRICS.echome.assessmentCut)} shorter adaptive assessment.`,
-              tags: ['LangGraph', 'Qdrant', 'Offline'],
-            },
-          ]}
-        />
-      </section>
-
-      {/* SC.04: Lab console (same command menu as ⌘K) */}
-      <section className="relative z-10 w-full px-5 sm:px-10 lg:px-16 py-16 sm:py-24 text-text">
-        <Reveal>
-          <SectionHead
-            index="02"
-            title="Lab"
-            aside={<Link href="/lab" className="text-detect hover:text-text transition-colors">Read the meter yourself →</Link>}
-          />
-        </Reveal>
-        <Reveal>
-          <LabDock />
-        </Reveal>
-      </section>
-
-      {/* SC.05: Principles */}
-      <section className="relative z-10 w-full px-5 sm:px-10 lg:px-16 text-text">
-        <ScrollWords
-          label={<SectionHead index="03" title="Engineering Creed" />}
-          lines={[
-            { text: 'Measure before you claim.' },
-            { text: 'Ship behind a canary.' },
-            { text: 'Boring to run.', muted: true },
-          ]}
-        />
-      </section>
-
-      {/* SC.06: Credentials, Open Source & Studio */}
-      <section className="relative z-10 w-full px-5 sm:px-10 lg:px-16 py-16 sm:py-24 text-text border-t border-line">
-        <Reveal stagger={0.1} className="grid grid-cols-1 gap-12 md:grid-cols-[5fr_7fr] lg:gap-24">
-          <RevealItem>
-            <div className="font-mono text-xs text-accent uppercase tracking-widest mb-2">04 / Credentials</div>
-            <h2 className="font-display text-4xl mb-4">Lourdu Raju</h2>
-            <p className="font-mono text-sm text-muted uppercase tracking-widest mb-6">
-              Machine Learning Engineer at Sujanix<br/>
-              Founder at spacedrift · Bengaluru, India
-            </p>
-            <p className="text-text/80 max-w-md leading-relaxed text-sm mb-6">
-              {TRUTH.identity.mission} Author of Achilles, {achillesLabs.value} test-driven labs that rebuild the modern LLM stack, and a PhilArchive preprint on identity in persistent AI agents.
-            </p>
-            <div className="flex flex-wrap gap-3 sm:gap-4">
-              <a 
-                href="/LourduRaju_Resume.pdf" 
-                target="_blank"
-                className="inline-flex min-h-11 items-center px-4 py-2 bg-surface border border-line hover:border-accent text-accent font-mono text-xs uppercase tracking-wider transition-colors"
-                style={{ borderRadius: '6px' }}
-              >
-                Resume PDF ↓
-              </a>
-              <Link 
-                href="/about"
-                className="inline-flex min-h-11 items-center px-4 py-2 border border-line hover:border-text text-text font-mono text-xs uppercase tracking-wider transition-colors"
-                style={{ borderRadius: '6px' }}
-              >
-                Full Story →
-              </Link>
-            </div>
-          </RevealItem>
-          
-          <RevealItem className="grid grid-cols-2 gap-3 sm:gap-6">
-            <div className="glass-float"><div className="glass h-full p-4 sm:p-7">
-              <div className="text-4xl font-display text-accent mb-2">{achillesTests.value}</div>
-              <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">CI tests passing (Achilles)</div>
-            </div></div>
-            <div className="glass-float lg:translate-y-10"><div className="glass h-full p-4 sm:p-7">
-              <div className="text-4xl font-display text-text mb-2">₹{studio.revenueLakh}L</div>
-              <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">spacedrift revenue ({studio.clients} clients)</div>
-            </div></div>
-            <div className="glass-float lg:-translate-x-6"><div className="glass h-full p-4 sm:p-7">
-              <div className="text-4xl font-display text-detect mb-2">{achillesLabs.value}</div>
-              <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">Test-driven AI labs</div>
-            </div></div>
-            <div className="glass-float lg:translate-y-4"><div className="glass h-full p-4 sm:p-7">
-              <div className="text-4xl font-display text-success mb-2">{Math.round(factor(classifierCompute))}×</div>
-              <div className="text-[11px] sm:text-xs font-mono uppercase tracking-wider sm:tracking-widest text-muted">TensorRT speedup ({show(classifierCompute, 'before')} → {show(classifierCompute)})</div>
-            </div></div>
-          </RevealItem>
-        </Reveal>
-      </section>
-
-      {/* SC.07: Footer */}
-      <footer className="relative z-10 w-full border-t border-line pt-20 sm:pt-24 pb-[max(4rem,calc(env(safe-area-inset-bottom)+3rem))] sm:pb-24 px-5 sm:px-10 lg:px-16 flex flex-col items-start overflow-hidden">
-        <Reveal className="flex flex-col items-start">
-        <Magnetic strength={20}>
-          <div className="glass-float">
-          <a 
-            href={`mailto:${TRUTH.identity.email}`} 
-            data-cursor="view"
-            data-cursor-label="Say hi"
-            className="glass group flex flex-col items-start text-left px-8 py-9 sm:px-14 sm:py-12 hover:border-accent transition-colors"
-          >
-            <span className="font-display text-[2.75rem] leading-[0.9] sm:text-6xl md:text-8xl group-hover:text-accent group-active:text-accent transition-colors uppercase">
-              Got a model to ship?
+    <main id="content" tabIndex={-1}>
+      <section className="hero" aria-labelledby="intro-title">
+        <div className="hero-topline mono">
+          <span>ML engineer / Bengaluru, IN</span>
+          <span className="availability">
+            <i />
+            Open to collaborations
+          </span>
+        </div>
+        <Reveal priority>
+          <div className="hero-name-row">
+            <h1 id="intro-title" className="name">
+              Lourdhu Raju<span className="name-period">.</span>
+            </h1>
+            <span className="hero-direction" aria-hidden="true">
+              ↗
             </span>
-          </a>
           </div>
-        </Magnetic>
-        <CopyEmail
-          email={TRUTH.identity.email}
-          className="mt-4 sm:mt-6 min-h-11 rounded-full px-4 py-2 font-mono text-xs text-muted transition-colors hover:text-text"
-        />
         </Reveal>
-
-        <div className="mt-10 sm:mt-16 flex flex-wrap justify-start gap-x-6 gap-y-1 sm:gap-6 font-mono text-xs uppercase tracking-widest text-muted">
-          <a href={TRUTH.identity.links.github} target="_blank" rel="noopener noreferrer" className="py-3 sm:py-0 hover:text-accent transition-colors">GitHub</a>
-          <span className="hidden sm:inline" aria-hidden="true">·</span>
-          <a href={TRUTH.identity.links.linkedin} target="_blank" rel="noopener noreferrer" className="py-3 sm:py-0 hover:text-accent transition-colors">LinkedIn</a>
-          <span className="hidden sm:inline" aria-hidden="true">·</span>
-          <a href={TRUTH.identity.links.kaggle} target="_blank" rel="noopener noreferrer" className="py-3 sm:py-0 hover:text-accent transition-colors">Kaggle</a>
-          <span className="hidden sm:inline" aria-hidden="true">·</span>
-          <a href={TRUTH.identity.links.studio} target="_blank" rel="noopener noreferrer" className="py-3 sm:py-0 hover:text-accent transition-colors">spacedrift.in</a>
-          <span className="hidden sm:inline" aria-hidden="true">·</span>
-          <a href={TRUTH.identity.links.preprint} target="_blank" rel="noopener noreferrer" className="py-3 sm:py-0 hover:text-accent transition-colors">PhilArchive</a>
+        <div className="hero-bottom">
+          <Reveal className="hero-manifesto" priority delay={0.06}>
+            <p>
+              I make vision models <br />
+              fast, honest, and <br />
+              <span className="muted">boring to run.</span>
+            </p>
+            <div className="intro-actions">
+              <a className="button button-primary" href={`mailto:${identity.email}`}>
+                Let&apos;s talk <span aria-hidden="true">↗</span>
+              </a>
+              <a
+                className="button"
+                href={withBase(identity.links.resume)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Résumé (PDF) <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+          </Reveal>
+          <Reveal className="hero-context" delay={0.12}>
+            <span className="mono eyebrow">Models are only half the work.</span>
+            <p>
+              I own production OCR for two state electricity utilities at Sujanix. From training
+              data to GPU serving, I build the system around the model.
+            </p>
+            <p className="muted">
+              I also run{' '}
+              <a href={identity.links.studio} target="_blank" rel="noreferrer">
+                spacedrift
+              </a>
+              , a small ML studio for document AI and reproducible research.
+            </p>
+            <a className="text-link mono" href={withBase('/about/')}>
+              A little more about me <span aria-hidden="true">↗</span>
+            </a>
+          </Reveal>
+          <Reveal className="hero-id" delay={0.18}>
+            {existsSync(join(process.cwd(), 'public/me.jpg')) ? (
+              <Image
+                className="hero-portrait"
+                src={withBase('/me.jpg')}
+                alt="Lourdhu Raju"
+                width={400}
+                height={500}
+                preload
+              />
+            ) : (
+              <div className="identity-tile" aria-hidden="true">
+                <div className="tile-cross top-left">+</div>
+                <div className="tile-cross bottom-right">+</div>
+                <span className="mono">
+                  Engineering.
+                  <br />
+                  Independent thinking.
+                </span>
+                <span className="tile-monogram">LR</span>
+                <div className="tile-lines">
+                  <i />
+                  <i />
+                  <i />
+                  <i />
+                </div>
+              </div>
+            )}
+          </Reveal>
         </div>
-
-        <div className="mt-10 sm:mt-12 font-mono text-[11px] sm:text-xs leading-relaxed text-muted/60 uppercase tracking-widest text-left text-balance">
-          © {new Date().getFullYear()} Lourdu Raju · Bengaluru, India · Built with Next.js & Motion
+        <div className="hero-footnote mono muted">
+          <span>
+            Currently at <span className="ink">Sujanix</span> · Founder,{' '}
+            <span className="ink">spacedrift</span>
+          </span>
+          <a href="#work">
+            Explore the work <span aria-hidden="true">↓</span>
+          </a>
         </div>
-      </footer>
+      </section>
+
+      <Section
+        id="work"
+        label="01 — Selected work"
+        aside={
+          <span>
+            Production systems.
+            <br />
+            Research with a working implementation.
+          </span>
+        }
+      >
+        <div className="work-grid">
+          {work.map((w, i) => (
+            <Reveal key={w.title} className={w.span} delay={(i % 3) * 0.06}>
+              <CardMotion className={`project-card ${w.kind === 'meter' ? 'featured-card' : ''}`}>
+                <a
+                  className="card-cover"
+                  href={withBase(w.href)}
+                  aria-label={`View ${w.title}`}
+                  {...(w.href.startsWith('https') ? { target: '_blank', rel: 'noreferrer' } : {})}
+                />
+                <div className="project-heading">
+                  <span className="mono muted">
+                    {String(i + 1).padStart(2, '0')} / {w.context}
+                  </span>
+                  <span className="card-arrow" aria-hidden="true">
+                    ↗
+                  </span>
+                </div>
+                <ProjectVisual kind={w.kind} />
+                <div className="project-copy">
+                  <div className="project-title-row">
+                    <h3>{w.title}</h3>
+                    <span className="mono muted">{w.year}</span>
+                  </div>
+                  <p>{w.description}</p>
+                </div>
+                <div className="project-receipt">
+                  <div>
+                    <span className="project-value">{w.result}</span>
+                    <span className="mono muted project-unit">{w.unit}</span>
+                  </div>
+                  <Receipt metric={w.metric} compact />
+                </div>
+              </CardMotion>
+            </Reveal>
+          ))}
+        </div>
+        <div className="work-extras">
+          <Reveal>
+            <CardMotion className="paper-card">
+              <a
+                className="card-cover"
+                href={identity.links.preprint}
+                aria-label="Read No Final Save"
+                target="_blank"
+                rel="noreferrer"
+              />
+              <div>
+                <span className="mono muted">06 / Independent research</span>
+                <h3>
+                  No Final Save<span aria-hidden="true">↗</span>
+                </h3>
+                <p>
+                  What makes a persistent AI agent the same agent? A preprint on identity,
+                  continuity, and self-preservation.
+                </p>
+                <div className="paper-source">
+                  <span className="mono">PhilArchive · {PREPRINT_PAGES.value} pages</span>
+                  <Receipt metric={PREPRINT_PAGES} compact />
+                </div>
+              </div>
+              <ProjectVisual kind="paper" />
+            </CardMotion>
+          </Reveal>
+        </div>
+      </Section>
+
+      <Section label="02 — Proof, not promises" aside="Measured in production. Sources included.">
+        <div className="numbers">
+          {[
+            {
+              value: fmt(m.busiestDay.value),
+              label: 'Meter photos on the busiest day',
+              metric: m.busiestDay,
+            },
+            {
+              value: `${Math.round(factor(m.p50))}×`,
+              label: `Faster p50 · ${show(m.p50, 'before')} → ${show(m.p50)}`,
+              metric: m.p50,
+            },
+            {
+              value: show(m.invalidDetection),
+              label: 'Unreadable photos refused',
+              metric: m.invalidDetection,
+            },
+          ].map((n, i) => (
+            <Reveal key={n.label} delay={i * 0.08}>
+              <div className="number-card">
+                <span className="mono muted number-index">/ 0{i + 1}</span>
+                <p className="number">{n.value}</p>
+                <p className="number-label">{n.label}</p>
+                <Receipt metric={n.metric} />
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </Section>
+      <Section
+        label="03 — Field notes"
+        aside={
+          <a className="text-link" href={withBase('/writing/')}>
+            All writing <span aria-hidden="true">↗</span>
+          </a>
+        }
+      >
+        <WritingList posts={latest} />
+      </Section>
+      <Section
+        id="elsewhere"
+        label="04 — Around the internet"
+        aside="Code, ideas, and the occasional detour."
+      >
+        <Elsewhere />
+      </Section>
+      <Section
+        label="05 — In progress"
+        aside={<a href={withBase('/now/')}>Updated {displayDate(NOW.updated)} ↗</a>}
+      >
+        <div className="now-grid">
+          {NOW.items.slice(0, 3).map((item, i) => (
+            <Reveal key={item.label} delay={i * 0.06}>
+              <div className="now-card">
+                <span className="mono muted">{item.label} /</span>
+                <p>{item.text}</p>
+                <span className="now-corner" aria-hidden="true">
+                  +
+                </span>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </Section>
+      <section id="contact" className="contact-section">
+        <Reveal>
+          <div className="contact-top">
+            <span className="mono">06 / Start a conversation</span>
+            <span className="mono">Research · Open source · Studio work</span>
+          </div>
+          <h2>
+            Good questions.
+            <br />
+            Better things, built.
+          </h2>
+          <div className="contact-bottom">
+            <p>
+              I&apos;m open to collaborations on OCR, inference and agents, studio projects through
+              spacedrift, and talks or guest posts.
+            </p>
+            <div>
+              <a className="email-link" href={`mailto:${identity.email}`}>
+                {identity.email} <span aria-hidden="true">↗</span>
+              </a>
+              <button
+                type="button"
+                className="copy-button"
+                data-copy-email={identity.email}
+                aria-live="polite"
+              >
+                Copy email
+              </button>
+            </div>
+          </div>
+        </Reveal>
+      </section>
+      <Section label="07 — The path so far" aside={<a href={withBase('/about/')}>Full story ↗</a>}>
+        <Experience />
+        <div className="receipt">
+          <a href={withBase(studio.source.url!)} target="_blank" rel="noreferrer">
+            source · résumé ↗
+          </a>
+        </div>
+      </Section>
     </main>
   )
 }

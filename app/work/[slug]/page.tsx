@@ -1,135 +1,91 @@
 import { notFound } from 'next/navigation'
-import { posts } from '#velite'
-import Link from 'next/link'
 import type { Metadata } from 'next'
+import { posts } from '#velite'
 import { TRUTH, METRICS, show } from '@/content/truth'
-
-interface PageProps {
-  params: Promise<{ slug: string }>
-}
-
-// Case-study header for each project. Figures come from content/truth.ts.
-const PROJECTS_META: Record<string, { role: string; timeline: string; stack: string; impact: string; github?: string }> = {
+import { PostSources } from '@/components/PostSources'
+import { withBase } from '@/lib/path'
+import { siteAddress } from '@/lib/site'
+const projects: Record<
+  string,
+  { role: string; period: string; stack: string; impact: string; github: string; next: string }
+> = {
   'svtrv2-ard': {
     role: 'Sole author',
-    timeline: '2026',
+    period: '2026',
     stack: 'PyTorch, CTC, LMDB, Union14M-L, pytest',
-    impact: `ARD method shipped with ${METRICS.svtrv2.tests.value}/${METRICS.svtrv2.tests.value} tests passing; served model unchanged`,
-    github: TRUTH.identity.links.svtrv2
+    impact: `${METRICS.svtrv2.tests.value} tests passing; served model unchanged`,
+    github: TRUTH.identity.links.svtrv2,
+    next: 'Train the benchmark baseline before the ARD ablation grid. Tests establish implementation correctness; accuracy still needs to be measured.',
   },
-  'echome': {
+  echome: {
     role: 'Sole author',
-    timeline: '2026',
+    period: '2026',
     stack: 'FastAPI, LangGraph, Qdrant, IRT, Whisper, XTTSv2, Ollama',
-    impact: `${show(METRICS.echome.memoryRecall)} memory recall vs 0% without; ${show(METRICS.echome.assessmentCut)} shorter assessment`,
-    github: TRUTH.identity.links.echome
+    impact: `${show(METRICS.echome.memoryRecall)} recall; ${show(METRICS.echome.assessmentCut)} shorter assessment`,
+    github: TRUTH.identity.links.echome,
+    next: 'Broaden the memory evaluation beyond the current scripted scenarios, especially ambiguous and conflicting facts.',
   },
-  'finsentinel': {
+  finsentinel: {
     role: 'Sole author',
-    timeline: '2026',
+    period: '2026',
     stack: 'React, FastAPI, ChromaDB, SentenceTransformers, cross-encoder, Ollama',
-    impact: 'Fully local finance RAG with per-user isolation inside the vector store',
-    github: TRUTH.identity.links.finSentinel
-  }
+    impact: 'Local finance RAG with per-user isolation inside the vector store',
+    github: TRUTH.identity.links.finSentinel,
+    next: 'Measure retrieval and answer quality separately, and extend evaluation beyond the synthetic corpus before making claims about real documents.',
+  },
 }
-
-const PROJECT_SLUGS = Object.keys(PROJECTS_META)
-
-function getProject(slug: string) {
-  if (!PROJECT_SLUGS.includes(slug)) return undefined
-  return posts.find((post) => post.slug === slug)
-}
-
-// This route is a curated set of case studies, not an alias for every writing post.
-// In Next 16, dynamic params not produced here would otherwise be rendered on demand.
+type Props = { params: Promise<{ slug: string }> }
 export const dynamicParams = false
-
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params
-  const post = getProject(slug)
-  if (!post) return {}
-  const url = `/work/${slug}`
-  return {
-    title: post.title,
-    description: post.summary,
-    alternates: { canonical: url },
-    openGraph: { type: 'article', title: post.title, description: post.summary, url, publishedTime: post.date },
-  }
+export function generateStaticParams() {
+  return Object.keys(projects).map((slug) => ({ slug }))
 }
-
-export default async function WorkSlugPage({ params }: PageProps) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  
-  const post = getProject(slug)
-
-  if (!post) {
-    notFound()
-  }
-
-  const meta = PROJECTS_META[slug] || {
-    role: 'Sole author',
-    timeline: '2026',
-    stack: post.tags.join(', '),
-    impact: post.summary
-  }
-
+  const post = posts.find((p) => p.slug === slug && !p.draft)
+  return post && projects[slug]
+    ? {
+        title: post.title,
+        description: post.summary,
+        alternates: { canonical: siteAddress(`/work/${slug}/`) },
+      }
+    : {}
+}
+export default async function Project({ params }: Props) {
+  const { slug } = await params
+  const post = posts.find((p) => p.slug === slug && !p.draft)
+  const meta = projects[slug]
+  if (!post || !meta) notFound()
   return (
-    <main className="relative w-full max-w-5xl px-5 sm:px-10 lg:ml-[14vw] lg:px-0 pt-24 pb-16 sm:py-32 text-text">
-      <Link href="/#work" className="inline-block font-mono text-xs uppercase tracking-widest text-muted hover:text-accent transition-colors -mt-2 py-2 mb-8 sm:mb-14">
-        ← Back to Work
-      </Link>
-      
-      <header className="mb-10 sm:mb-16">
-          <h1 className="font-display text-[clamp(3.25rem,16vw,3.75rem)] sm:text-6xl md:text-8xl leading-[0.85] mb-6 uppercase w-fit">
-            {post.title}
-          </h1>
-        <p className="font-mono text-xs sm:text-base text-muted uppercase tracking-wider sm:tracking-widest">{post.summary}</p>
+    <main id="content" tabIndex={-1}>
+      <header className="page-header">
+        <a className="mono muted" href={withBase('/#work')}>
+          ← Selected work
+        </a>
+        <h1>{post.title}</h1>
+        <p className="muted">{post.summary}</p>
       </header>
-
-      {/* TL;DR Grid */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-6 sm:gap-8 py-8 border-y border-line mb-12 sm:mb-16">
-        <div>
-          <div className="text-xs font-mono text-muted mb-2">ROLE</div>
-          <div className="text-sm font-medium">{meta.role}</div>
-        </div>
-        <div>
-          <div className="text-xs font-mono text-muted mb-2">TIMELINE</div>
-          <div className="text-sm font-medium">{meta.timeline}</div>
-        </div>
-        <div>
-          <div className="text-xs font-mono text-muted mb-2">STACK</div>
-          <div className="text-sm font-medium">{meta.stack}</div>
-        </div>
-        <div>
-          <div className="text-xs font-mono text-muted mb-2">IMPACT</div>
-          <div className="text-sm font-medium text-success">{meta.impact}</div>
-        </div>
-      </section>
-      
-      <article className="prose prose-p:text-text/80 prose-headings:font-display prose-headings:font-normal prose-a:text-accent prose-code:font-mono prose-code:text-accent max-w-none mb-16">
+      <article className="article">
+        <dl className="meta-table">
+          <dt>Role</dt>
+          <dd>{meta.role}</dd>
+          <dt>Period</dt>
+          <dd>{meta.period}</dd>
+          <dt>Stack</dt>
+          <dd>{meta.stack}</dd>
+          <dt>Links</dt>
+          <dd>
+            <a href={meta.github} target="_blank" rel="noreferrer">
+              Source code ↗
+            </a>
+          </dd>
+          <dt>Results</dt>
+          <dd>{meta.impact}</dd>
+        </dl>
         <div dangerouslySetInnerHTML={{ __html: post.content }} />
+        <PostSources slug={slug} />
+        <h2>What I&apos;d do differently</h2>
+        <p>{meta.next}</p>
       </article>
-
-      {meta.github && (
-        <div className="pt-8 border-t border-line flex justify-between items-center">
-          <a 
-            href={meta.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-accent hover:underline"
-          >
-            <span>View Source on GitHub</span>
-            <span>↗</span>
-          </a>
-          <Link href="/#work" className="font-mono text-xs uppercase tracking-widest text-muted hover:text-text transition-colors">
-            All Projects →
-          </Link>
-        </div>
-      )}
     </main>
   )
-}
-
-export function generateStaticParams() {
-  return PROJECT_SLUGS.map((slug) => ({ slug }))
 }

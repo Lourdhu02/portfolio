@@ -4,23 +4,22 @@
   "private": true,
   "packageManager": "pnpm@11.28.4",
   "scripts": {
-    "dev": "velite && next dev",
-    "build": "velite && next build",
-    "start": "next start",
+    "dev": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/build-assets.mjs && velite && next dev",
+    "build": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/build-assets.mjs && velite && next build && node scripts/fix-export-paths.mjs",
+    "start": "node scripts/serve-export.mjs",
+    "verify": "node scripts/verify.mjs",
     "lint": "eslint",
     "check:claims": "node --experimental-strip-types --no-warnings=ExperimentalWarning scripts/check-claims.mjs"
   },
   "dependencies": {
-    "clsx": "^2.1.1",
-    "cmdk": "^1.1.1",
-    "lenis": "^1.3.26",
-    "motion": "^14.0.0",
+    "motion": "^14.6.0",
     "next": "16.3.8",
     "react": "19.2.8",
-    "react-dom": "19.2.8",
-    "tailwind-merge": "^3.7.0"
+    "react-dom": "19.2.8"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.64.1",
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.20",
     "@types/node": "^20",
@@ -28,6 +27,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.8",
+    "lighthouse": "^13.5.0",
     "tailwindcss": "^4",
     "typescript": "^5",
     "velite": "^0.4.0"

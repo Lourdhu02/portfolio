@@ -7,22 +7,29 @@ export default defineConfig({
     assets: 'public/static',
     base: '/static/',
     name: '[name]-[hash:6].[ext]',
-    clean: true
+    clean: true,
   },
   collections: {
     posts: {
       name: 'Post',
       pattern: 'writing/**/*.mdx',
-      schema: s.object({
-        title: s.string().max(99),
-        summary: s.string(),
-        date: s.isodate(),
-        tags: s.array(s.string()).default([]),
-        cover: s.image().optional(),
-        draft: s.boolean().default(false),
-        content: s.markdown(),
-        path: s.path()
-      }).transform(({ path, ...data }) => ({ ...data, slug: path.split('/').pop()! }))
-    }
-  }
+      schema: s
+        .object({
+          title: s.string().max(99),
+          summary: s.string(),
+          date: s.isodate(),
+          tags: s.array(s.string()).default([]),
+          cover: s.image().optional(),
+          draft: s.boolean().default(false),
+          content: s.markdown(),
+          path: s.path(),
+        })
+        .transform(({ path, ...data }) => ({
+          ...data,
+          // Keyboard users can scroll long code lines on narrow screens.
+          content: data.content.replace(/<pre>/g, '<pre tabindex="0">'),
+          slug: path.split('/').pop()!,
+        })),
+    },
+  },
 })
