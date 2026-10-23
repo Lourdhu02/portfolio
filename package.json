@@ -5,13 +5,14 @@
   "packageManager": "pnpm@11.28.4",
   "scripts": {
     "dev": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/build-assets.mjs && velite && next dev",
-    "build": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/build-assets.mjs && velite && next build && node scripts/finish-export.mjs",
+    "build": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/build-assets.mjs && velite && next build && node scripts/fix-export-paths.mjs",
     "start": "node scripts/serve-export.mjs",
     "verify": "node scripts/verify.mjs",
     "lint": "eslint",
     "check:claims": "node --experimental-strip-types --no-warnings=ExperimentalWarning scripts/check-claims.mjs"
   },
   "dependencies": {
+    "motion": "^14.6.0",
     "next": "16.3.8",
     "react": "19.2.8",
     "react-dom": "19.2.8"

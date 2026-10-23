@@ -1,6 +1,6 @@
 # Lourdhu Raju — portfolio
 
-A white-first, monochrome portfolio built with Next.js 16 App Router, React 19, Tailwind v4 and Velite. Geist for text, Geist Mono for metadata. Static HTML, no analytics, no scroll animation. Light, dark and system themes are available in the header.
+A white-first, monochrome portfolio built with Next.js 16 App Router, React 19, Tailwind v4, Motion for React and Velite. Full-width asymmetric grids, square project cards, custom SVG diagrams and a clear type hierarchy. Light, dark and system themes are available in the header.
 
 ## Run locally
 
@@ -44,4 +44,10 @@ pnpm exec tsc --noEmit
 
 The claims check validates bold numeric claims in MDX against the metric registry. Source receipts explain private measurements without fabricating public links. Build output and browser audits are the evidence for performance; a Lighthouse target is not a guaranteed score on every machine.
 
-`scripts/finish-export.mjs` removes unused Next hydration and Flight scripts from the exported HTML outside `/lab`. These pages use native document navigation (with a 150 ms CSS View Transition where supported); `public/preferences.js` enhances the server-rendered clock, theme selector and email copy button. The lab retains full React hydration. If you add another client component, update the export gate and browser checks before publishing.
+`components/MotionSystem.tsx` provides shared route exit/entry, viewport reveals, and card interactions. Internal links retain native anchor fallbacks and use Next client navigation after an exit animation. Content is still pre-rendered to static HTML; the hydrated runtime is retained on every page. `prefers-reduced-motion` disables movement, and a noscript fallback keeps content visible without JavaScript. The server-rendered clock, theme selector and copy button are enhanced by `public/preferences.js`.
+
+`scripts/fix-export-paths.mjs` creates flat RSC segment filename aliases on Windows for the URLs expected by Next 16.3's client router; Linux exports are unchanged. This is covered by browser navigation and failed-request checks.
+
+To review the production export locally, run `pnpm start` with the same `NEXT_PUBLIC_BASE_PATH` used to build, then run `pnpm verify` in another terminal. The browser checks require Chrome and include desktop, tablet, mobile, both themes, reduced motion, routing, keyboard access and the OCR lab.
+
+See [the current design review](docs/iteration-2.md) for screenshots, measured performance, and the shared motion architecture.

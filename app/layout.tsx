@@ -4,13 +4,14 @@ import { TRUTH } from '@/content/truth'
 import { Header, Footer } from '@/components/SiteChrome'
 import { withBase } from '@/lib/path'
 import { siteAddress } from '@/lib/site'
+import { MotionSystem } from '@/components/MotionSystem'
 import './globals.css'
 const sans = Geist({ subsets: ['latin'], variable: '--font-geist', display: 'swap' })
 const mono = Geist_Mono({
   subsets: ['latin'],
   variable: '--font-geist-mono',
   display: 'swap',
-  preload: false,
+  preload: true,
 })
 const { name, role, pitch, links } = TRUTH.identity
 export const metadata: Metadata = {
@@ -41,6 +42,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <noscript>
+          <style>
+            {'[data-motion], [data-page-stage] { opacity:1!important; transform:none!important; }'}
+          </style>
+        </noscript>
         {sameAs.map((url) => (
           <link key={url} rel="me" href={url} />
         ))}
@@ -65,7 +71,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
         <div className="shell">
           <Header />
-          {children}
+          <MotionSystem>{children}</MotionSystem>
           <Footer />
         </div>
         <script src={withBase('/preferences.js')} defer />

@@ -1,6 +1,7 @@
 import { TRUTH, PREPRINT_PAGES, SOCIAL_SOURCES } from '@/content/truth'
 import { getStats } from '@/lib/stats'
 import { SourceLink } from './ui/Receipt'
+import { Reveal, CardMotion } from './MotionSystem'
 export async function Elsewhere() {
   const stats = await getStats()
   const { links } = TRUTH.identity
@@ -76,24 +77,35 @@ export async function Elsewhere() {
     },
   ]
   return (
-    <ul className="index-list">
-      {profiles.map((p) => (
-        <li className="index-item" key={p.name}>
-          <a href={p.href} target="_blank" rel="me noreferrer" className="social-row">
-            <span className="index-title">{p.name}</span>
-            <span className="mono muted social-handle">{p.handle}</span>
-            <span className="social-description muted">{p.description}</span>
-            <span className="mono social-stat">{p.stat}</span>
-            <span className="social-arrow" aria-hidden="true">
-              ↗
-            </span>
-          </a>
-          {p.source ? (
-            <div className="receipt social-source">
-              <SourceLink source={p.source} />
-              {p.fallback ? ' · last verified snapshot' : null}
-            </div>
-          ) : null}
+    <ul className="index-list social-grid">
+      {profiles.map((p, i) => (
+        <li key={p.name}>
+          <Reveal delay={(i % 3) * 0.04}>
+            <CardMotion className="social-card">
+              <a
+                href={p.href}
+                target="_blank"
+                rel="me noreferrer"
+                className="card-cover"
+                aria-label={`Visit ${p.name}`}
+              />
+              <div className="social-card-top">
+                <h3 className="social-name">{p.name}</h3>
+                <span aria-hidden="true">↗</span>
+              </div>
+              <span className="mono muted social-handle">{p.handle}</span>
+              <p className="social-description muted">{p.description}</p>
+              <div className="social-card-bottom">
+                <span className="mono social-stat">{p.stat}</span>
+                {p.source ? (
+                  <div className="receipt">
+                    <SourceLink source={p.source} />
+                    {p.fallback ? ' · last verified snapshot' : null}
+                  </div>
+                ) : null}
+              </div>
+            </CardMotion>
+          </Reveal>
         </li>
       ))}
     </ul>
