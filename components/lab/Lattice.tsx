@@ -1,4 +1,4 @@
-"use client"
+'use client'
 import type { ReadResult } from '@/lib/lab/worker'
 
 const CELL = 18
@@ -21,7 +21,9 @@ export function Lattice({
   const rows = ['ε', ...alphabet.split('')]
   const w = LABEL_W + T * CELL
   const h = K * CELL
-  const pts = path.map((k, t) => `${LABEL_W + t * CELL + CELL / 2},${k * CELL + CELL / 2}`).join(' ')
+  const pts = path
+    .map((k, t) => `${LABEL_W + t * CELL + CELL / 2},${k * CELL + CELL / 2}`)
+    .join(' ')
 
   return (
     <svg
@@ -46,7 +48,15 @@ export function Lattice({
       ))}
       {Array.from({ length: T }, (_, t) => (
         <g key={t} onMouseEnter={() => onHover(t)} onFocus={() => onHover(t)}>
-          <rect x={LABEL_W + t * CELL} y={0} width={CELL} height={h} fill={hover === t ? 'rgba(45,226,230,0.08)' : 'transparent'} />
+          <rect
+            x={LABEL_W + t * CELL}
+            y={0}
+            width={CELL}
+            height={h}
+            fill={
+              hover === t ? 'color-mix(in srgb, var(--color-ink) 8%, transparent)' : 'transparent'
+            }
+          />
           {rows.map((_, k) => {
             const p = probs[t * K + k]
             if (p < 0.02) return null
@@ -59,17 +69,32 @@ export function Lattice({
                 width={CELL - 4}
                 height={CELL - 4}
                 rx={2}
-                fill={blank ? '#8A8A96' : '#2DE2E6'}
+                fill={blank ? 'var(--color-muted)' : 'var(--color-ink)'}
                 opacity={blank ? p * 0.35 : 0.15 + p * 0.85}
               />
             )
           })}
         </g>
       ))}
-      <polyline points={pts} fill="none" stroke="#FF4655" strokeWidth={1.25} strokeLinejoin="round" opacity={0.85} pointerEvents="none" />
+      <polyline
+        points={pts}
+        fill="none"
+        stroke="var(--color-ink)"
+        strokeWidth={1.25}
+        strokeLinejoin="round"
+        opacity={0.85}
+        pointerEvents="none"
+      />
       {path.map((k, t) =>
         k === 0 ? null : (
-          <circle key={t} cx={LABEL_W + t * CELL + CELL / 2} cy={k * CELL + CELL / 2} r={2.6} fill="#FF4655" pointerEvents="none" />
+          <circle
+            key={t}
+            cx={LABEL_W + t * CELL + CELL / 2}
+            cy={k * CELL + CELL / 2}
+            r={2.6}
+            fill="var(--color-ink)"
+            pointerEvents="none"
+          />
         ),
       )}
     </svg>
@@ -77,7 +102,15 @@ export function Lattice({
 }
 
 // Frame-by-frame argmax, then the two CTC rules: merge repeats, drop blanks
-export function CollapseStrip({ result, alphabet, hover }: { result: ReadResult; alphabet: string; hover: number | null }) {
+export function CollapseStrip({
+  result,
+  alphabet,
+  hover,
+}: {
+  result: ReadResult
+  alphabet: string
+  hover: number | null
+}) {
   const sym = (k: number) => (k === 0 ? '·' : alphabet[k - 1])
   return (
     <div className="font-mono text-[11px] leading-none">
@@ -87,9 +120,9 @@ export function CollapseStrip({ result, alphabet, hover }: { result: ReadResult;
           return (
             <span
               key={t}
-              className={`text-center py-1.5 border-r border-line/60 last:border-r-0 ${
-                hover === t ? 'bg-detect/15' : ''
-              } ${k === 0 ? 'text-muted/50' : repeat ? 'text-muted line-through decoration-accent/70' : 'text-detect'}`}
+              className={`text-center py-1.5 border-r border-rule/60 last:border-r-0 ${
+                hover === t ? 'bg-ink/15' : ''
+              } ${k === 0 ? 'text-muted' : repeat ? 'text-muted line-through decoration-ink/70' : 'text-ink'}`}
             >
               {sym(k)}
             </span>

@@ -40,3 +40,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Rebuilt from source by scripts/build-assets.mjs
+/public/lab/worker.js

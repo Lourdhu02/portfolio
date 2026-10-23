@@ -1,118 +1,75 @@
-import type { Metadata, Viewport } from "next";
-import { Big_Shoulders, Geist, JetBrains_Mono } from "next/font/google";
-import "./globals.css";
-import { JinxMode } from "@/components/JinxMode";
-import { Navigation } from "@/components/ui/Navigation";
-import { MotionProvider } from "@/components/motion/MotionProvider";
-import { SmoothScroll } from "@/components/motion/SmoothScroll";
-import { ScrollProgress } from "@/components/motion/ScrollProgress";
-import { CommandPalette } from "@/components/interaction/CommandPalette";
-import { Cursor } from "@/components/interaction/Cursor";
-import { Toaster } from "@/components/interaction/Toaster";
-import { posts } from "#velite";
-import { TRUTH } from "@/content/truth";
-
-// Big Shoulders Display now ships on Google Fonts as the variable "Big Shoulders" family (opsz axis).
-const fontDisplay = Big_Shoulders({
-  variable: "--font-big-shoulders",
-  subsets: ["latin"],
-  weight: ["700", "800", "900"],
-  // next/font has no metric overrides for this family yet, so name the closest condensed fallback.
-  adjustFontFallback: false,
-  fallback: ["Arial Narrow", "sans-serif"],
-});
-
-const fontSans = Geist({
-  variable: "--font-geist",
-  subsets: ["latin"],
-});
-
-const fontMono = JetBrains_Mono({
-  variable: "--font-jetbrains",
-  subsets: ["latin"],
-});
-
-const { name, role, pitch, siteUrl, links } = TRUTH.identity;
-
+import type { Metadata } from 'next'
+import { Geist, Geist_Mono } from 'next/font/google'
+import { TRUTH } from '@/content/truth'
+import { Header, Footer } from '@/components/SiteChrome'
+import { withBase } from '@/lib/path'
+import { siteAddress } from '@/lib/site'
+import './globals.css'
+const sans = Geist({ subsets: ['latin'], variable: '--font-geist', display: 'swap' })
+const mono = Geist_Mono({
+  subsets: ['latin'],
+  variable: '--font-geist-mono',
+  display: 'swap',
+  preload: false,
+})
+const { name, role, pitch, links } = TRUTH.identity
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: { default: `${name} · ${role}`, template: `%s · ${name}` },
+  metadataBase: new URL(siteAddress()),
+  title: { default: `${name} — ${role}`, template: `%s — ${name}` },
   description: pitch,
-  authors: [{ name, url: siteUrl }],
+  alternates: { canonical: siteAddress() },
   openGraph: {
-    type: "website",
+    type: 'website',
     siteName: name,
-    title: `${name} · ${role}`,
+    title: `${name} — ${role}`,
     description: pitch,
-    url: "/",
-    locale: "en_US",
+    url: siteAddress(),
+    images: [{ url: withBase('/og.png'), width: 1200, height: 630, alt: `${name}, ${role}` }],
   },
-  twitter: { card: "summary_large_image", title: `${name} · ${role}`, description: pitch },
-};
-
-// Lets search engines show Raju as a person with a role, employer and profiles.
-const personJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  name,
-  jobTitle: role,
-  url: siteUrl,
-  worksFor: { "@type": "Organization", name: TRUTH.identity.company },
-  address: { "@type": "PostalAddress", addressLocality: "Bengaluru", addressCountry: "IN" },
-  sameAs: [links.github, links.linkedin, links.kaggle, links.studio],
-};
-
-// viewport-fit=cover lets the dark background run under the notch and home indicator;
-// components pad themselves with env(safe-area-inset-*).
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-  viewportFit: "cover",
-  themeColor: "#050507",
-  colorScheme: "dark",
-};
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  const palettePosts = posts
-    .filter((p) => !p.draft)
-    .sort((a, b) => b.date.localeCompare(a.date))
-    .map(({ slug, title }) => ({ slug, title }));
-
+  twitter: { card: 'summary_large_image', images: [withBase('/og.png')] },
+  icons: { icon: withBase('/icon.svg') },
+}
+const themeScript = `try{var t=localStorage.getItem('portfolio-theme')||'light';if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;else delete document.documentElement.dataset.theme}catch{document.documentElement.dataset.theme='light'}`
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const sameAs = [...new Set(Object.values(links).filter((url) => url.startsWith('https://')))]
   return (
-    <html lang="en" className={`${fontDisplay.variable} ${fontSans.variable} ${fontMono.variable}`}>
-      <body className="antialiased">
+    <html
+      lang="en"
+      data-theme="light"
+      suppressHydrationWarning
+      className={`${sans.variable} ${mono.variable}`}
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        {sameAs.map((url) => (
+          <link key={url} rel="me" href={url} />
+        ))}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd).replace(/</g, "\\u003c") }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Person',
+              name,
+              jobTitle: role,
+              url: siteAddress(),
+              worksFor: { '@type': 'Organization', name: TRUTH.identity.company },
+              sameAs,
+            }).replace(/</g, '\\u003c'),
+          }}
         />
-        <a
-          href="#content"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-6 focus:top-6 focus:z-[100] focus:rounded-[6px] focus:bg-accent focus:px-4 focus:py-2 focus:font-mono focus:text-xs focus:uppercase focus:tracking-widest focus:text-bg"
-        >
+      </head>
+      <body>
+        <a href="#content" className="skip-link">
           Skip to content
         </a>
-        <MotionProvider>
-          <SmoothScroll>
-          <JinxMode />
-          <ScrollProgress />
-          <CommandPalette posts={palettePosts} />
-          <Cursor />
-          <Toaster />
-          <Navigation />
-          <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-50 overflow-hidden" style={{ viewTransitionName: "site-grain" }}>
-            <div className="film-grain absolute inset-0" />
-            <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_40%,transparent_55%,rgba(5,5,7,0.7)_100%)]" />
-          </div>
-          <div id="content" tabIndex={-1} className="outline-none">
-            {children}
-          </div>
-          </SmoothScroll>
-        </MotionProvider>
+        <div className="shell">
+          <Header />
+          {children}
+          <Footer />
+        </div>
+        <script src={withBase('/preferences.js')} defer />
       </body>
     </html>
-  );
+  )
 }

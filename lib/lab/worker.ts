@@ -1,7 +1,18 @@
 // Web Worker for /lab: renders the stressed meter, runs the model and times it,
 // so the page thread only paints.
 import { parseModel, forward, decode, type Model } from './infer'
-import { renderMeter, toGray, normalize, rng, randomSpec, W, H, NO_STRESS, type MeterSpec, type StressKey } from './meter'
+import {
+  renderMeter,
+  toGray,
+  normalize,
+  rng,
+  randomSpec,
+  W,
+  H,
+  NO_STRESS,
+  type MeterSpec,
+  type StressKey,
+} from './meter'
 
 export type WorkerIn =
   | { type: 'load'; url: string }
@@ -56,11 +67,18 @@ self.onmessage = async (e: MessageEvent<WorkerIn>) => {
   try {
     if (msg.type === 'load') {
       const t0 = performance.now()
-      const buf = await (await fetch(msg.url)).arrayBuffer()
+      const response = await fetch(msg.url)
+      if (!response.ok) throw new Error(`Model download failed (${response.status})`)
+      const buf = await response.arrayBuffer()
       model = parseModel(buf)
       // Warm the JIT so the first visible timing is not a cold start
       forward(model, new Float32Array(model.inH * model.inW))
-      post({ type: 'ready', bytes: buf.byteLength, ms: performance.now() - t0, alphabet: model.alphabet })
+      post({
+        type: 'ready',
+        bytes: buf.byteLength,
+        ms: performance.now() - t0,
+        alphabet: model.alphabet,
+      })
     } else if (msg.type === 'read' && model) {
       post({ type: 'read', id: msg.id, ...read(msg.spec) })
     } else if (msg.type === 'cancel') {
@@ -84,7 +102,14 @@ self.onmessage = async (e: MessageEvent<WorkerIn>) => {
           }
         }
         times.sort((a, b) => a - b)
-        post({ type: 'sweep-point', id: msg.id, level: l / 10, exact: ok / msg.perLevel, n: msg.perLevel, msP50: times[times.length >> 1] })
+        post({
+          type: 'sweep-point',
+          id: msg.id,
+          level: l / 10,
+          exact: ok / msg.perLevel,
+          n: msg.perLevel,
+          msP50: times[times.length >> 1],
+        })
       }
       post({ type: 'sweep-done', id: msg.id })
     }

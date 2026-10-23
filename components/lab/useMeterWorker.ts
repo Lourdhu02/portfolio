@@ -1,7 +1,8 @@
-"use client"
+'use client'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { MeterSpec, StressKey } from '@/lib/lab/meter'
 import type { ReadResult, WorkerIn, WorkerOut } from '@/lib/lab/worker'
+import { withBase } from '@/lib/path'
 
 export interface SweepPoint {
   level: number
@@ -24,7 +25,11 @@ export function useMeterWorker() {
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<ReadResult | null>(null)
   const [timings, setTimings] = useState<number[]>([])
-  const [sweep, setSweep] = useState<{ key: StressKey; points: SweepPoint[]; running: boolean } | null>(null)
+  const [sweep, setSweep] = useState<{
+    key: StressKey
+    points: SweepPoint[]
+    running: boolean
+  } | null>(null)
 
   const send = useCallback((m: WorkerIn) => worker.current?.postMessage(m), [])
 
@@ -36,7 +41,7 @@ export function useMeterWorker() {
   }, [send])
 
   useEffect(() => {
-    const w = new Worker(new URL('../../lib/lab/worker.ts', import.meta.url), { type: 'module' })
+    const w = new Worker(withBase('/lab/worker.js'), { type: 'module' })
     worker.current = w
     loaded.current = false
     inFlight.current = false
@@ -62,7 +67,7 @@ export function useMeterWorker() {
       }
     }
     w.onerror = (e) => setError(e.message || 'Worker failed to start')
-    w.postMessage({ type: 'load', url: '/lab/meter-ctc.bin' } satisfies WorkerIn)
+    w.postMessage({ type: 'load', url: withBase('/lab/meter-ctc.bin') } satisfies WorkerIn)
     return () => w.terminate()
   }, [pump])
 

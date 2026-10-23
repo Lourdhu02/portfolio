@@ -35,7 +35,11 @@ const gh = (repo: string, path: string): Source => ({
   path,
   url: `https://github.com/Lourdhu02/${repo}/blob/main/${path}`,
 })
-const resume: Source = { name: 'résumé', path: 'LourduRaju_Resume.pdf', url: '/LourduRaju_Resume.pdf' }
+const resume: Source = {
+  name: 'résumé',
+  path: 'LourdhuRaju_Resume.pdf',
+  url: '/LourdhuRaju_Resume.pdf',
+}
 
 export const METRICS = {
   meterOcr: {
@@ -44,7 +48,8 @@ export const METRICS = {
       value: 60,
       unit: 'ms',
       label: 'End-to-end p50, GPU path vs serverless',
-      context: 'The same 1,000 meter photos sent through the production router at 14 req/s, timed at the client.',
+      context:
+        'The same 1,000 meter photos sent through the production router at 14 req/s, timed at the client.',
       source: triton('westbengal/ec2/router-lambda/TEST_RESULTS.md'),
     },
     throughput: {
@@ -52,7 +57,8 @@ export const METRICS = {
       value: 321,
       unit: 'img/s',
       label: 'Single-image throughput',
-      context: 'At 16 concurrent requests on the GB10 dev box, after moving the last classifier from ONNX Runtime to TensorRT.',
+      context:
+        'At 16 concurrent requests on the GB10 dev box, after moving the last classifier from ONNX Runtime to TensorRT.',
       source: triton('CHANGELOG.md'),
     },
     p50AtLoad: {
@@ -69,7 +75,8 @@ export const METRICS = {
       unit: 'ms',
       decimals: 1,
       label: 'Meter-classifier compute',
-      context: 'ONNX Runtime to TensorRT FP16, after patching a UINT8 Transpose that TensorRT rejects.',
+      context:
+        'ONNX Runtime to TensorRT FP16, after patching a UINT8 Transpose that TensorRT rejects.',
       source: triton('CHANGELOG.md'),
     },
     sustainedL4: {
@@ -106,7 +113,8 @@ export const METRICS = {
       unit: '%',
       decimals: 1,
       label: 'Reading accuracy, West Bengal',
-      context: '2,950 labelled photos from the fixed 3,965-image test set. Every release must reproduce it before it ships.',
+      context:
+        '2,950 labelled photos from the fixed 3,965-image test set. Every release must reproduce it before it ships.',
       source: triton('README.md'),
     },
     invalidDetection: {
@@ -114,7 +122,8 @@ export const METRICS = {
       unit: '%',
       decimals: 1,
       label: 'Unreadable photos caught',
-      context: '1,015 blurred, blank or non-meter photos from the same test set, answered "NA" instead of a wrong number.',
+      context:
+        '1,015 blurred, blank or non-meter photos from the same test set, answered "NA" instead of a wrong number.',
       source: triton('README.md'),
     },
     biharAccuracy: {
@@ -143,7 +152,8 @@ export const METRICS = {
       value: 8000,
       unit: 'requests',
       label: 'Shadow and canary rollout, 0 errors',
-      context: 'Eight stages of 1,000 requests, from shadow 10% to canary 100%, with zero errors and zero fallbacks.',
+      context:
+        'Eight stages of 1,000 requests, from shadow 10% to canary 100%, with zero errors and zero fallbacks.',
       source: triton('westbengal/ec2/router-lambda/TEST_RESULTS.md'),
     },
     canaryGap: {
@@ -152,7 +162,8 @@ export const METRICS = {
       unit: '%',
       decimals: 1,
       label: 'Serverless vs GPU path accuracy in canary',
-      context: '800 labelled photos. The ladder caught the gap, mostly analog dials, and held rollout until it was understood.',
+      context:
+        '800 labelled photos. The ladder caught the gap, mostly analog dials, and held rollout until it was understood.',
       source: triton('westbengal/ec2/router-lambda/TEST_RESULTS.md'),
     },
     regressionTests: {
@@ -166,7 +177,8 @@ export const METRICS = {
       value: 475,
       unit: 'objects',
       label: 'S3 objects lost to fire-and-forget archiving',
-      context: 'In a 1,000-image burst test on version 1. Version 2 spools failures to disk and replays them.',
+      context:
+        'In a 1,000-image burst test on version 1. Version 2 spools failures to disk and replays them.',
       source: triton('westbengal/ec2/version-2/README.md'),
     },
   },
@@ -175,7 +187,8 @@ export const METRICS = {
       value: 18,
       unit: 'labs',
       label: 'Test-driven labs',
-      context: 'Autograd to mixture of experts, each with a handout, an exercise and a reference solution.',
+      context:
+        'Autograd to mixture of experts, each with a handout, an exercise and a reference solution.',
       source: gh('achilles', 'README.md'),
     },
     tests: {
@@ -192,7 +205,8 @@ export const METRICS = {
       value: 92,
       unit: '%',
       label: 'Multi-session memory recall',
-      context: '11 of 12 scenarios recall the needed fact, up to 52 turns back. The baseline is the same agent with memory off.',
+      context:
+        '11 of 12 scenarios recall the needed fact, up to 52 turns back. The baseline is the same agent with memory off.',
       source: gh('echome', 'tests/eval/run_eval.py'),
     },
     assessmentCut: {
@@ -208,7 +222,8 @@ export const METRICS = {
       value: 49,
       unit: 'tests',
       label: 'Tests passing, 17 of them for ARD',
-      context: 'Routing and distillation ship behind flags, including an end-to-end CPU fit with both on.',
+      context:
+        'Routing and distillation ship behind flags, including an end-to-end CPU fit with both on.',
       source: gh('svtrv2', 'agents/status.md'),
     },
   },
@@ -217,7 +232,8 @@ export const METRICS = {
       value: 1000,
       unit: 'documents',
       label: 'Synthetic finance corpus',
-      context: 'Invoices, salary slips, bank statements, GST returns, purchase orders, credit and debit notes across 10 layouts.',
+      context:
+        'Invoices, salary slips, bank statements, GST returns, purchase orders, credit and debit notes across 10 layouts.',
       source: gh('fin-sentinal.ai', 'test-data/sugar_dataset/manifest.csv'),
     },
   },
@@ -225,8 +241,8 @@ export const METRICS = {
 
 export const TRUTH = {
   identity: {
-    name: 'Lourdu Raju',
-    siteUrl: 'https://lourdu.netlify.app',
+    name: 'Lourdhu Raju',
+    siteUrl: 'https://lourdhu02.github.io',
     role: 'Machine Learning Engineer',
     focus: 'Production Computer Vision · GPU Inference · Applied GenAI',
     company: 'Sujanix',
@@ -242,13 +258,17 @@ export const TRUTH = {
       github: 'https://github.com/Lourdhu02',
       linkedin: 'https://linkedin.com/in/lourdhu',
       kaggle: 'https://kaggle.com/blourdhuraju',
+      huggingface: 'https://huggingface.co/lourdhu02',
+      x: 'https://x.com/_lourdhu',
+      reddit: 'https://www.reddit.com/user/lourdhu_/',
+      instagram: 'https://www.instagram.com/lourdu_02/',
       studio: 'https://spacedrift.in',
       preprint: 'https://philarchive.org/rec/BANNFS',
       achilles: 'https://github.com/Lourdhu02/achilles',
       echome: 'https://github.com/Lourdhu02/echome',
       svtrv2: 'https://github.com/Lourdhu02/svtrv2',
       finSentinel: 'https://github.com/Lourdhu02/fin-sentinal.ai',
-      resume: '/LourduRaju_Resume.pdf',
+      resume: '/LourdhuRaju_Resume.pdf',
     },
   },
   studio: {
@@ -310,7 +330,11 @@ export const TRUTH = {
       issuer: 'DeepLearning.AI & Stanford University',
       date: 'Supervised, unsupervised and advanced learning',
     },
-    { title: 'NPTEL Data Science', issuer: 'IIT Madras', date: 'Data science and applied algorithms' },
+    {
+      title: 'NPTEL Data Science',
+      issuer: 'IIT Madras',
+      date: 'Data science and applied algorithms',
+    },
   ],
   education: {
     institution: 'Andhra Loyola Institute of Engineering and Technology',
@@ -322,7 +346,10 @@ export const TRUTH = {
 
 /** 330707 → "330,707"; respects `decimals`. */
 export function fmt(n: number, decimals = 0): string {
-  return n.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
+  return n.toLocaleString('en-US', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  })
 }
 
 /** "60 ms", "99.8%", "321 img/s". */
@@ -342,3 +369,33 @@ export function factor(m: Metric): number {
 
 /** Headroom of the L4 over production's busiest five minutes. */
 export const headroom = METRICS.meterOcr.sustainedL4.value / METRICS.meterOcr.productionPeak.value
+
+/** Last verified public API snapshot, 23 October 2026. */
+export const SOCIAL_FALLBACK = { repos: 19, followers: 16, models: 0 }
+export const SOCIAL_SOURCES = {
+  github: {
+    name: 'GitHub API',
+    path: 'users/Lourdhu02',
+    url: 'https://api.github.com/users/Lourdhu02',
+  },
+  huggingface: {
+    name: 'Hugging Face API',
+    path: 'models?author=lourdhu02',
+    url: 'https://huggingface.co/api/models?author=lourdhu02',
+  },
+} satisfies Record<string, Source>
+export const PREPRINT_PAGES: Metric = {
+  value: 23,
+  unit: 'pp',
+  label: 'Preprint length',
+  context: 'No Final Save, published on PhilArchive.',
+  source: { name: 'PhilArchive', path: 'BANNFS', url: TRUTH.identity.links.preprint },
+}
+
+// The lab has its own public model; these figures are unrelated to production OCR.
+export { default as LAB_MODEL } from '../lib/lab/model-card.json' with { type: 'json' }
+export const LAB_SOURCE: Source = {
+  name: 'portfolio',
+  path: 'lib/lab/model-card.json',
+  url: 'https://github.com/Lourdhu02/portfolio/blob/main/lib/lab/model-card.json',
+}
